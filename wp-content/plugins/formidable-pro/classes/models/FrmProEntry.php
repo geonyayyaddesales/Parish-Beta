@@ -116,10 +116,8 @@ class FrmProEntry{
                 $old_ids = array();
             }
 
-			if ( is_array( $field_values ) ) {
-				unset( $field_values['form'] );
-				unset( $field_values['row_ids'] );
-			}
+			unset( $field_values['form'] );
+			unset( $field_values['row_ids'] );
 
             $sub_ids = array();
 

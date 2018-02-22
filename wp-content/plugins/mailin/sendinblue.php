@@ -3,7 +3,7 @@
  * Plugin Name: SendinBlue Subscribe Form And WP SMTP
  * Plugin URI: https://www.sendinblue.com/?r=wporg
  * Description: Easily send emails from your WordPress blog using SendinBlue SMTP and easily add a subscribe form to your site
- * Version: 2.9.0
+ * Version: 2.8.3
  * Author: SendinBlue
  * Author URI: https://www.sendinblue.com/?r=wporg
  * License: GPLv2 or later
@@ -50,7 +50,6 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 	require_once( 'widget/widget_form.php' );
 	require_once( 'inc/table-forms.php' );
 	require_once( 'inc/sib-api-manager.php' );
-	require_once( 'inc/sib-sms-code.php' );
 	require_once( 'model/model-forms.php' );
 	require_once( 'model/model-users.php' );
 	require_once( 'model/model-lang.php' );
@@ -166,9 +165,6 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 			add_action( 'wp_ajax_sib_update_form_html', array( 'SIB_Page_Form', 'ajax_update_html' ) );
 			add_action( 'wp_ajax_sib_copy_origin_form', array( 'SIB_Page_Form', 'ajax_copy_origin_form' ) );
 
-			add_action( 'wp_ajax_sib_get_country_prefix', array( $this, 'ajax_get_country_prefix' ) );
-			add_action( 'wp_ajax_nopriv_sib_get_country_prefix', array( $this, 'ajax_get_country_prefix' ) );
-
 			add_action( 'init', array( &$this, 'init' ) );
 
 			add_action( 'wp_login', array( &$this, 'sib_wp_login_identify' ), 10, 2 );
@@ -185,7 +181,7 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 				// check if updated into new configuration. to 2.x.x.
 				$use_new_version = get_option( 'sib_use_new_version', '0' );
 				if ( '1' === $use_new_version ) {
-					update_option( 'sib_use_new_version', '2.9.0' );
+					update_option( 'sib_use_new_version', '2.7.2' );
 					// create forms tables and create default form.
 					SIB_Forms::createTable();
 					// create users table.
@@ -194,11 +190,10 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 					$oldFormData = SIB_Forms::get_old_form();
 					$oldFormID = SIB_Forms::addForm( $oldFormData );
 					update_option( 'sib_old_form_id', $oldFormID );
-				} elseif ( '2.9.0' !== $use_new_version ) {
-					update_option( 'sib_use_new_version', '2.9.0' );
+				} elseif ( '2.7.2' !== $use_new_version ) {
+					update_option( 'sib_use_new_version', '2.7.2' );
 					SIB_Forms::alterTable();
 					SIB_Forms::addTermsColumn();
-					SIB_Forms::addConfirmIDColumn();
 				}
 			}
 
@@ -227,37 +222,34 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 			}
 			$home_settings = get_option( SIB_Manager::HOME_OPTION_NAME, array() );
 
-			if( 'yes' === $home_settings['activate_email'] )
-            {
-                if ( false === self::$wp_mail_conflict ) {
-                    /**
-                     * Declare wp_mail function for SendinBlue SMTP module
-                     *
-                     * @param string $to - receiption email.
-                     * @param string $subject - subject of email.
-                     * @param string $message - message content.
-                     * @param string $headers - header of email.
-                     * @param array  $attachments - attachments.
-                     * @return bool
-                     */
-                    function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-                        $message = str_replace( 'NF_SIB', '', $message );
-                        $message = str_replace( 'WC_SIB', '', $message );
-                        try {
-                            $sent = SIB_Manager::sib_email( $to, $subject, $message, $headers, $attachments );
-                            if ( is_wp_error( $sent ) || ! isset( $sent['code'] ) || 'success' !== $sent['code'] ) {
-                                return SIB_Manager::wp_mail_native( $to, $subject, $message, $headers, $attachments );
-                            }
-                            return true;
-                        } catch ( Exception $e ) {
-                            return SIB_Manager::wp_mail_native( $to, $subject, $message, $headers, $attachments );
-                        }
-                    }
-                } else {
-                    add_action( 'admin_notices', array( &$this, 'wpMailNotices' ) );
-                    return;
-                }
-            }
+			if ( 'yes' === $home_settings['activate_email'] && false === self::$wp_mail_conflict ) {
+				/**
+				 * Declare wp_mail function for SendinBlue SMTP module
+				 *
+				 * @param string $to - receiption email.
+				 * @param string $subject - subject of email.
+				 * @param string $message - message content.
+				 * @param string $headers - header of email.
+				 * @param array  $attachments - attachments.
+				 * @return bool
+				 */
+				function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
+					$message = str_replace( 'NF_SIB', '', $message );
+					$message = str_replace( 'WC_SIB', '', $message );
+					try {
+						$sent = SIB_Manager::sib_email( $to, $subject, $message, $headers, $attachments );
+						if ( is_wp_error( $sent ) || ! isset( $sent['code'] ) || 'success' !== $sent['code'] ) {
+							return SIB_Manager::wp_mail_native( $to, $subject, $message, $headers, $attachments );
+						}
+						return true;
+					} catch ( Exception $e ) {
+						return SIB_Manager::wp_mail_native( $to, $subject, $message, $headers, $attachments );
+					}
+				}
+			} else {
+				add_action( 'admin_notices', array( &$this, 'wpMailNotices' ) );
+				return;
+			}
 		}
 
 		/**
@@ -358,23 +350,14 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 		 */
 		function wp_head_ac() {
 			wp_enqueue_script( 'sib-front-js', self::$plugin_url . '/js/mailin-front.js', array( 'jquery' ), filemtime( self::$plugin_dir . '/js/mailin-front.js' ), false );
-			wp_enqueue_style( 'sib-front-css', self::$plugin_url.'/css/mailin-front.css', array(), array(), 'all');
 			wp_localize_script(
 				'sib-front-js', 'sibErrMsg', array(
 					'invalidMail' => __( 'Please fill out valid email address', 'sib_lang' ),
 					'requiredField' => __( 'Please fill out required fields', 'sib_lang' ),
 					'invalidDateFormat' => __( 'Please fill out valid date format', 'sib_lang' ),
-                    'invalidSMSFormat' => __( 'Please fill out valid phone number', 'sib_lang' ),
 				)
 			);
-            wp_localize_script(
-                'sib-front-js', 'ajax_sib_front_object',
-                array(
-                    'ajax_url' => admin_url( 'admin-ajax.php' ),
-                    'ajax_nonce' => wp_create_nonce( 'sib_front_ajax_nonce' ),
-                    'flag_url' => plugins_url('img/flags/', __FILE__ ),
-                )
-            );
+			wp_localize_script( 'sib-front-js', 'sib_ajax_nonce', wp_create_nonce( 'sib_front_ajax_nonce' ) );
 		}
 
 		/**
@@ -818,31 +801,13 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 								break;
 
 							case 'bcc':
-							    if ( strpos( $content, '<') !== false )
-                                {
-                                    $bcc_content = substr( $content, 0, strpos( $content, '<' ) - 1 );
-                                    $bcc[ trim( $bcc_content ) ] = '';
-                                } else {
-                                    $bcc[ trim( $content ) ] = '';
-                                }
+								$bcc[ trim( $content ) ] = '';
 								break;
 							case 'cc':
-                                if ( strpos( $content, '<') !== false )
-                                {
-                                    $cc_content = substr( $content, 0, strpos( $content, '<' ) - 1 );
-                                    $cc[ trim( $cc_content ) ] = '';
-                                } else {
-                                    $bcc[ trim( $content ) ] = '';
-                                }
+								$cc[ trim( $content ) ] = '';
 								break;
 							case 'reply-to':
-                                if ( strpos( $content, '<') !== false )
-                                {
-                                    $reply_content = substr( $content, 0, strpos( $content, '<' ) - 1 );
-                                    $reply[] = trim( $reply_content );
-                                } else {
-                                    $reply[] = trim( $content );
-                                }
+								$reply[] = trim( $content );
 								break;
 							default:
 								break;
@@ -1188,19 +1153,6 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 				<?php
 			}
 		}
-
-		public function ajax_get_country_prefix() {
-            check_ajax_referer( 'sib_front_ajax_nonce', 'security' );
-            $sms_manager = new SIB_SMS_Code();
-            $country_list = $sms_manager->get_sms_code_list();
-            $country_list_html = '';
-            foreach ( $country_list as $item => $value ) {
-                $flg_url = plugins_url( 'img/flags/', __FILE__ ).strtolower($item).'.png';
-                $item_html = '<li class="sib-country-prefix" data-country-code="'.$item.'" data-dial-code="'.$value["code"].'"><div class="sib-flag-box"><div class="sib-flag '.$item.'" style="background-image: url('.$flg_url.')"></div><span>'.$value['name'].'</span><span class="sib-dial-code">+'.$value['code'].'</span></div></li>';
-                $country_list_html .= $item_html;
-            }
-            wp_send_json($country_list_html);
-        }
 	}
 
 	add_action( 'sendinblue_init', 'sendinblue_init' );

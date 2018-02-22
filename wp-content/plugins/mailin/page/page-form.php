@@ -71,7 +71,6 @@ if ( ! class_exists( 'SIB_Page_Form' ) ) {
                     'ajax_nonce' => wp_create_nonce( 'ajax_sib_admin_nonce' ),
 				)
 			);
-			wp_localize_script( 'sib-admin-js', 'sib_img_url', SIB_Manager::$plugin_url.'/img/flags/' );
 
 		}
 
@@ -513,8 +512,6 @@ if ( ! class_exists( 'SIB_Page_Form' ) ) {
 										  style="display: none;"><?php _e( 'Confirmation emails will be sent through your own email server, but you have no guarantees on their deliverability. <br/> <a href="https://app-smtp.sendinblue.com/" target="_blank">Click here</a> to send your emails through SendinBlue in order to improve your deliverability and get statistics', 'sib_lang' ); ?></span>
 									<span id="sib_disclaim_do_template"
 										  style="display: none;"><?php _e( 'The template you selected does not include a link [DOUBLEOPTIN] to allow subscribers to confirm their subscription. <br/> Please edit the template to include a link with [DOUBLEOPTIN] as URL.', 'sib_lang' ); ?></span>
-                                    <span id="sib_disclaim_confirm_template"
-                                          style="display: none;"><?php _e( 'You cannot select a template with the tag [DOUBLEOPTIN]', 'sib_lang' ); ?></span>
 								</div>
 
 								<!-- Linked List -->
@@ -597,7 +594,9 @@ if ( ! class_exists( 'SIB_Page_Form' ) ) {
 								</div>
 								<!-- select template id for double optin confirmation email -->
 								<div class="row" id="sib_doubleoptin_template_area">
-									<input type="hidden" id="sib_selected_do_template_id" value="<?php echo esc_attr( $formData['templateID'] ); ?>">
+									<input type="hidden" id="sib_selected_do_template_id"
+										   value="<?php echo esc_attr( $formData['templateID'] ); ?>">
+
 									<div class="col-md-3" id="sib_doubleoptin_template_id_area">
 									</div>
 									<div class="col-md-4">
@@ -608,27 +607,14 @@ if ( ! class_exists( 'SIB_Page_Form' ) ) {
 									</div>
 								</div>
 								<div class="row small-content" id="sib_double_redirect_area">
-									<span class="col-md-3"><?php esc_attr_e( 'Redirect to this URL after clicking in the email', 'sib_lang' ); ?></span>
+									<span
+										class="col-md-3"><?php esc_attr_e( 'Redirect to this URL after clicking in the email', 'sib_lang' ); ?></span>
 
 									<div class="col-md-8">
-										<input type="url" class="col-md-11" name="redirect_url" value="<?php echo esc_attr( $formData['redirectInEmail'] ); ?>">
+										<input type="url" class="col-md-11" name="redirect_url"
+											   value="<?php echo esc_attr( $formData['redirectInEmail'] ); ?>">
 									</div>
 								</div>
-                                <div class="row small-content" id="sib_final_confirm_template_area">
-									<span class="col-md-3"><?php esc_attr_e( 'Select final confirmation email template', 'sib_lang' ); ?><?php echo esc_html( SIB_Page_Home::get_narration_script( __( 'Final confirmation', 'sib_lang' ), __( 'This is the final confirmation email your contacts will receive once they click on the double opt-in confirmation link. You can select one of the default templates we have created for you, e.g. \'Default template - Final confirmation\'.
-For your information, you cannot select a template with the tag [DOUBLEOPTIN].', 'sib_lang' ) ) ); ?></span>
-                                    <div class="col-md-8">
-                                        <input type="hidden" id="sib_selected_confirm_template_id" value="<?php echo esc_attr( $formData['confirmID'] );?>">
-                                        <div class="col-md-5" id="sib_final_confirm_template_id_area">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <a href="https://my.sendinblue.com/camp/listing?utm_source=wordpress_plugin&utm_medium=plugin&utm_campaign=module_link#temp_active_m"
-                                               class="col-md-12" target="_blank"><i
-                                                        class="fa fa-angle-right"></i> <?php esc_attr_e( 'Set up my templates', 'sib_lang' ); ?>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
 
 								<div class="row small-content">
 									<span
@@ -802,17 +788,15 @@ For your information, you cannot select a template with the tag [DOUBLEOPTIN].',
 			$lang = isset( $_POST['lang'] ) ? sanitize_text_field( $_POST['lang'] ) : '';
 			// sign up process.
 			$templateID = '-1';
-			$confirmID = '-1';
 			$redirectInForm = '';
 
 			$isOpt = isset( $_POST['is_confirm_email'] ) ? sanitize_text_field( $_POST['is_confirm_email'] ) : false;
 			if ( $isOpt ) {
-				$templateID = isset( $_POST['template_id'] ) ? sanitize_text_field( $_POST['template_id'] ) : '-1';
+				$templateID = isset( $_POST['template_id'] ) ? sanitize_text_field( $_POST['template_id'] ) : '';
 			}
 			$isDopt = isset( $_POST['is_double_optin'] ) ? sanitize_text_field( $_POST['is_double_optin'] ) : false;
 			if ( $isDopt ) {
-				$templateID = isset( $_POST['doubleoptin_template_id'] ) ? sanitize_text_field( $_POST['doubleoptin_template_id'] ) : '-1';
-                $confirmID = isset( $_POST['confirm_template_id'] ) ? sanitize_text_field( $_POST['confirm_template_id'] ) : '-1';
+				$templateID = isset( $_POST['doubleoptin_template_id'] ) ? sanitize_text_field( $_POST['doubleoptin_template_id'] ) : '';
 			}
 			$redirectInEmail = isset( $_POST['redirect_url'] ) ? sanitize_text_field( $_POST['redirect_url'] ) : '';
 			$isRedirectInForm = isset( $_POST['is_redirect_url_click'] ) ? sanitize_text_field( $_POST['is_redirect_url_click'] ) : false;
@@ -832,10 +816,10 @@ For your information, you cannot select a template with the tag [DOUBLEOPTIN].',
 					}
 				}
 			}
-			$successMsg = isset( $_POST['alert_success_message'] ) ? sanitize_text_field( esc_attr ($_POST['alert_success_message'] ) ) : '';
-			$errorMsg = isset( $_POST['alert_error_message'] ) ? sanitize_text_field( esc_attr( $_POST['alert_error_message'] ) ) : '';
-			$existMsg = isset( $_POST['alert_exist_subscriber'] ) ? sanitize_text_field( esc_attr( $_POST['alert_exist_subscriber'] ) ) : '';
-			$invalidMsg = isset( $_POST['alert_invalid_email'] ) ? sanitize_text_field( esc_attr( $_POST['alert_invalid_email'] ) ) : '';
+			$successMsg = isset( $_POST['alert_success_message'] ) ? sanitize_text_field( $_POST['alert_success_message'] ) : '';
+			$errorMsg = isset( $_POST['alert_error_message'] ) ? sanitize_text_field( $_POST['alert_error_message'] ) : '';
+			$existMsg = isset( $_POST['alert_exist_subscriber'] ) ? sanitize_text_field( $_POST['alert_exist_subscriber'] ) : '';
+			$invalidMsg = isset( $_POST['alert_invalid_email'] ) ? sanitize_text_field( $_POST['alert_invalid_email'] ) : '';
 			$formData = array(
 				'title' => $form_name,
 				'html' => addslashes( $form_html ),
@@ -845,7 +829,6 @@ For your information, you cannot select a template with the tag [DOUBLEOPTIN].',
 				'isOpt' => $isOpt,
 				'isDopt' => $isDopt,
 				'templateID' => $templateID,
-				'confirmID' => $confirmID,
 				'redirectInEmail' => $redirectInEmail,
 				'redirectInForm' => $redirectInForm,
 				'successMsg' => $successMsg,

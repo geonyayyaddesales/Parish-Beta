@@ -3508,7 +3508,6 @@ var acf;
 		actions: {
 			'ready':	'ready',
 			'change':	'on',
-			'submit':	'off'
 		},
 		
 		ready: function(){
@@ -4086,65 +4085,6 @@ var acf;
 	};
 	
 	
-	/**
-	*  acf.lock
-	*
-	*  Creates a lock on an element
-	*
-	*  @date	22/2/18
-	*  @since	5.6.9
-	*
-	*  @param	type $var Description. Default.
-	*  @return	type Description.
-	*/
-	
-	acf.lock = function( $el, type, key ){
-		var locks = getLocks( $el, type );
-		var i = locks.indexOf(key);
-		if( i < 0 ) {
-			locks.push( key );
-			setLocks( $el, type, locks );
-		}
-	};
-	
-	acf.unlock = function( $el, type, key ){
-		var locks = getLocks( $el, type );
-		var i = locks.indexOf(key);
-		if( i > -1 ) {
-			locks.splice(i, 1);
-			setLocks( $el, type, locks );
-		}
-	};
-	
-	acf.isLocked = function( $el, type ){
-		return ( getLocks( $el, type ).length > 0 );
-	};
-	
-	var getLocks = function( $el, type ){
-		return $el.data('acf-lock-'+type) || [];
-	};
-	
-	var setLocks = function( $el, type, locks ){
-		$el.data('acf-lock-'+type, locks);
-	}
-	
-/*
-	$(document).ready(function(){
-		
-		var $el = $('#page_template');
-		
-		console.log( 'isLocked', acf.isLocked($el, 'visible') );
-		console.log( 'getLocks', getLocks($el, 'visible') );
-		
-		console.log( 'lock', acf.lock($el, 'visible', 'me') );
-		console.log( 'getLocks', getLocks($el, 'visible') );
-		console.log( 'isLocked', acf.isLocked($el, 'visible') );
-		
-		console.log( 'unlock', acf.unlock($el, 'visible', 'me') );
-		console.log( 'isLocked', acf.isLocked($el, 'visible') );
-		
-	});
-*/
 	
 	/*
 	*  Sortable
@@ -4400,8 +4340,6 @@ var acf;
 			// bail early if not active
 			if( !this.active ) return;
 			
-			// bail early if not for post
-			if( acf.get('screen') !== 'post' ) return;
 			
 			// bail early if no ajax
 			if( !acf.get('ajax') ) return;
@@ -4939,9 +4877,8 @@ var acf;
 
 (function($, undefined){
 	
-	// constants
-	var CLASS = 'hidden-by-conditional-logic';
-	var CONTEXT = 'conditional_logic';
+	// vars
+	var hidden = 'hidden-by-conditional-logic';
 	
 	// model
 	var conditionalLogic = acf.conditional_logic = acf.model.extend({
@@ -5342,34 +5279,22 @@ var acf;
 		*  @return	$post_id (int)
 		*/
 		
-		showField: function( $field, lockKey ){
-//console.log('showField', lockKey, $field.data('name'), $field.data('type') );
-			// defaults
-			lockKey = lockKey || 'default';
+		showField: function( $field ){
 			
-			// bail early if field is not locked (does not need to be unlocked)
-			if( !acf.isLocked($field, CONTEXT) ) {
-//console.log('- not locked, no need to show');
-				return false;
-			}
+			// bail ealry if not hidden
+			//if( !$field.hasClass(hidden) ) return;
 			
-			// unlock
-			acf.unlock($field, CONTEXT, lockKey);
-			
-			// bail early if field is still locked (by another field)
-			if( acf.isLocked($field, CONTEXT) ) {
-//console.log('- is still locked, cant show', acf.getLocks($field, CONTEXT));
-				return false;
-			}
+			// vars
+			var key = $field.data('key');
 			
 			// remove class
-			$field.removeClass( CLASS );
+			$field.removeClass(hidden);
 			
 			// enable
-			acf.enable_form( $field, CONTEXT );
+			acf.enable_form( $field, 'condition-'+key );
 			
 			// action for 3rd party customization
-			acf.do_action('show_field', $field, CONTEXT );
+			acf.do_action('show_field', $field, 'conditional_logic' );
 			
 		},
 		
@@ -5387,31 +5312,22 @@ var acf;
 		*  @return	$post_id (int)
 		*/
 		
-		hideField: function( $field, lockKey ){
-//console.log('hideField', lockKey, $field.data('name'), $field.data('type') );
-			// defaults
-			lockKey = lockKey || 'default';
+		hideField : function( $field ){
+			
+			// bail ealry if hidden
+			//if( $field.hasClass(hidden) ) return;
 			
 			// vars
-			var isLocked = acf.isLocked($field, CONTEXT);
-			
-			// unlock
-			acf.lock($field, CONTEXT, lockKey);
-			
-			// bail early if field is already locked (by another field)
-			if( isLocked ) {
-//console.log('- is already locked');
-				return false;
-			}
+			var key = $field.data('key');
 			
 			// add class
-			$field.addClass( CLASS );
+			$field.addClass( hidden );
 			
 			// disable
-			acf.disable_form( $field, CONTEXT );
+			acf.disable_form( $field, 'condition-'+key );
 						
 			// action for 3rd party customization
-			acf.do_action('hide_field', $field, CONTEXT );
+			acf.do_action('hide_field', $field, 'conditional_logic' );
 			
 		},
 				
@@ -9358,8 +9274,8 @@ var acf;
 		$input: null,
 		
 		events: {
-			'input input': 'onInput',
-			'change input': 'onChange'
+			'input input': '_change',
+			'change input': '_change'
 		},
 		
 		focus: function(){
@@ -9371,22 +9287,30 @@ var acf;
 			
 		},
 		
-		setValue: function( val ){
-			this.$input.val( val );
-			this.$range.val( val );
-		},
-		
-		onInput: function( e ){
-			this.setValue( e.$el.val() );
-		},
-		
-		onChange: function( e ){
-			this.setValue( e.$el.val() );
+		_change: function( e ){
 			
-			if( e.$el.attr('type') == 'number' ) {
-				this.$range.trigger('change');
+			// get value from changed element
+			var val = e.$el.val();
+			var type = e.$el.attr('type');
+			
+			
+			// allow for cleared value
+			val = val || 0;
+			
+			
+			// update sibling
+			if( type === 'range' ) {
+				
+				this.$input.val( val );
+				
+			} else {
+				
+				this.$range.val( val );
+				
 			}
+						
 		}
+		
 	});
 	
 })(jQuery);
@@ -11706,7 +11630,7 @@ var acf;
 (function($){
 	
 	// vars
-	var CLASS = 'hidden-by-conditional-logic';
+	var hidden = 'hidden-by-conditional-logic';
 	var groupIndex = 0;
 	var tabIndex = 0;
 	
@@ -12031,18 +11955,18 @@ var acf;
 			
 			
 			// hide li
-			$li.addClass( CLASS );
+			$li.addClass(hidden);
 			
 				
 			// hide fields
 			tabs.getFields( $field ).each(function(){
-				acf.conditional_logic.hide_field( $(this), key );
+				acf.conditional_logic.hide_field( $(this) );
 			});
 			
 			
 			// select other tab if active
 			if( $li.hasClass('active') ) {
-				$wrap.find('li:not(.'+CLASS+'):first a').trigger('click');
+				$wrap.find('li:not(.'+hidden+'):first a').trigger('click');
 			}
 			
 		},
@@ -12065,18 +11989,18 @@ var acf;
 			
 			
 			// show li
-			$li.removeClass( CLASS );
+			$li.removeClass(hidden);
 			
 			
 			// hide fields
 			tabs.getFields( $field ).each(function(){
-				acf.conditional_logic.show_field( $(this), key );
+				acf.conditional_logic.show_field( $(this) );
 			});
 			
 			
 			// select tab if no other active
 			var $active = $li.siblings('.active');
-			if( !$active.exists() || $active.hasClass(CLASS) ) {
+			if( !$active.exists() || $active.hasClass(hidden) ) {
 				tabs.toggle( $tab );
 			}
 			
@@ -13623,6 +13547,11 @@ var acf;
 				
 			}
 			
+			
+			// action for 3rd party
+			acf.do_action('validation_failure');
+			
+			
 			// set valid (prevents fetch_complete from runing)
 			this.valid = false;
 			
@@ -13633,10 +13562,6 @@ var acf;
 			
 			// display errors
 			this.display_errors( json.errors, $form );
-			
-			
-			// action
-			acf.do_action('validation_failure');
 			
 		},
 		

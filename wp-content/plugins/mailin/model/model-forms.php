@@ -31,7 +31,6 @@ if ( ! class_exists( 'SIB_Forms' ) ) {
                 `dependTheme` int(1) NOT NULL DEFAULT 1,
                 `listID` longtext,
                 `templateID` int(20) NOT NULL DEFAULT -1,
-                `confirmID` int(20) NOT NULL DEFAULT -1,
                 `isDopt` int(1) NOT NULL DEFAULT 0,
                 `isOpt` int(1) NOT NULL DEFAULT 0,
                 `redirectInEmail` varchar(255),
@@ -104,7 +103,6 @@ if ( ! class_exists( 'SIB_Forms' ) ) {
 					'listID' => $list,
 					'dependTheme' => '1',
 					'templateID' => '-1',
-					'confirmID' => '-1',
 					'isOpt' => '0',
 					'isDopt' => '0',
 					'redirectInEmail' => '',
@@ -177,9 +175,9 @@ if ( ! class_exists( 'SIB_Forms' ) ) {
 
 			global $wpdb;
 			$query = 'INSERT INTO ' . $wpdb->prefix . self::TABLE_NAME . ' ';
-			$query .= '(title,html,css,dependTheme,listID,templateID,confirmID,isOpt,isDopt,redirectInEmail,redirectInForm,successMsg,errorMsg,existMsg,invalidMsg,attributes,date,gCaptcha,gCaptcha_secret,gCaptcha_site,termAccept,termsURL) ';
+			$query .= '(title,html,css,dependTheme,listID,templateID,isOpt,isDopt,redirectInEmail,redirectInForm,successMsg,errorMsg,existMsg,invalidMsg,attributes,date,gCaptcha,gCaptcha_secret,gCaptcha_site,termAccept,termsURL) ';
 			$query .= "VALUES ('{$formData['title']}','{$formData['html']}','{$formData['css']}','{$formData['dependTheme']}','{$formData['listID']}',
-        '{$formData['templateID']}','{$formData['confirmID']}','{$formData['isOpt']}','{$formData['isDopt']}','{$formData['redirectInEmail']}','{$formData['redirectInForm']}',
+        '{$formData['templateID']}','{$formData['isOpt']}','{$formData['isDopt']}','{$formData['redirectInEmail']}','{$formData['redirectInForm']}',
         '{$formData['successMsg']}','{$formData['errorMsg']}','{$formData['existMsg']}','{$formData['invalidMsg']}','{$formData['attributes']}','{$current_date}','{$formData['gcaptcha']}','{$formData['gcaptcha_secret']}' ,'{$formData['gcaptcha_site']}','{$formData['termAccept']}','{$formData['termsURL']}')";
 			$wpdb->query( $query ); // db call ok; no-cache ok.
 			$index = $wpdb->get_var( 'SELECT LAST_INSERT_ID();' ); // db call ok; no-cache ok.
@@ -201,7 +199,7 @@ if ( ! class_exists( 'SIB_Forms' ) ) {
 			global $wpdb;
 			$query = 'update ' . $wpdb->prefix . self::TABLE_NAME . ' ';
 			$query .= "set title='{$formData['title']}',html='{$formData['html']}',css='{$formData['css']}',dependTheme='{$formData['dependTheme']}',listID='{$formData['listID']}',
-        isOpt='{$formData['isOpt']}',isDopt='{$formData['isDopt']}',templateID='{$formData['templateID']}',confirmID='{$formData['confirmID']}',
+        isOpt='{$formData['isOpt']}',isDopt='{$formData['isDopt']}',templateID='{$formData['templateID']}',
         redirectInEmail='{$formData['redirectInEmail']}',redirectInForm='{$formData['redirectInForm']}',
         successMsg='{$formData['successMsg']}',errorMsg='{$formData['errorMsg']}',existMsg='{$formData['existMsg']}',invalidMsg='{$formData['invalidMsg']}',date='{$current_date}',attributes='{$formData['attributes']}',gCaptcha='{$formData['gcaptcha']}',gCaptcha_secret='{$formData['gcaptcha_secret']}' ,gCaptcha_site='{$formData['gcaptcha_site']}' ,termAccept='{$formData['termAccept']}',termsURL='{$formData['termsURL']}'";
 			$query .= 'where id=' . $formID . ';';
@@ -417,21 +415,6 @@ EOD;
 			}
 
 		}
-
-		/**
-         * Add new column for final confirm template id
-         */
-		public static function addConfirmIDColumn() {
-            global $wpdb;
-            // add columns - confirmID.
-            $check_query = 'SHOW COLUMNS FROM `' . $wpdb->prefix . self::TABLE_NAME . "` LIKE 'confirmID';";
-            $result = $wpdb->query( $check_query ); // db call ok; no-cache ok.
-            if ( empty( $result ) ) {
-                $alter_query = 'ALTER TABLE ' . $wpdb->prefix . self::TABLE_NAME . '
-                            ADD COLUMN confirmID int(20) not NULL DEFAULT -1';
-                $ret = $wpdb->query( $alter_query ); // db call ok; no-cache ok.
-            }
-        }
 
 	}
 }

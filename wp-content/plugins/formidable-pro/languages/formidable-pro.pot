@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Formidable v2.05\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-01 23:00+0000\n"
+"POT-Creation-Date: 2018-02-10 21:25+0000\n"
 "POT-Revision-Date: Tue Sep 26 2017 16:06:46 GMT-0600 (MDT)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
@@ -41,22 +41,22 @@ msgstr ""
 
 #: classes/controllers/FrmProAddressesController.php:111
 #: classes/controllers/FrmProAddressesController.php:137
-#: classes/models/fields/FrmProFieldAddress.php:51
+#: classes/models/fields/FrmProFieldAddress.php:52
 msgid "Country"
 msgstr ""
 
 #: classes/controllers/FrmProAddressesController.php:134
-#: classes/models/fields/FrmProFieldAddress.php:48
+#: classes/models/fields/FrmProFieldAddress.php:49
 msgid "City"
 msgstr ""
 
 #: classes/controllers/FrmProAddressesController.php:135
-#: classes/models/fields/FrmProFieldAddress.php:49
+#: classes/models/fields/FrmProFieldAddress.php:50
 msgid "State/Province"
 msgstr ""
 
 #: classes/controllers/FrmProAddressesController.php:136
-#: classes/models/fields/FrmProFieldAddress.php:50
+#: classes/models/fields/FrmProFieldAddress.php:51
 msgid "Zip/Postal"
 msgstr ""
 
@@ -102,12 +102,12 @@ msgid "Expiration Year"
 msgstr ""
 
 #: classes/controllers/FrmProCreditCardsController.php:108
-#: classes/models/fields/FrmProFieldCreditCard.php:44
+#: classes/models/fields/FrmProFieldCreditCard.php:46
 msgid "Card number"
 msgstr ""
 
 #: classes/controllers/FrmProCreditCardsController.php:109
-#: classes/models/fields/FrmProFieldCreditCard.php:45
+#: classes/models/fields/FrmProFieldCreditCard.php:47
 msgid "CVC"
 msgstr ""
 
@@ -141,8 +141,8 @@ msgstr ""
 #: classes/controllers/FrmProDisplaysController.php:102
 #: classes/controllers/FrmProDisplaysController.php:102
 #: classes/controllers/FrmProEntriesController.php:1423
-#: classes/helpers/FrmProEntriesHelper.php:248
-#: classes/helpers/FrmProEntriesHelper.php:274
+#: classes/helpers/FrmProEntriesHelper.php:246
+#: classes/helpers/FrmProEntriesHelper.php:272
 msgid "Duplicate"
 msgstr ""
 
@@ -174,8 +174,8 @@ msgid "Date"
 msgstr ""
 
 #: classes/controllers/FrmProDisplaysController.php:132
-#: classes/helpers/FrmProFieldsHelper.php:2531
-#: classes/helpers/FrmProFieldsHelper.php:2547
+#: classes/helpers/FrmProFieldsHelper.php:2495
+#: classes/helpers/FrmProFieldsHelper.php:2511
 #: classes/views/displays/mb_advanced.php:88
 msgid "Key"
 msgstr ""
@@ -390,7 +390,7 @@ msgstr ""
 #: classes/controllers/FrmProEntriesController.php:1628
 #: classes/controllers/FrmProEntriesController.php:2149
 #: classes/helpers/FrmProAppHelper.php:257
-#: classes/helpers/FrmProEntriesHelper.php:289
+#: classes/helpers/FrmProEntriesHelper.php:288
 msgid "Edit"
 msgstr ""
 
@@ -556,7 +556,7 @@ msgid "User Role"
 msgstr ""
 
 #: classes/controllers/FrmProFormsController.php:302
-#: classes/helpers/FrmProFieldsHelper.php:2511
+#: classes/helpers/FrmProFieldsHelper.php:2475
 #: classes/views/displays/where_row.php:8
 #: classes/views/xml/map_csv_fields.php:49
 msgid "Post ID"
@@ -1007,7 +1007,7 @@ msgid "Display format"
 msgstr ""
 
 #: classes/controllers/FrmProFormsController.php:773
-#: classes/helpers/FrmProFieldsHelper.php:2583
+#: classes/helpers/FrmProFieldsHelper.php:2547
 msgid "List"
 msgstr ""
 
@@ -1087,7 +1087,7 @@ msgstr ""
 #: classes/controllers/FrmProFormsController.php:812
 #: classes/helpers/FrmProEntriesListHelper.php:62
 #: classes/helpers/FrmProEntriesListHelper.php:73
-#: classes/helpers/FrmProFieldsHelper.php:2509
+#: classes/helpers/FrmProFieldsHelper.php:2473
 #: classes/views/displays/order_row.php:3
 #: classes/views/displays/where_row.php:6
 #: classes/views/xml/map_csv_fields.php:56
@@ -1203,18 +1203,18 @@ msgid "Monthly Entries"
 msgstr ""
 
 #: classes/controllers/FrmProLookupFieldsController.php:12
-#: classes/helpers/FrmProFieldsHelper.php:2580
+#: classes/helpers/FrmProFieldsHelper.php:2544
 msgid "Dropdown"
 msgstr ""
 
 #: classes/controllers/FrmProLookupFieldsController.php:13
-#: classes/helpers/FrmProFieldsHelper.php:2581
+#: classes/helpers/FrmProFieldsHelper.php:2545
 #: classes/views/styles/_sample_form.php:14
 msgid "Radio Buttons"
 msgstr ""
 
 #: classes/controllers/FrmProLookupFieldsController.php:14
-#: classes/helpers/FrmProFieldsHelper.php:2582
+#: classes/helpers/FrmProFieldsHelper.php:2546
 msgid "Checkboxes"
 msgstr ""
 
@@ -1405,19 +1405,19 @@ msgstr ""
 msgid "Add New"
 msgstr ""
 
-#: classes/helpers/FrmProEntriesHelper.php:297
+#: classes/helpers/FrmProEntriesHelper.php:296
 msgid "Resend Email Notifications"
 msgstr ""
 
-#: classes/helpers/FrmProEntriesHelper.php:319
+#: classes/helpers/FrmProEntriesHelper.php:318
 msgid "Really permanently delete ALL entries in this form?"
 msgstr ""
 
-#: classes/helpers/FrmProEntriesHelper.php:320
+#: classes/helpers/FrmProEntriesHelper.php:319
 msgid "Delete ALL Entries"
 msgstr ""
 
-#: classes/helpers/FrmProEntriesHelper.php:348
+#: classes/helpers/FrmProEntriesHelper.php:347
 msgid "Download CSV"
 msgstr ""
 
@@ -1432,7 +1432,7 @@ msgstr ""
 
 #: classes/helpers/FrmProEntriesListHelper.php:61
 #: classes/helpers/FrmProEntriesListHelper.php:72
-#: classes/helpers/FrmProFieldsHelper.php:2513
+#: classes/helpers/FrmProFieldsHelper.php:2477
 #: classes/views/displays/_calendar_options.php:4
 #: classes/views/displays/_calendar_options.php:16
 #: classes/views/displays/order_row.php:4
@@ -1445,96 +1445,96 @@ msgstr ""
 msgid "View all posts filed under %s"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:741
+#: classes/helpers/FrmProFieldsHelper.php:705
 msgid "The entered values do not match"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:1326
+#: classes/helpers/FrmProFieldsHelper.php:1290
 msgid "No Categories"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2078
+#: classes/helpers/FrmProFieldsHelper.php:2042
 msgid "Confirm"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2258
+#: classes/helpers/FrmProFieldsHelper.php:2222
 msgid "Edit Uploaded File"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2507
+#: classes/helpers/FrmProFieldsHelper.php:2471
 #: classes/views/frmpro-fields/back-end/calculations.php:18
 msgid "Select a value to insert into the box below"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2510
+#: classes/helpers/FrmProFieldsHelper.php:2474
 #: classes/views/xml/map_csv_fields.php:57
 #: classes/views/xml/map_csv_fields.php:57
 msgid "Entry Key"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2512
+#: classes/helpers/FrmProFieldsHelper.php:2476
 msgid "User IP"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2514
+#: classes/helpers/FrmProFieldsHelper.php:2478
 #: classes/views/displays/_calendar_options.php:5
 #: classes/views/displays/_calendar_options.php:17
 #: classes/views/displays/order_row.php:5
 msgid "Entry update date"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2516
+#: classes/helpers/FrmProFieldsHelper.php:2480
 msgid "Form Fields"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2530
-#: classes/helpers/FrmProFieldsHelper.php:2546
+#: classes/helpers/FrmProFieldsHelper.php:2494
+#: classes/helpers/FrmProFieldsHelper.php:2510
 #: classes/views/displays/mb_advanced.php:87
 #: classes/views/frmpro-entries/table.php:5
 msgid "ID"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2533
+#: classes/helpers/FrmProFieldsHelper.php:2497
 msgid "Thumbnail"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2534
+#: classes/helpers/FrmProFieldsHelper.php:2498
 msgid "Medium"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2535
+#: classes/helpers/FrmProFieldsHelper.php:2499
 msgid "Large"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2536
+#: classes/helpers/FrmProFieldsHelper.php:2500
 msgid "Full Size"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2558
+#: classes/helpers/FrmProFieldsHelper.php:2522
 msgid "Helpers"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2559
+#: classes/helpers/FrmProFieldsHelper.php:2523
 msgid "Admin link to edit the entry"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2561
+#: classes/helpers/FrmProFieldsHelper.php:2525
 msgid "Link to view single page if showing dynamic entries"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2565
+#: classes/helpers/FrmProFieldsHelper.php:2529
 msgid "Add a rotating 'even' or 'odd' class"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2567
+#: classes/helpers/FrmProFieldsHelper.php:2531
 msgid "Default Email Message"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2569
+#: classes/helpers/FrmProFieldsHelper.php:2533
 msgid "Site URL"
 msgstr ""
 
-#: classes/helpers/FrmProFieldsHelper.php:2570
+#: classes/helpers/FrmProFieldsHelper.php:2534
 msgid "Site Name"
 msgstr ""
 
@@ -1543,7 +1543,7 @@ msgstr ""
 msgid "Your draft has been saved."
 msgstr ""
 
-#: classes/models/FrmProDb.php:537
+#: classes/models/FrmProDb.php:524
 msgid "Formidable Style"
 msgstr ""
 
@@ -1730,7 +1730,7 @@ msgstr ""
 msgid "Entry Limit (leave blank to list all)"
 msgstr ""
 
-#: classes/models/fields/FrmProFieldAddress.php:256
+#: classes/models/fields/FrmProFieldAddress.php:206
 msgid "This value is invalid"
 msgstr ""
 
@@ -1738,15 +1738,15 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: classes/models/fields/FrmProFieldCreditCard.php:152
+#: classes/models/fields/FrmProFieldCreditCard.php:154
 msgid "That credit card number is invalid"
 msgstr ""
 
-#: classes/models/fields/FrmProFieldCreditCard.php:216
+#: classes/models/fields/FrmProFieldCreditCard.php:218
 msgid "That credit card is expired"
 msgstr ""
 
-#: classes/models/fields/FrmProFieldCreditCard.php:229
+#: classes/models/fields/FrmProFieldCreditCard.php:231
 msgid "Please enter a valid CVC"
 msgstr ""
 

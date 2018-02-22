@@ -38,7 +38,7 @@ msgstr "Merci pour votre inscription"
 
 #: ../inc/sib-api-manager.php:636
 msgid "You have just subscribed to the newsletter of "
-msgstr "Vous vous êtes inscrit à la newsletter de "
+msgstr "Vous vous êtes inscrit à la newsletter de"
 
 #: ../inc/sib-api-manager.php:638
 msgid "-SendinBlue"
@@ -1015,24 +1015,6 @@ msgstr "Copier le contenu du formulaire original"
 #: ../sendinblue.php:1000
 msgid "You can copy contents from origin form. You need to translate the contents by this language."
 msgstr "Vous pouvez copier le contenu du formulaire original. Vous devrez le traduire dans cette nouvelle langue."
-
-#: ../page/page-form.php:616
-msgid "Select final confirmation email template"
-msgstr "Veuillez sélectionner l'email de confirmation finale"
-
-#: ../page/page-form.php:618
-msgid ""
-"This is the final confirmation email your contacts will receive once they click on the double opt-in confirmation link."
-"You can select one of the default templates we have created for you, e.g. 'Default template - Final confirmation'."
-"For your information, you cannot select a template with the tag [DOUBLEOPTIN]."
-msgstr ""
-"Cecli est l'email de confirmation finale que vos contacts recevront lorsqu'ils auront cliqué sur le lien de confirmation double opt-in."
-"Vous pouvez sélectionner l'un des templates par défaut que nous avons générés pour vous. Par exemple 'Default template - Final confirmation'."
-"Pour information, vous ne pouvez pas sélectionner un template contenant le tag [DOUBLEOPTIN]."
-
-#: ../page/page-form.php:618
-msgid "Final confirmation"
-msgstr "Confirmation finale"
 
 #~ msgid "Settings"
 #~ msgstr "Paramètres"

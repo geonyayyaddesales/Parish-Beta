@@ -323,38 +323,32 @@ function acf_the_field_label( $field ) {
 *  @return	n/a
 */
 
-function acf_render_fields( $fields, $post_id = 0, $el = 'div', $instruction = 'label' ) {
-	
-	// parameter order changed in ACF 5.6.9
-	if( is_array($post_id) ) {
-		$args = func_get_args();
-		$fields = $args[1];
-		$post_id = $args[0];
-	}
-	
-	// filter
-	$fields = apply_filters('acf/pre_render_fields', $fields, $post_id);
+function acf_render_fields( $post_id = 0, $fields, $el = 'div', $instruction = 'label' ) {
 	
 	// bail early if no fields
-	if( empty($fields) ) return;
+	if( empty($fields) ) return false;
 	
-	// loop
+		
+	// remove corrupt fields
+	$fields = array_filter($fields);
+	
+	
+	// loop through fields
 	foreach( $fields as $field ) {
 		
-		// bail ealry if no field
-		if( !$field ) continue;
-	
 		// load value
 		if( $field['value'] === null ) {
+			
 			$field['value'] = acf_get_value( $post_id, $field );
+			
 		} 
+		
 		
 		// render
 		acf_render_field_wrap( $field, $el, $instruction );
+		
 	}
 	
-	// action
-	do_action( 'acf/render_fields', $fields, $post_id );
 }
 
 
@@ -717,7 +711,6 @@ function acf_get_fields( $parent = false ) {
 	
 	
 	// filter
-	$fields = apply_filters('acf/load_fields', $fields, $parent);
 	$fields = apply_filters('acf/get_fields', $fields, $parent);
 	
 	

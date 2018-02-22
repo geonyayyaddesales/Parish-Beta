@@ -45,17 +45,17 @@ class FrmProCreditCardsController extends FrmProComboFieldsController {
 				),
 			),
 			'month' => array(
-				'type' => 'select', 'classes' => 'frm_third frm_first frm_cc_exp_month',
+				'type' => 'select', 'classes' => 'frm_fourth frm_first frm_cc_exp_month',
 				'label' => 1, 'options' => range( 1, 12 ),
 				'placeholder' => __( 'Month', 'formidable-pro' ),
 			),
 			'year'  => array(
-				'type' => 'select', 'classes' => 'frm_third frm_cc_exp_year',
+				'type' => 'select', 'classes' => 'frm_fourth frm_cc_exp_year',
 				'label' => 1, 'options' => range( date('Y'), date('Y') + 10 ),
 				'placeholder' => __( 'Year', 'formidable-pro' ),
 			),
 			'cvc'  => array(
-				'type' => $html5_type, 'classes' => 'frm_third frm_cc_cvc', 'label' => 1,
+				'type' => $html5_type, 'classes' => 'frm_half frm_cc_cvc', 'label' => 1,
 				'atts' => array(
 					'spellcheck' => 'off', 'autocapitalize' => 'off',
 					'maxlength' => 4, 'autocorrect' => 'off', 'autocomplete' => 'off',

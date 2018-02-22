@@ -1509,9 +1509,9 @@ class FrmProGraphsController {
 	 */
 	private static function order_x_axis_values( $atts, &$x_axis_data ) {
 		if ( self::is_created_at_or_updated_at( $atts['x_axis'] ) || self::is_date_field( $atts['x_axis_field'] ) ) {
-			usort( $x_axis_data, array( 'FrmProGraphsController', 'date_compare' ) );
+			usort( $x_axis_data, 'self::date_compare' );
 		} else if ( is_object( $atts['x_axis_field'] ) && $atts['x_axis_field']->type == 'number' ) {
-			usort( $x_axis_data, array( 'FrmProGraphsController', 'number_compare' ) );
+			usort( $x_axis_data, 'self::number_compare' );
 		}
 	}
 

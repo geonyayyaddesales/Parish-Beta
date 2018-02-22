@@ -837,5 +837,3 @@ position: absolute;
 .tickercontainer { padding-left:89px; }
 .ticker__item { font-size:14px; font-weight:100; padding-right:30px !important; }
 .ticker__item.last {  }
-body iframe { display:none; }
-body #page iframe { display:block; }

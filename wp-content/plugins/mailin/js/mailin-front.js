@@ -43,7 +43,7 @@ jQuery(document).ready(function(){
             }
             err_index=0;
             jQuery.each(form.find('input[type="email"]'), function(){
-                var Email = /^([a-zA-Z0-9_.+-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/i;
+                var Email = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
                 if (!Email.test(jQuery(this).val()))
                 {
                     err_index++;
@@ -56,7 +56,7 @@ jQuery(document).ready(function(){
             }
 
             /**
-             * Check dateformat
+             * check dateformat
              */
             err_index = 0;
             jQuery.each(form.find('.sib-date') , function(){
@@ -88,20 +88,10 @@ jQuery(document).ready(function(){
                 form.find('.sib_msg_disp').html('<p class="sib-alert-message sib-alert-message-warning ">' + sibErrMsg.invalidDateFormat + '</p>').show();
                 return;
             }
+            /**
+             * End
+             */
 
-            // Check sms validation
-            err_index = 0;
-            jQuery.each(form.find('.sib-sms'), function () {
-                var sms = jQuery(this).val();
-                if ( is_valid_sms(sms) == false && sms != '' ) {
-                    err_index ++;
-                }
-            });
-            if(err_index > 0)
-            {
-                form.find('.sib_msg_disp').html('<p class="sib-alert-message sib-alert-message-warning ">' + sibErrMsg.invalidSMSFormat + '</p>').show();
-                return;
-            }
             form.find('.sib_loader').show();
             jQuery('.sib_msg_disp').hide();
             var postData = form.serializeArray();
@@ -112,7 +102,7 @@ jQuery(document).ready(function(){
             var formURL = form.attr("action");
             form.addClass('sib_processing');
 
-            postData.push({ "name": "security", "value": ajax_sib_front_object.ajax_nonce });
+            postData.push({ "name": "security", "value": sib_ajax_nonce});
             jQuery.ajax(
                 {
                     url: formURL,
@@ -120,6 +110,7 @@ jQuery(document).ready(function(){
                     dataType: "json",
                     data: postData,
                     success: function (data, textStatus, jqXHR) {
+                        var form = jQuery('.sib_processing');
                         jQuery('.sib_loader').hide();
                         if (data.redirect) {
                             window.location.href = data.redirect;
@@ -142,9 +133,6 @@ jQuery(document).ready(function(){
                             var cdata = '<p class="sib-alert-message sib-alert-message-error ">' + data.msg + '</p>';
                             form.find('.sib_msg_disp').html(cdata).show();
                         }
-                        form[0].reset();
-                        var previous_code = form.find('.sib-cflags').data('dial-code');
-                        form.find('.sib-sms').val('+' + previous_code);
                         // run MA script identify() when subscribe on SIB forms
                         if (typeof sendinblue != 'undefined') {
                             var email = form.find('input[name=email]').val();
@@ -155,85 +143,15 @@ jQuery(document).ready(function(){
                         }
                         jQuery(".sib-alert-message").delay(2000).hide('slow');
                         form.removeClass('sib_processing');
-                        if (typeof grecaptcha != 'undefined')
-                        {
-                            grecaptcha.reset(gCaptchaSibWidget);
-                        }
+                        grecaptcha.reset(gCaptchaSibWidget);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         form.find('.sib_msg_disp').html(jqXHR).show();
-                        if (typeof grecaptcha != 'undefined')
-                        {
-                            grecaptcha.reset(gCaptchaSibWidget);
-                        }
+                        grecaptcha.reset(gCaptchaSibWidget);
                     }
                 });
         }
     });
-    jQuery('.sib-country-block').on('click', function () {
-       jQuery('.sib-country-list').toggle();
-    });
-    jQuery('.sib-country-list').ready( function () {
-        var country_list_box = jQuery(this);
-        var data = {
-            action : 'sib_get_country_prefix',
-            security: ajax_sib_front_object.ajax_nonce,
-        };
-        jQuery.post( ajax_sib_front_object.ajax_url, data, function (respond) {
-            jQuery('.sib-country-list').html(respond);
-        });
-    });
-
-    jQuery('body').on('click', function(e){
-        if ( jQuery('.sib-sms-field .sib-country-list').length > 0 && !jQuery('.sib-sms-field .sib-country-list').is(e.target) && jQuery('.sib-sms-field .sib-country-list').has(e.target).length === 0 && jQuery('.sib-sms-field .sib-country-block').has(e.target).length === 0 ) {
-            jQuery('.sib-sms-field .sib-country-list').hide();
-        }
-    });
-
-    jQuery('.sib-country-list').on( 'click', 'li' , function () {
-        var country_code = jQuery(this).data('country-code').toLowerCase();
-        var dial_code = jQuery(this).data('dial-code');
-        jQuery(this).closest('.sib-sms-field').find('.sib-sms').val('+' + dial_code );
-        jQuery(this).closest('.sib-sms-field').find('.sib-cflags').css('background-image', 'url(' + ajax_sib_front_object.flag_url + country_code + '.png)');
-        jQuery(this).closest('.sib-sms-field').find('.sib-cflags').data('dial-code', dial_code);
-        jQuery(this).closest('.sib-country-list').hide();
-    });
-    jQuery(".sib-sms").on('keypress', function (event){
-        validateInteger(event, 'sms');
-    });
-    // allow to input 0-9 and - only for date field
-    jQuery(".sib-date").on('keypress', function(event) {
-        validateInteger(event, 'date');
-    });
-    function is_valid_sms( sms ) {
-        sms = sms.replace(/\b(0(?!\b))+/g, "");
-
-        var tempSms = sms.replace(/( |\(|\)|\.|\-)/g, '');
-
-        if (tempSms.length > 19  || tempSms.length < 6 || tempSms.charAt(0) != '+'){
-            return false;
-        }
-        return true;
-    }
-    function validateInteger(evt,type) {
-        var theEvent = evt || window.event;
-        var key = theEvent.charCode || theEvent.which;
-
-        key = String.fromCharCode( key );
-        // 0-9, +/-, space, brackets
-        var regex = /[ +0-9()-]/;
-        var smsLength = 0;
-        if( type == 'date' ) {
-            regex = /[ 0-9-]/;
-        }
-        if( !regex.test(key)) {
-            theEvent.returnValue = false;
-            key = theEvent.keyCode;
-            // ignore input for del,tab, back, left, right, home amd end
-            if(theEvent.preventDefault && key != 9 && key != 8 ) theEvent.preventDefault();
-        }
-    }
-
 
 });
 // get serialized data form subscribe form

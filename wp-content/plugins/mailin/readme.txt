@@ -1,8 +1,8 @@
-﻿=== SendinBlue Subscribe Form And WP SMTP ===
+=== SendinBlue Subscribe Form And WP SMTP ===
 Contributors: neeraj_slit
 Tags: sendinblue, marketing automation, email marketing, email campaign, newsletter, wordpress smtp, subscription form, phpmailer, SMTP, wp_mail, massive email, sendmail, ssl, tls, wp-phpmailer, mail smtp, mailchimp, newsletters, email plugin, signup form, email widget, widget, plugin, sidebar, shortcode
 Requires at least: 4.4
-Tested up to: 4.9.4
+Tested up to: 4.8.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -113,11 +113,6 @@ In order to create a signup form, you need to:
 
 
 == Changelog ==
-= 2.9.0 =
-* add country code prefix to sms field.
-* send final confirmation email in Double Opt_in form
-* change email validation rule
-
 = 2.8.3 =
 * fix compatible issue with old forms
 

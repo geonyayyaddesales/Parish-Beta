@@ -2838,7 +2838,7 @@ class FrmProEntriesController{
     }
 
 	public static function add_duplicate_link( $entry ) {
-		_deprecated_function( __METHOD__, '3.0' );
+		_deprecated_function( __METHOD__, '3.0', 'FrmProEntriesHelper::show_duplicate_link' );
 		FrmProEntriesHelper::show_duplicate_link( $entry );
 	}
 

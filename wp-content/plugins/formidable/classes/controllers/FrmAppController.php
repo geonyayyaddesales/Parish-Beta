@@ -219,6 +219,7 @@ class FrmAppController {
 	 * @since 3.0.04
 	 */
 	public static function compare_for_update( $atts ) {
+		$needs_upgrade = false;
 		$db_version = get_option( $atts['option'] );
 
 		if ( strpos( $db_version, '-' ) === false ) {
@@ -321,11 +322,9 @@ class FrmAppController {
 			FrmAppHelper::localize_script( 'admin' );
 
             wp_enqueue_style( 'formidable-admin' );
-			if ( 'formidable-styles' !== $page ) {
-				wp_enqueue_style( 'formidable-grids' );
-				wp_enqueue_style( 'formidable-dropzone' );
-				add_thickbox();
-			}
+			wp_enqueue_style( 'formidable-grids' );
+			wp_enqueue_style( 'formidable-dropzone' );
+            add_thickbox();
 
             wp_register_script( 'formidable-editinplace', FrmAppHelper::plugin_url() . '/js/jquery/jquery.editinplace.packed.js', array( 'jquery' ), '2.3.0' );
 
