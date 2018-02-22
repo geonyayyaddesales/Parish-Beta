@@ -1,0 +1,839 @@
+/*
+Theme Name: Parish
+Author: 345 Design
+Author URI: http://345desgin.com/
+Description: Custom theme based on the Underscores.me theme.
+Version: 3.3.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: Parish
+Tags:
+
+Normalizing styles have been helped along thanks to the fine work of
+Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
+*/
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+1.0 Normalize
+2.0 Typography
+3.0 Elements
+4.0 Forms
+5.0 Navigation
+	5.1 Links
+	5.2 Menus
+6.0 Accessibility
+7.0 Alignments
+8.0 Clearings
+9.0 Widgets
+10.0 Content
+	10.1 Posts and pages
+	10.2 Asides
+	10.3 Comments
+11.0 Infinite scroll
+12.0 Media
+	12.1 Captions
+	12.2 Galleries
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+1.0 Normalize
+--------------------------------------------------------------*/
+html { font-family: "lato", Lato, sans-serif; font-style: normal; font-weight: 600; -webkit-text-size-adjust: 100%; -ms-text-size-adjust:     100%; }
+
+body { margin: 0; }
+
+article, aside, details, figcaption, figure, footer, header, main, menu, nav, section, summary { display: block; }
+
+audio, canvas, progress, video { display: inline-block; vertical-align: baseline; }
+
+audio:not([controls]) { display: none; height: 0; }
+
+[hidden], template { display: none; }
+
+a { background-color: transparent; }
+
+test{}
+
+a:active, a:hover { outline: 0; }
+
+abbr[title] { border-bottom: 1px dotted; }
+
+b, strong { font-weight: bold; }
+
+dfn { font-style: italic; }
+
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+mark { background: #ff0; color: #000; }
+
+small { font-size: 80%; }
+
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+img { border: 0; }
+
+svg:not(:root) { overflow: hidden; }
+
+figure { margin: 1em 40px; }
+
+hr { box-sizing: content-box; height: 0; }
+
+pre { overflow: auto; }
+
+code, kbd, pre, samp { font-family: monospace, monospace; font-size: 1em; }
+
+button, input, optgroup, select, textarea { color: inherit; font: inherit; margin: 0; }
+
+button { overflow: visible; }
+
+button, select { text-transform: none; }
+
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; cursor: pointer; }
+
+button[disabled], html input[disabled] { cursor: default; }
+
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+input { line-height: normal; }
+
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; padding: 0; }
+
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { height: auto; }
+
+input[type="search"] { -webkit-appearance: textfield; box-sizing: content-box; }
+
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+legend { border: 0; padding: 0; }
+
+textarea { overflow: auto; }
+
+optgroup { font-weight: bold; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+
+td, th { padding: 0; }
+
+/*--------------------------------------------------------------
+2.0 Typography
+--------------------------------------------------------------*/
+body, button, input, select, textarea { color: #29343a; font-size: 14px; font-size: 1rem; line-height: 1.5; font-weight: 400;}
+
+h1, h2, h3, h4, h5, h6 { text-transform: uppercase; font-family: "lato", Lato, sans-serif; font-style: normal; font-weight: 600;}
+
+article h1, article h2, article h3 {text-transform: none;}
+
+h1 { clear: both; }
+
+p { margin-bottom: 1.5em; }
+
+b, strong { font-weight: bold; }
+
+dfn, cite, em, i { font-style: italic; }
+
+blockquote { margin: 0 1.5em; }
+
+address { margin: 0 0 1.5em; }
+
+pre { background: #eee; font-family: "Courier 10 Pitch", Courier, monospace; font-size: 15px; font-size: 0.9375rem; line-height: 1.6; margin-bottom: 1.6em; max-width: 100%; overflow: auto; padding: 1.6em; }
+
+code, kbd, tt, var { font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace; font-size: 15px; font-size: 0.9375rem; }
+
+abbr, acronym { border-bottom: 1px dotted #666; cursor: help; }
+
+mark, ins { background: #fff9c0; text-decoration: none; }
+
+small { font-size: 75%; }
+
+big { font-size: 125%; }
+
+
+footer#colophon, footer#colophon a, footer#colophon a:link, footer#colophon a:visited  {color: #fff; text-decoration: none;}
+
+footer#colophon a:hover, footer#colophon a:active, footer#colophon a:focus {border-bottom: 1px dotted #fff;}
+
+footer#colophon a.tw, footer#colophon a.fb {color: #2EFE1E; margin: 5px; }
+footer#colophon a.tw .fa, footer#colophon a.fb .fa {border-radius: 50%; height:20px; padding: 2px; text-align:center; width:20px;}
+.footer-right a:hover, a.fb:hover, a.tw:hover { border-bottom: none !important; }
+
+/*--------------------------------------------------------------
+3.0 Elements
+--------------------------------------------------------------*/
+html { box-sizing: border-box; }
+
+*, *:before, *:after { /* Inherit box-sizing to make it easier to change the property for components that leverage other behavior; see http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+	box-sizing: inherit; }
+
+body { background: #e7ebf1; }
+
+blockquote:before, blockquote:after, q:before, q:after { content: ""; }
+
+blockquote, q { quotes: "" ""; }
+
+hr { background-color: #ccc; border: 0; height: 1px; margin-bottom: 1.5em; }
+
+ul, ol { margin: 0 0 1.5em 3em; }
+
+ul { list-style: disc; }
+
+ol { list-style: decimal; }
+
+li > ul, li > ol { margin-bottom: 0; margin-left: 1.5em; }
+
+dt { font-weight: bold; }
+
+dd { margin: 0 1.5em 1.5em; }
+
+img { height: auto; /* Make sure images are scaled correctly. */
+	max-width: 100%; /* Adhere to container width. */
+}
+
+table { margin: 0 0 1.5em; width: 100%; }
+
+/*--------------------------------------------------------------
+4.0 Forms
+--------------------------------------------------------------*/
+button, input[type="button"], input[type="reset"], input[type="submit"] 
+{ border: 1px solid; border-color: #505e65; border-radius: 3px; background: #FE1EEB; font-size: 12px; font-size: 0.75rem; line-height: 1; padding: .3em .8em; text-shadow: 0 0px 0 
+rgba(0, 0, 0, 0.8); color: #fff; font-size: 16px; }
+
+button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover { border-color: #006079 #333 #fff; box-shadow: inset 0 1px 0 rgba(113, 126, 133, 0.8), inset 0 15px 17px rgba(94, 108, 116, 0.8), inset 0 -5px 12px rgba(0, 0, 0, 0.02); }
+
+button:focus, input[type="button"]:focus, input[type="reset"]:focus, input[type="submit"]:focus, button:active, input[type="button"]:active, input[type="reset"]:active, input[type="submit"]:active { border-color: #aaa #bbb #bbb; box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.5), inset 0 2px 5px rgba(0, 0, 0, 0.15); }
+
+input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"], textarea { color: #666; border: 1px solid #ccc; border-radius: 3px; }
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="password"]:focus, input[type="search"]:focus, textarea:focus { color: #111; }
+
+input[type="text"], input[type="email"], input[type="url"], input[type="password"], input[type="search"] { padding: 3px; }
+
+textarea { padding-left: 3px; width: 100%; }
+
+
+/* FORMIDABLE FORMS */
+
+.with_frm_style .frm_left_container p.description, .with_frm_style .frm_left_container div.description, .with_frm_style .frm_left_container div.frm_description, .with_frm_style .frm_left_container .frm_error {margin-left: 0;}
+
+.frm_forms {background: #fff;}
+.frm_form_fields {}
+.entry-content .frm_forms {padding: 10px;}
+.frm_forms fieldset {padding: 0 10px 10px;}
+
+.with_frm_style .crest {margin-top: 10px; margin-bottom: 25px !important;}
+.frm_forms img {text-align: center; display: block; margin: 0 auto;}
+
+
+
+.frm_forms h3 {  font-size: 18px; text-align: center; padding-top: 15px; padding-bottom: 5px; clear: both; text-transform: capitalize;}
+
+.frm_style_formidable-style.with_frm_style .frm-show-form .frm_section_heading h3 {border-top: 0px;}
+h3.formname {margin-top: 0; padding-bottom: 0; margin-bottom: 0; border-bottom: 0 !important;}
+.formnamespan h3.frm_pos_top {margin-top: 0; padding-top: 0;}
+
+.formh1 h3 { clear: both; padding: 0 75px !important; margin: 0 auto!important; font-size: 24px !important; text-align: center; border-bottom: none; vertical-align: text-bottom; }
+
+.formh1 {margin-bottom: 0 !important; padding-bottom: 0 !important;}
+
+.with_frm_style .chzn-container-single .chzn-single {max-width: 90%;}
+
+.frm_forms.frm_style_formidable-style.with_frm_style {max-width: 740px;}
+
+.with_frm_style .form-field .lessmargin {margin-bottom: 5px;}
+.frm_style_formidable-style.with_frm_style .frm_section_heading  {margin-top:0px;}
+
+/*--------------------------------------------------------------
+5.0 Navigation
+--------------------------------------------------------------*/
+
+#site-navigation ul {list-style: none; display: block; width: auto; margin: 0 auto; text-transform: uppercase; font-size: 14px; vertical-align: middle !important; }
+
+#site-navigation li {display: inline-block; margin: 0 3px 3px; text-align: center; background: #fe1eeb; line-height: 20px;}
+#site-navigation li.twolines {line-height: 25px;}
+
+#site-navigation li a {text-align: center; display: table-cell; width: 154px; height: 65px; color: #fff; text-decoration: none; vertical-align: middle !important;}
+#site-navigation li a span {padding: 0 20px 2px 20px; border-bottom: 1px solid #fff;}
+#site-navigation li a:hover, #site-navigation li a:focus, #site-navigation li.current-menu-item {background: #2efe1e; color: #fff;}
+
+#site-navigation .sub-menu li a {height: 35px; text-transform: none;}
+
+
+/*--------------------------------------------------------------
+5.1 Links
+--------------------------------------------------------------*/
+a, a:visited { color: #2EFE1E; }
+
+a:hover, a:focus, a:active { color: #2EFE1E;  }
+
+a:focus { outline: thin dotted; }
+
+a:focus { outline: 0; }
+
+/*--------------------------------------------------------------
+5.2 Menus
+--------------------------------------------------------------*/
+.main-navigation { clear: both; display: block; width: 960px; margin: 0 auto; /*float: left; width: 100%; */}
+
+.main-navigation ul { list-style: none; margin: 0; padding-left: 0; }
+
+.main-navigation li { float: left; position: relative; }
+
+.main-navigation a { display: block; text-decoration: none; }
+
+.main-navigation ul ul { position: absolute; top: 100%; left: -999em; z-index: 99999; border-top: 3px solid transparent; }
+
+.main-navigation ul ul ul { left: -999em; top: 0; }
+
+.main-navigation ul ul a { width: 200px; }
+
+.main-navigation ul ul li { }
+
+.main-navigation li:hover > a { }
+
+.main-navigation ul ul :hover > a { }
+
+.main-navigation ul ul a:hover { }
+
+.main-navigation ul li:hover > ul { left: auto; }
+
+.main-navigation ul ul li:hover > ul { left: 100%; }
+
+.main-navigation .current_page_item > a, .main-navigation .current-menu-item > a, .main-navigation .current_page_ancestor > a { }
+
+
+.main-navigation ul ul.sub-menu, 
+.main-navigation ul ul.sub-menu li {background: #f1fe1e !important;}
+
+#site-navigation li ul.sub-menu li a  {color: #fff !important;}
+
+#site-navigation li ul.sub-menu li a:hover, 
+#site-navigation li ul.sub-menu li a:focus,
+#site-navigation li ul.sub-menu li a:active,  
+#site-navigation li ul.sub-menu li.current-menu-item a {background: #f1fe1e; color: #fff !important;} 
+
+
+/* Small menu. */
+.menu-toggle { display: none; }
+
+@media screen and (max-width: 960px) { 
+	
+	.menu-toggle, .main-navigation.toggled .menu-primary-menu-container { display: block; width: 100%; font-size: 16px; background: #fe1eeb; color: #fff; }
+	.menu-primary-menu-container { display: none; }
+	
+	#site-navigation ul {list-style: none; display: block; width: 100%; margin: 0 auto; text-transform: uppercase; font-size: 14px; vertical-align: middle !important; }
+
+  .main-navigation ul li:hover > ul {position:relative;}
+	#site-navigation li {display: block; margin: 0 0 1px !important; width: 100%; text-align: left; background: #fe1eeb; line-height: 20px;}
+	#site-navigation li.twolines {line-height: 25px;}
+
+	#site-navigation li a {width: 100%; display: block; padding: 10px !important; height: auto; }
+	#site-navigation li a span {padding: 0 10px 2px; border-bottom: 1px solid #fff;}
+	#site-navigation li a:hover, #site-navigation li a:focus {background: #fe1eeb;}
+	
+}
+
+
+.site-main .comment-navigation, .site-main .posts-navigation, .site-main .post-navigation { margin: 0 0 1.5em; overflow: hidden; }
+
+.comment-navigation .nav-previous, .posts-navigation .nav-previous, .post-navigation .nav-previous { float: left; width: 50%; }
+
+.comment-navigation .nav-next, .posts-navigation .nav-next, .post-navigation .nav-next { float: right; text-align: right; width: 50%; }
+
+/*--------------------------------------------------------------
+6.0 Accessibility
+--------------------------------------------------------------*/
+/* Text meant only for screen readers. */
+.screen-reader-text { clip: rect(1px, 1px, 1px, 1px); position: absolute !important; height: 1px; width: 1px; overflow: hidden; }
+
+.screen-reader-text:hover, .screen-reader-text:active, .screen-reader-text:focus { background-color: #f1f1f1; border-radius: 3px; box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6); clip: auto !important; color: #21759b; display: block; font-size: 14px; font-size: 0.875rem; font-weight: bold; height: auto; left: 5px; line-height: normal; padding: 15px 23px 14px; text-decoration: none; top: 5px; width: auto; z-index: 100000; /* Above WP toolbar. */
+}
+
+/*--------------------------------------------------------------
+7.0 Alignments
+--------------------------------------------------------------*/
+.alignleft { display: inline; float: left; margin-right: 1.5em; }
+
+.alignright { display: inline; float: right; margin-left: 1.5em; }
+
+.aligncenter { clear: both; display: block; margin-left: auto; margin-right: auto; }
+
+/*--------------------------------------------------------------
+8.0 Clearings
+--------------------------------------------------------------*/
+.clear:before, .clear:after, .entry-content:before, .entry-content:after, .comment-content:before, .comment-content:after, .site-header:before, .site-header:after, .site-content:before, .site-content:after, .site-footer:before, .site-footer:after { content: ""; display: table; }
+
+.clear:after, .entry-content:after, .comment-content:after, .site-header:after, .site-content:after, .site-footer:after { clear: both; }
+
+/*--------------------------------------------------------------
+9.0 Widgets
+--------------------------------------------------------------*/
+.widget { margin: 0 0 1.5em; }
+
+/* Make sure select elements fit in widgets. */
+.widget select { max-width: 100%; }
+
+/* Search widget. */
+.widget_search .search-submit { display: none; }
+
+/*--------------------------------------------------------------
+10.0 Content
+--------------------------------------------------------------*/
+/* main layout areas */
+#masthead {width: 960px; margin: 0 auto;}
+.header-main a, .header-main a:visited {color: #fff; text-decoration: none; }
+.header-main a:hover, .header-main a:focus, .header-main a:active {color: #ccc;}
+#masthead {color: #fff;}
+
+.entry-meta a, .entry-meta a:visited {color: #404040; text-decoration:none;}
+
+#content, .footer-left {width: 954px; margin: 0 auto;}
+footer#colophon {width: 100%; background: #fe1eeb; color: #fff;}
+#content {min-height:600px;}
+.home #content {min-height:0;}
+
+
+/* HEADER */
+.header-wide {position: relative; width: 960px; margin: 0 auto; }
+
+/*
+.header-wide {position: relative; width: 1004px; margin: 0 auto; }
+*/
+.header-main {height: 87px; width: 954px; margin: 0 auto; background: #fe1eeb; border-bottom: 1px solid #fff;}
+
+body.home .header-main {height: auto; border-bottom: 0;}
+
+
+.site-title {margin: 0; padding: 24px 24px 0; font-size:  24px; text-transform: uppercase;}
+.site-title a {margin: 0; padding: 0; display: block; color: #fff; text-decoration: none;}
+.site-title a:hover, .site-title a:focus, .site-title a:active {color: #ccc;}
+
+.diocese-icon {z-index: 99999; display: block; position: absolute; top: 0; right: -22px; margin-right: 0; width: 87px; height: 87px; background: url(images/diocese-icon.png) no-repeat;}
+
+.diocese-icon a {display: block; height: 87px; width: 87px; margin: 0; padding: 0;}
+
+/* HOME header */
+h1.site-title {font-size: 28px; line-height: 30px; padding-top: 13px; margin: 0 0 4px; font-weight: bold; padding-left: 0; padding-right: 0; }
+
+.intro-left {width: 62%; float: left; padding-left: 30px; margin: 0 0 17px 0; text-transform: uppercase; }
+.intro-left p { font-weight: 600; font-size: 15px; margin: 2px 0; line-height: 16px;}
+
+.intro-right {width: 33%; float: right; margin: 5px 0 0 0; padding-right: 25px; text-align: center;}
+.intro-right .halfcol {width: 50%; float: left;}
+
+.intro-right h3 {margin: 0; padding: 0 5px; width: auto; display: inline-block; border-bottom: 1px solid #fff; font-size: 15px; }
+.intro-right p {font-size: 12px; margin: 5px 0px; line-height: 16px;}
+
+.site-branding {width: 954px; margin: 0 auto; z-index: 0; position: relative; background: #3b4c54; color: #fff; border-bottom: 1px solid #fff; height: 40px;}
+.site-branding a  {color: #fff;}
+
+
+h1.entry-title { margin-top: 40px; margin-bottom: 0; }
+
+/* FOOTER */
+footer {clear: both; margin-top: 20px;}
+
+.footer-container {width: 960px; margin: 0 auto; padding: 20px 0; }
+
+.footer-inner {position: relative; padding-left: 80px; }
+.seal-1 {margin-left: 80px !important; }
+
+a.footer-seal-white {position: absolute; left: 0; top: 0; margin: 0; padding: 0; display: block; width: 80px; height: 100px; background: url(https://beta.stpiusv-queens.org/wp-content/themes/parish/icons/site-seal.png) no-repeat 0 0; padding-left: 80px; text-indent: -9999px;}
+
+a.footer-seal-color {position: absolute; left: 0; top: 0; margin: 0; padding: 0; display: block; width: 80px; height: 100px; background: url(https://beta.stpiusv-queens.org/wp-content/themes/parish/icons/site-seal-color.png) no-repeat 0 0; padding-left: 80px; text-indent: -9999px;}
+
+a.papacy-emblem {position: absolute; left: 0; top: 0; margin: 0; padding: 0; display: block; width: 80px; height: 100px; background: url(https://beta.stpiusv-queens.org/wp-content/themes/parish/icons/papacy-emblem.png) no-repeat 0 0; padding-left: 80px; text-indent: -9999px;}
+
+a.footer-seal-white:hover, a.footer-seal-color:hover, a.papacy-emblem:hover {text-decoration: none; border: 0 !important;}
+
+
+.footer-left { margin: 0px; width: 100%; border-left: 1px solid #fff; padding-top: 10px; padding-bottom: 15px; padding-left: 5px;}
+.footer-right {float: left; margin-top: 0; width: auto; }
+
+.site-info {float: left; }
+
+.footer-left ul {margin: 0 0 5px; padding: 0; text-transform: uppercase; font-size: 12px; line-height:28px;}
+
+.footer-left ul li {padding: 0 8px; list-style-type: none; display: inline-block; margin: 2px 0; padding-right: 10px; border-right: 1px solid #fff;}
+.footer-left ul li:last-child {border-right: none;}
+
+.footer-left p { margin: 0 0 0 10px;}
+
+.footer-right img {display: inline-block; vertical-align: middle;}
+
+p.connect { width: auto; float: left; line-height: 28px; margin: 0 5px 10px 10px; text-transform: uppercase; font-size: 12px;}
+footer p.sm {font-size: 10px;}
+
+
+/*---------------------
+ HOME PAGE
+-------------------------*/
+
+/* HOME WELCOME */
+
+.home-welcome {background: #2efe1e; font-size: 20px; color: #ffffff; margin-bottom: 20px; height: 363px;}
+
+.home-welcome h1.entry-title {display: none;}
+
+.welcome-img {float: left; width: 58%; margin-right: 15px; height: 100%; }
+.welcome-img img {display: block}
+
+.welcome-text {float: left; width: 39%; display: inline;}
+.welcome-text footer {display: none; visibility: hidden;}
+
+.home-welcome .entry-content p {margin-bottom: 1em; }
+.home-welcome p {line-height: 30px;}
+.welcome-text article, .spanish-welcome p {margin-bottom: 0;}
+ .welcome-text a .fa, .spanish-welcome a .fa {color: #2EFE1E; background-color: white; border-radius: 50%; margin: 5px; padding:4px; font-size:14px; text-align:center; }
+
+.welcome-text a:hover, .spanish-welcome a:hover {}
+.royalSlider.rsMinW .rsBullet { padding: 6px 6px 6px 4px !important; }
+.entry-content .unslider {height:400px; }
+
+/* HOME BOTTOM */
+
+.home-bottom {clear: both; margin: 20px auto; width: 954px; }
+
+.home-bottom h3 a {color: #fff; text-decoration: none; }
+.home-bottom h3 a:hover,
+.home-bottom h3 a:focus, 
+.home-bottom h3 a:active { text-decoration: underline;}
+
+.thirdcol {width: 303px; height: 354px; vertical-align: top; margin: 0 0 20px; position: relative;}
+.thirdcol.left {border: 4px solid #fe1eeb; float: left;}
+.thirdcol.right {border: 4px solid #fe1eeb; float: right; position: relative;}
+.thirdcol.middle {width: 296px; margin-left: auto; margin-right: auto; float: none; }
+
+.thirdcol h3 {margin: 0; padding: 5px 0; font-weight: normal; background: #fe1eeb; color: #fff; font-size: 20px; text-align: center;}
+.thirdcol h4 {font-size: 19px; line-height: 22px; padding-left: 10px;}
+
+.thirdcol ul {font-size: 14px;}
+.thirdcol ul li {margin-bottom: 5px; line-height: 19px;}
+.thirdcol ul li a, .rss-title a {text-decoration: none;}
+.rss-date {clear:both; display:block; font-style: italic;}
+.thirdcol h4.rss-title a:hover {text-decoration: none; color: #fe1eeb;}
+.thirdcol ul li a:hover, .thirdcol.left ul li a:focus, .thirdcol.rigth .meet-me ul li a:focus  {  text-decoration: underline; color: #fe1eeb;}
+
+.thirdcol .middle_ad_img {height: 256px; }
+.thirdcol .middle_ad_img img { display: block; margin: 0; border: 1px solid #ACB1AB;
+}
+
+.thirdcol .middle_ad_img a {display: block; }
+.thirdcol .middle_ad_img a:hover {box-shadow: 0 0 4px rgba(0,0,0,0.80); }
+
+/* left */
+.thirdcol.left ul, .thirdcol.right .meet-me ul {margin: 5px 0 0 0; padding: 0 0 0 25px;}
+
+.meet-me ul li { display:none; }
+.meet-me ul li:nth-child(1), .meet-me ul li:nth-child(2), .meet-me ul li:nth-child(3), .meet-me ul li:nth-child(4), .meet-me ul li:nth-child(5) { display:list-item; }
+
+.rss-title {margin: 2px 0 0; text-transform: uppercase; border-bottom: 1px solid #A5AAA4;}
+.view-all{padding: 3px; position: absolute; bottom: 3px; width: 100%; text-align: center; font-size: 12px;}
+.thirdcol aside {padding: 2px 10px; margin-bottom: 0; line-height: normal;}
+.thirdcol aside.widget_rss {padding-bottom: 0;}
+.thirdcol aside.widget_gce_widget {padding: 0 10px;}
+.thirdcol aside.widget_text {padding: 3px; position:absolute; bottom: 3px; width: 100%; text-align: center; font-size: 12px; }
+.home #text-3 {padding-top: 3px; }
+.home #text-3 a {text-decoration: none;}
+.home #text-3 a:hover {text-decoration: underline; }
+
+.thirdcol aside a.rsswidget img {display: none; visibility: hidden;}
+
+.widget_rss li {text-transform: capitalize; }
+
+/* right */
+.googlecal {margin: 2px 0 0; font-size: 14px; overflow: hidden; }
+.googlecal a {text-decoration: none;}
+.googlecal a:hover, .googlecal a:focus {text-decoration: underline;}
+.meet-me .gce-event-day {padding-bottom:20px;}
+.meet-me a {text-decoration:none;}
+.meet-me a:hover {text-decoration:underline;}
+.gce-list-title {padding: 0 15px; margin: 3px 0 0; font-size: 13px; background: #2EFE1E; color: #fff; line-height: normal; padding: 0 15px;}
+
+.gce-list-event.gce-tooltip-event {font-weight: bold; background: none; padding: 0; margin-top: 2px; font-size: 15px; line-height: 18px; }
+
+.gce-list-grouped .gce-feed {margin-left: 15px; margin-bottom: 4px;}
+
+/* middle */
+
+.thirdcol .button {margin-top: 10px; width: 48%; max-width: 142px; height: auto; position: relative; background: #006079; text-align: center; font-size: 18px; color: #fff; line-height: normal; text-transform:uppercase; }
+.thirdcol .button.left {float: left; font-size: 18px;}
+.thirdcol .button.right {float: right}
+
+.thirdcol .button a {width: 142px; border: 4px solid #2efe1e;  background: #fe1eeb; height: 88px; display: table-cell; vertical-align: middle; text-align: center; padding: 0; color: #fff; text-decoration: none; margin-top:14px;}
+.thirdcol.middle {width:300px;}
+.thirdcol .button a:hover {background: #2efe1e;}
+
+
+/*--------------------------------------------------------------
+10.1 Posts and pages
+--------------------------------------------------------------*/
+#primary {width: 65%; margin-right: 35px; float: left; }
+#primary article {padding-left: 20px;}
+#secondary {width: 30%; float: left; margin-top: 38px;}
+
+#primary.fullwidth {width: 100%; margin-right: 0;}
+
+#primary.homeprimary {width: 100%; padding-left: 0;}
+#primary.homeprimary article { padding-left: 0;}
+
+.sticky { display: block; }
+
+.hentry { margin: 0 0 1.5em; }
+
+.byline, .updated:not(.published) { display: none; }
+
+.posted-on {text-decoration:none; pointer-events:none; cursor: default;}
+
+.single .byline, .group-blog .byline { display: none; }
+
+.page-content, .entry-content, .entry-summary { margin: 0 0 .5em; }
+
+.page-links { clear: both; margin: 0 0 1.5em; }
+
+.news-signup { padding-bottom: 5px; }
+.news-signup a {margin: 0 auto; text-align:center; display:block;}
+.news-signup h3 { margin-bottom: 5px; font-size:17px;}
+.news-signup #mce-EMAIL {max-width: 60%;}
+
+/*--------------------------------------------------------------
+10.2 Asides
+--------------------------------------------------------------*/
+.blog .format-aside .entry-title, .archive .format-aside .entry-title { display: none; }
+
+/*--------------------------------------------------------------
+10.3 Comments
+--------------------------------------------------------------*/
+.comment-content a { word-wrap: break-word; }
+
+.bypostauthor { display: block; }
+
+/*--------------------------------------------------------------
+11.0 Infinite scroll
+--------------------------------------------------------------*/
+/* Globally hidden elements when Infinite Scroll is supported and in use. */
+.infinite-scroll .posts-navigation, /* Older / Newer Posts Navigation (always hidden) */
+.infinite-scroll.neverending .site-footer { /* Theme Footer (when set to scrolling) */
+	display: none; }
+
+/* When Infinite Scroll has reached its end we need to re-display elements that were hidden (via .neverending) before. */
+.infinity-end.neverending .site-footer { display: block; }
+
+/*--------------------------------------------------------------
+12.0 Media
+--------------------------------------------------------------*/
+.page-content .wp-smiley, .entry-content .wp-smiley, .comment-content .wp-smiley { border: none; margin-bottom: 0; margin-top: 0; padding: 0; }
+
+/* Make sure embeds and iframes fit their containers. */
+embed, iframe, object { max-width: 100%; }
+
+/*--------------------------------------------------------------
+12.1 Captions
+--------------------------------------------------------------*/
+.wp-caption { margin-bottom: 1.5em; max-width: 100%; }
+
+.wp-caption img[class*="wp-image-"] { display: block; margin: 0 auto; }
+
+.wp-caption-text { text-align: center; }
+
+.wp-caption .wp-caption-text { margin: 0.8075em 0; font-size: 12px; }
+
+/*--------------------------------------------------------------
+12.2 Galleries
+--------------------------------------------------------------*/
+.gallery { margin-bottom: 1.5em; }
+
+.gallery-item { display: inline-block; text-align: center; vertical-align: top; width: 100%; }
+
+.gallery-columns-2 .gallery-item { max-width: 50%; }
+
+.gallery-columns-3 .gallery-item { max-width: 33.33%; }
+
+.gallery-columns-4 .gallery-item { max-width: 25%; }
+
+.gallery-columns-5 .gallery-item { max-width: 20%; }
+
+.gallery-columns-6 .gallery-item { max-width: 16.66%; }
+
+.gallery-columns-7 .gallery-item { max-width: 14.28%; }
+
+.gallery-columns-8 .gallery-item { max-width: 12.5%; }
+
+.gallery-columns-9 .gallery-item { max-width: 11.11%; }
+
+.gallery-caption { display: block; }
+
+
+@media screen and (max-width: 1003px) { 
+	
+	.header-wide {width: 960px; margin: 0 auto;}
+	
+	.site-branding, header, .header-main {width: 100%; margin: 0 auto;}
+	
+	#masthead {width: 960px; margin: 0 auto;}
+	
+	.diocese-icon {}
+	
+	#page {}
+	
+	#content {width: 95%;}
+	body.home #content {width: 954px; margin: 0 auto;}
+
+	.intro-left {width: 60%;}
+	/* .intro-right {width: 30%; } */
+	.intro-right h3 {padding-left: 0; text-align: left; float: left;}
+	
+	.home-bottom {width: 99%;}
+
+	.footer-container {width: 95%;}
+
+}
+
+@media screen and (max-width: 959px) { 
+	#masthead, .header-wide, .header-main, .site-branding, #site-navigation, body.home #content {width: 100%;}
+	.diocese-icon {margin-right: 0; right: 0;}	
+	.intro-right {padding-right: 85px;}.thirdcol {width: 30%; height: 386px; vertical-align: top; margin: 0 0 20px; }
+	.thirdcol.middle {max-width: 296px; }
+	
+}
+
+@media screen and (max-width: 800px) { 
+  
+	#primary {width: 100%; margin-right: 0; float: none;}
+	#secondary {width: 100%; float: none; }
+	#primary article{padding-left:0px; margin: 0 auto;}
+	.home-bottom {width: 99%;}
+	.thirdcol {width: 100%; }
+	
+	.thirdcol {width: 100%; margin: 10px 0; height: auto;}
+	.thirdcol.right {}
+	.thirdcol.middle {clear: both;}
+	
+	h1.site-title {padding-left: 85px; padding-right: 85px;}
+	.intro-left {width: 100%; text-align: center; float: none;}
+	.intro-right {clear: both; float: none; margin: 0 auto; padding-right: 0; }
+	.intro-right h3 {float: none; padding: 0; margin-right: 0; text-align: center; display: block;}
+
+	.welcome-text, .home-welcome {font-size: 16px; line-height: 24px;}
+	.home-welcome p {line-height: 22px;}
+	.welcome-img {width: 46%;}
+	.welcome-text {width: 50%;}
+	#site-navigation li {margin: 0 1px 2px;}
+	#site-navigation li a {padding: 0 10px; width: auto; }
+  .thirdcol aside.widget_text {padding-top:10px;position:relative;}
+	}
+	
+@media screen and (max-width: 700px) { 
+
+	#page, #masthead, nav, footer, .footer-container, .footer-left {width: 100%;}
+	.site-title {margin:0 auto; text-align:center;}
+	
+	#content {width: 95%;}
+	body.home #content {width: 100%;}
+
+	#primary {width: 90%; margin-right: 0; float: none;}
+	#secondary {width: 90%; float: none; }
+
+	.intro-left {width: 100%;}
+	.intro-right {margin: 20px auto; width: 100%; max-width: 250px;}
+
+	.home-welcome {padding-bottom: 20px; }
+	.welcome-img {width: 100%; margin: 0 auto;}
+	.welcome-img img {width: auto; text-align: center; margin: 0 auto 20px;}
+	.welcome-text {font-size: 16px; margin: 0 auto; width: 100%; background: #2EFE1E;}
+	.welcome-text .entry-content, .spanish-welcome {width: 90%; margin: 0 auto;}
+	
+	.thirdcol {width: 100%; margin: 10px 0;}
+	.thirdcol.right {margin-left: 0;}
+	.footer-left {width: 100%;}
+
+.footer-inner {      margin: 0 auto; width: 90%; }
+	
+	/*
+	.footer-right {clear: both; float: none; display: block; margin: 30px auto 0; text-align: center; width: 90%;}
+	.footer-right img {float: none;}
+	.connect {display: block; float: none;}
+		*/
+.site-title {line-height: normal; padding-top: 15px; font-size: 24px;}
+	
+
+}
+
+@media screen and (max-width: 600px) { 
+	body.home .diocese-icon {z-index: 99999; display: block; position: absolute; top: 0; right: 0; margin-right: 0; width: 40px; height: 40px; background: url(images/diocese-icon-sm.png) no-repeat;}
+	body.home .diocese-icon a {height: 40px; width: 40px;}
+
+
+@media screen and (max-width: 450px) { 
+	#primary {padding-left: 0;}
+	.diocese-icon {width: 40px; height: 40px; background: url(images/diocese-icon-sm.png) no-repeat right top;}
+	.diocese-icon a {width: 40px; height: 40px;}
+	footer p.connect {float:none;}
+	.site-title {padding: 10px 10px 10px 10px; text-align:center; line-height: normal; padding-top: 10px; font-size: 18px;}
+
+	.header-main {height: auto;}
+	.intro-left {padding-left: 0; width: 95%; margin: 0 auto;}
+	.dioceselogo img {max-width: 90%;}
+	h1.site-title {padding: 20px 0 10px; }
+	
+	.frm_first_half, .frm_last_half {width: 90% !important; float: none !important;}
+
+	.entry-content .frm_form_fields input, 
+	.entry-content .frm_form_fields textarea {max-width: 80% !important;}
+
+	.entry-content .frm_form_field {max-width: 90% !important;}
+	.frm_forms fieldset {padding: 0;}
+	
+	.frm_form_field.frm_left_inline, 
+	.frm_form_field.frm_first_inline, 
+	.frm_form_field.frm_inline, 
+	.frm_form_field.frm_right_inline, 
+	.frm_form_field.frm_last_inline {float: left; clear: both;}	
+	
+	.with_frm_style input[type="text"], 
+	.with_frm_style input[type="password"], 
+	.with_frm_style input[type="email"], 
+	.with_frm_style input[type="number"], 
+	.with_frm_style input[type="url"], 
+	.with_frm_style input[type="tel"], 
+	.with_frm_style select, 
+	.with_frm_style textarea, 
+	.frm_form_fields_style, 
+	.with_frm_style 
+	.frm_scroll_box .frm_opt_container, 
+	.frm_form_fields_active_style, 
+	.frm_form_fields_error_style, 
+	.with_frm_style .chzn-container-multi .chzn-choices, 
+	.with_frm_style .chzn-container-single .chzn-single {width: 90%;}
+	
+	.frm_form_field.frm_right_half, .frm_form_field.frm_right_third, .frm_form_field.frm_right_two_thirds, .frm_form_field.frm_right_fourth, .frm_form_field.frm_right_fifth, .frm_form_field.frm_right_inline, .frm_form_field.frm_last_half, .frm_form_field.frm_last_third, .frm_form_field.frm_last_two_thirds, .frm_form_field.frm_last_fourth, .frm_form_field.frm_last_fifth, .frm_form_field.frm_last_inline { clear: both; float: left;}
+	
+	.with_frm_style .horizontal_radio .frm_checkbox, .with_frm_style .horizontal_radio .frm_radio, .horizontal_radio .frm_catlevel_1 {display: block;}
+	.with_frm_style .form-field {max-width: 90%;}
+	div.formnamespan {max-width: 70% !important; margin: 0 auto;}
+}
+}
+.ticker-left-mask {
+position: absolute;
+    margin-top: -30px;
+    padding-left: 20px;
+    background: #FFF;
+    border-bottom: 2px solid #58595b;
+  	border-right: 2px solid #58595b;
+    padding-right: 20px;
+    color: #b13221;
+		line-height:30px;
+  	text-transform:uppercase;
+    font-weight:bold;
+}
+.ticker-wrap { border: 2px solid #58595b; color:#58595b; background-color:#FFF; width: calc(100% - 6px); margin-left: 3px; }
+.ticker-wrap a { color:#58595b; text-decoration:none; }
+.tickercontainer { padding-left:89px; }
+.ticker__item { font-size:14px; font-weight:100; padding-right:30px !important; }
+.ticker__item.last {  }
