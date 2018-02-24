@@ -106,6 +106,7 @@ class FrmProFieldTime extends FrmFieldType {
 
 		if ( isset( $field['options']['H'] ) ) {
 			$this->time_string_to_array( $values['field_value'] );
+			$this->time_string_to_array( $values['field']['default_value'] );
 
 			$html = '<div class="frm_time_wrap"><span dir="ltr">' . "\r\n";
 

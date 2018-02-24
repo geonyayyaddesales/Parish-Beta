@@ -1,5 +1,5 @@
 
-<div class="frm_form_field frm_section_heading form-field frm6">
+<div class="frm_form_field frm_section_heading form-field frm_half frm_first">
     <h3 class="frm_pos_top frm_section_spacing"><?php _e( 'Repeatable Section', 'formidable-pro' ) ?></h3>
     <div>
         <div class="frm_repeat_sec">
@@ -10,7 +10,7 @@
 				<div class="frm_description"><?php _e( 'Another field with a description', 'formidable-pro' ) ?></div>
 			</div>
 
-			<div class="frm_form_field form-field frm6 <?php echo esc_attr( $pos_class ) ?>">
+			<div class="frm_form_field form-field frm_half frm_first <?php echo esc_attr( $pos_class ) ?>">
 				<label class="frm_primary_label"><?php _e( 'Radio Buttons', 'formidable-pro' ) ?></label>
 				<div class="frm_opt_container">
 					<div class="frm_radio"><label><input type="radio" /><?php _e( 'Option 1', 'formidable-pro' ) ?></label></div>
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 
-			<div class="frm_form_field form-field frm6 <?php echo esc_attr( $pos_class ) ?>">
+			<div class="frm_form_field form-field frm_half <?php echo esc_attr( $pos_class ) ?>">
 				<label class="frm_primary_label"><?php _e( 'Check Boxes', 'formidable-pro' ) ?></label>
 				<div class="frm_opt_container">
 					<div class="frm_checkbox"><label><input type="checkbox" /><?php _e( 'Option 1', 'formidable-pro' ) ?></label></div>
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="frm_form_field frm_section_heading form-field frm6">
+<div class="frm_form_field frm_section_heading form-field frm_half">
     <h3 class="frm_pos_top frm_trigger active frm_section_spacing"><i class="frm_icon_font frm_arrow_icon frm_before_collapse"></i><?php _e( 'Collapsible Section', 'formidable-pro' ) ?><i class="frm_icon_font frm_arrow_icon frm_after_collapse"></i></h3>
     <div class="frm_toggle_container">
 

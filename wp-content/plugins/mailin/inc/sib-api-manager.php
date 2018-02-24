@@ -31,7 +31,6 @@ if ( ! class_exists( 'SIB_API_Manager' ) ) {
 			if ( false === $account_info || false == $account_info ) {
 				$mailin = new Mailin( SIB_Manager::SENDINBLUE_API_URL, SIB_Manager::$access_key );
 				$response = $mailin->get_account();
-
 				if ( (is_array( $response )) && ( 'success' == $response['code'] ) ) {
 					$account_data = $response['data'];
 					$count = count( $account_data );
@@ -650,6 +649,13 @@ if ( ! class_exists( 'SIB_API_Manager' ) ) {
 				$email = $contact_info['email'];
 				$info = maybe_unserialize( $contact_info['info'] );
 				$list_id = maybe_unserialize( $contact_info['listIDs'] );
+                $form_id = $contact_info['frmid'];
+                $current_form = SIB_Forms::getForm( $form_id );
+
+                if ( '1' == $current_form['isDopt'] )
+                {
+                    SIB_API_Manager::send_comfirm_email( 'confirm', $email, $current_form['confirmID'], $info );
+                }
 
 				// temp dopt list.
 				$temp_list = get_option( SIB_Manager::TEMPLIST_OPTION_NAME );

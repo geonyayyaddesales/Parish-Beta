@@ -6,8 +6,8 @@ class FrmProFieldsHelper{
 		$unserialized = maybe_unserialize( $value );
 		if ( is_array( $unserialized ) ) {
 			$field_obj = FrmFieldFactory::get_field_object( $field );
-			if ( $field->type == 'time' && $field_obj->is_time_empty( $value ) ) {
-				$value = '';
+			if ( $field->type == 'time' ) {
+				$field_obj->time_array_to_string( $value );
 			} elseif ( FrmAppHelper::is_empty_value( $unserialized ) || count( array_filter( $unserialized ) ) === 0  ) {
 				$value = '';
 			} else {

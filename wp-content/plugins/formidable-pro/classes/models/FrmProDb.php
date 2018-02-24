@@ -2,12 +2,12 @@
 
 class FrmProDb{
 
-	public static $db_version = 54;
+	public static $db_version = 59;
 
 	/**
 	 * @since 3.0.02
 	 */
-	public static $plug_version = '3.0.04';
+	public static $plug_version = '3.0.05';
 
 	/**
 	 * @since 2.3
@@ -37,14 +37,18 @@ class FrmProDb{
 	}
 
 	public static function upgrade() {
-		$db_version = self::$db_version; // this is the version of the database we're moving to
-		$old_db_version = get_option( 'frmpro_db_version' );
-
 		if ( ! self::needs_upgrade() ) {
 			return;
 		}
 
-        if ( $old_db_version ) {
+		$db_version = self::$db_version; // this is the version of the database we're moving to
+		$old_db_version = get_option( 'frmpro_db_version' );
+		if ( strpos( $old_db_version, '-' ) ) {
+			$last_upgrade = explode( '-', $old_db_version );
+			$old_db_version = (int) $last_upgrade[1];
+		}
+
+		if ( $old_db_version && is_numeric( $old_db_version ) ) {
 			$migrations = array( 16, 17, 25, 27, 28, 29, 30, 31, 32, 34, 36, 37, 39, 43, 44, 50 );
 			foreach ( $migrations as $migration ) {
 				if ( $db_version >= $migration && $old_db_version < $migration ) {
