@@ -74,6 +74,9 @@ $jQ(document).ready(function(){
             case 'text':
             case 'float':
                 $jQ('.sib-attr-normal').show();
+                if(attr_name == 'SMS'){
+                    $jQ('#sib_field_initial_area').hide();
+                }
                 break;
             case 'category':
                 $jQ('.sib-attr-category').show();
@@ -116,7 +119,6 @@ $jQ(document).ready(function(){
             field_html += '    <label class="sib-' + attr_name + '-area">' + field_label + '</label> \n';
         }
 
-
         switch (attr_type)
         {
             case 'email':
@@ -132,17 +134,33 @@ $jQ(document).ready(function(){
                 field_html += '    <input type="text" class="sib-' + attr_name + '-area sib-date" name="' + attr_name + '" placeholder="' + dateformat + '" data-format="' + dateformat + '">';
                 break;
             case 'text':
-                field_html += '    <input type="text" class="sib-' + attr_name + '-area" name="' + attr_name + '" ';
-                if(field_placeholder != '') {
-                    field_html += 'placeholder="' + field_placeholder + '" ';
+                if ( attr_name == "SMS" ) {
+                    field_html += '<div class="sib-sms-field"><div class="sib-country-block">' +
+                        '<div class="sib-toggle sib-country-flg"><div class="sib-cflags"></div> ' +
+                        '<div class="sib-icon-arrow"></div></div> '+
+                        '</div>' + '<ul class="sib-country-list" style="display: none;"></ul>' +
+                        '<input type="hidden" name="sib_SMS_prefix"><input type="text" name="SMS" class="sib-sms" value="+33" ';
+                    if(field_placeholder != '') {
+                        field_html += 'placeholder="' + field_placeholder + '" ';
+                    }
+                    if(field_required == true) {
+                        field_html += 'required="required" ';
+                    }
+                    field_html += '></div>\n';
                 }
-                if(field_initial != '') {
-                    field_html += 'value="' + field_initial + '" ';
+                else {
+                    field_html += '    <input type="text" class="sib-' + attr_name + '-area" name="' + attr_name + '" ';
+                    if(field_placeholder != '') {
+                        field_html += 'placeholder="' + field_placeholder + '" ';
+                    }
+                    if(field_initial != '') {
+                        field_html += 'value="' + field_initial + '" ';
+                    }
+                    if(field_required == true) {
+                        field_html += 'required="required" ';
+                    }
+                    field_html += '> \n';
                 }
-                if(field_required == true) {
-                    field_html += 'required="required" ';
-                }
-                field_html += '> \n';
                 break;
             case 'float':
                 field_html += '    <input type="text" class="sib-' + attr_name + '-area" name="' + attr_name + '" ';
@@ -196,7 +214,6 @@ $jQ(document).ready(function(){
         }
 
         field_html += '</p>';
-
         $jQ('#sib_field_html').html(field_html);
     }
 
@@ -231,6 +248,7 @@ $jQ(document).ready(function(){
     function set_select_template() {
         var selected_template_id = $jQ('#sib_selected_template_id').val();
         var selected_do_template_id = $jQ('#sib_selected_do_template_id').val();
+        var selected_confirm_template_id = $jQ('#sib_selected_confirm_template_id').val();
         var default_template_name = $jQ('#sib_default_template_name').val();
         var data = {
             action : 'sib_get_templates',
@@ -273,13 +291,50 @@ $jQ(document).ready(function(){
             });
             select_html += '</select>';
             $jQ('#sib_doubleoptin_template_id_area').html(select_html);
+
+            // For final confirmation emait template
+            select_html = '<select id="sib_confirm_template_id" class="col-md-11" name="confirm_template_id">';
+            if (selected_confirm_template_id == '-1') {
+                select_html += '<option value="-1" selected>' + default_template_name + '</option>';
+            }
+            else {
+                select_html += '<option value="-1">' + default_template_name + '</option>';
+            }
+
+            $jQ.each(respond.templates, function(index, value) {
+                if (value['id'] == selected_confirm_template_id) {
+                    select_html += '<option is_shortcode="' + value['is_dopt']  + '" value="' + value['id'] + '" selected>' + value['name'] + '</option>';
+                }
+                else {
+                    select_html += '<option is_shortcode="' + value['is_dopt']  + '" value="' + value['id'] + '">' + value['name'] + '</option>';
+                }
+            });
+            select_html += '</select>';
+            $jQ('#sib_final_confirm_template_id_area').html(select_html);
+
             // double optin template id
             $jQ('#sib_doubleoptin_template_id').on('change', function() {
                 var shortcode_exist = $jQ(this).find(':selected').attr('is_shortcode');
                 if (shortcode_exist == 0 && $jQ(this).val() != -1) {
                     $jQ('#sib_form_alert_message').show();
                     $jQ('#sib_disclaim_smtp').hide();
+                    $jQ('#sib_disclaim_confirm_template').hide();
                     $jQ('#sib_disclaim_do_template').show();
+                    $jQ(this).val('-1');
+                }
+                else {
+                    $jQ('#sib_form_alert_message').hide();
+                }
+            });
+
+            // Final confirm template id
+            $jQ('#sib_confirm_template_id').on('change', function() {
+                var shortcode_exist = $jQ(this).find(':selected').attr('is_shortcode');
+                if (shortcode_exist == 1 && $jQ(this).val() != -1) {
+                    $jQ('#sib_form_alert_message').show();
+                    $jQ('#sib_disclaim_smtp').hide();
+                    $jQ('#sib_disclaim_confirm_template').show();
+                    $jQ('#sib_disclaim_do_template').hide();
                     $jQ(this).val('-1');
                 }
                 else {
@@ -623,6 +678,7 @@ $jQ(document).ready(function(){
         $jQ('#sib_double_sender_area').hide();
         $jQ('#sib_double_redirect_area').hide();
         $jQ('#sib_doubleoptin_template_area').hide();
+        $jQ('#sib_final_confirm_template_area').hide();
     }
 
     if ($jQ('#sib_setting_signup_body').find('#sib_select_list_area').length > 0 ) {
@@ -642,16 +698,20 @@ $jQ(document).ready(function(){
 
         if(confirm_email == '1') {
             $jQ('#sib_doubleoptin_template_id').val('-1');
+            $jQ('#sib_confirm_template_id').val('-1');
             $jQ('#is_double_optin_no').prop("checked", true);
             $jQ('#sib_double_sender_area').hide();
             $jQ('#sib_double_redirect_area').hide();
             $jQ('#sib_confirm_template_area').show();
             $jQ('#sib_confirm_sender_area').show();
             $jQ('#sib_doubleoptin_template_area').hide();
+            $jQ('#sib_final_confirm_template_area').hide();
+            $jQ('#sib_form_alert_message').hide();
             if (is_activated_smtp == 0) {
                 $jQ('#sib_form_alert_message').show();
                 $jQ('#sib_disclaim_smtp').show();
                 $jQ('#sib_disclaim_do_template').hide();
+                $jQ('#sib_disclaim_confirm_template').hide();
             }
         } else {
             $jQ('#sib_confirm_template_area').hide();
@@ -672,16 +732,19 @@ $jQ(document).ready(function(){
             $jQ('#sib_double_sender_area').show();
             $jQ('#sib_double_redirect_area').show();
             $jQ('#sib_doubleoptin_template_area').show();
+            $jQ('#sib_final_confirm_template_area').show();
             if (is_activated_smtp == 0) {
                 $jQ('#sib_form_alert_message').show();
                 $jQ('#sib_disclaim_smtp').show();
                 $jQ('#sib_disclaim_do_template').hide();
+                $jQ('#sib_disclaim_confirm_template').hide();
             }
         } else {
             $jQ('#sib_double_sender_area').hide();
             $jQ('#sib_double_redirect_area').hide();
             $jQ('#sib_doubleoptin_template_area').hide();
             $jQ('#sib_form_alert_message').hide();
+            $jQ('#sib_final_confirm_template_area').hide();
         }
     });
 
