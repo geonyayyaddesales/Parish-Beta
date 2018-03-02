@@ -11,8 +11,6 @@ class FrmProFieldRange extends FrmFieldType {
 	 */
 	protected $type = 'range';
 
-	protected $is_tall = true;
-
 	protected function field_settings_for_type() {
 		$settings = array(
 			'invalid' => true,
@@ -35,7 +33,23 @@ class FrmProFieldRange extends FrmFieldType {
 			$step = 1;
 		}
 
-		return '<input type="range" name="' . esc_attr( $this->html_name( $name ) ) . '" id="' . esc_attr( $this->html_id() ) . '" value="' . esc_attr( $this->get_field_column('default_value') ) . '" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" step="' . esc_attr( $step ) . '" />';
+		$default_value = $this->get_default_value( $min, $max );
+
+		return '<input type="range" name="' . esc_attr( $this->html_name( $name ) ) . '" id="' . esc_attr( $this->html_id() ) . '" value="' . esc_attr( $default_value ) . '" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" step="' . esc_attr( $step ) . '" />';
+	}
+
+	/**
+	 * Reset the default value if it's out of range
+	 *
+	 * @since 3.0.06
+	 */
+	private function get_default_value( $min, $max ) {
+		$default_value = $this->get_field_column( 'default_value' );
+		$out_of_range = $default_value < $min || $default_value > $max;
+		if ( $default_value !== '' && $out_of_range ) {
+			$default_value = '';
+		}
+		return $default_value;
 	}
 
 	protected function extra_field_opts() {

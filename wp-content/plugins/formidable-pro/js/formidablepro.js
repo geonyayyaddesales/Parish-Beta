@@ -3623,7 +3623,9 @@ function frmProFormJS(){
 				checkConditionalLogic( 'editInPlace' );
 
 				// Make sure fields just loaded are properly bound
-				jQuery(document).on('change', '.frm-show-form input[name^="item_meta"], .frm-show-form select[name^="item_meta"], .frm-show-form textarea[name^="item_meta"]', maybeCheckDependent);
+				if ( typeof frmFrontForm.fieldValueChanged === 'function' ) {
+					jQuery(document).on('change', '.frm-show-form input[name^="item_meta"], .frm-show-form select[name^="item_meta"], .frm-show-form textarea[name^="item_meta"]', frmFrontForm.fieldValueChanged );
+				}
 				checkFieldsOnPage( prefix + entry_id );
 			}
 		});
@@ -3737,7 +3739,7 @@ function frmProFormJS(){
 		var timeFields = __frmUniqueTimes;
 		for ( var i = 0; i < timeFields.length; i++ ) {
 			if ( timeFields[i].dateID == this.id ) {
-				frmFrontForm.removeUsedTimes( this, timeFields[i].timeID );
+				frmProForm.removeUsedTimes( this, timeFields[i].timeID );
 			}
 		}
 	}

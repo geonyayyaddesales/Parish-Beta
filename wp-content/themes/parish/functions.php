@@ -131,11 +131,12 @@ add_action( 'widgets_init', 'parish_widgets_init' );
  * Enqueue scripts and styles.
  */
 function parish_scripts2() {
-
+	
+	wp_enqueu_style ('google-fonts', 'https://fonts.googleapis.com/css?family=Lato:400,700,700i&amp;subset=latin-ext');
 	wp_enqueue_script( 'parish-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
   	wp_enqueue_script( 'font-awesome', 'https://use.fontawesome.com/0960f40152.js', array(), '20160614', true );
 	wp_enqueue_script( 'parish-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
-	  wp_enqueue_script( 'ticker', get_template_directory_uri() . '/js/jquery.webticker.min.js', array(), '20130115', true );
+	wp_enqueue_script( 'ticker', get_template_directory_uri() . '/js/jquery.webticker.min.js', array(), '20130115', true );
 	wp_enqueue_script( 'tiny-sort', 'https://cdnjs.cloudflare.com/ajax/libs/tinysort/2.3.6/tinysort.min.js', array(), '20160810', true);
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
