@@ -3,6 +3,8 @@
 class FrmProFieldsHelper{
 
     public static function get_default_value( $value, $field, $dynamic_default = true, $allow_array = false ) {
+		$dynamic_value = self::get_dynamic_default( $field, $dynamic_default );
+
 		$unserialized = maybe_unserialize( $value );
 		if ( is_array( $unserialized ) ) {
 			$field_obj = FrmFieldFactory::get_field_object( $field );
@@ -10,23 +12,24 @@ class FrmProFieldsHelper{
 				$field_obj->time_array_to_string( $value );
 			} elseif ( FrmAppHelper::is_empty_value( $unserialized ) || count( array_filter( $unserialized ) ) === 0  ) {
 				$value = '';
+			} elseif ( $field->type === 'address' && ! empty( $dynamic_value ) ) {
+				$value = $dynamic_value;
 			} else {
 				$filtered = array();
 				foreach ( $unserialized as $k => $v ) {
-					$filtered[ $k ] = self::get_default_value( $v, $field, $dynamic_default, $allow_array );
+					$filtered[ $k ] = self::get_default_value( $v, $field, $dynamic_default, false );
 				}
+
 				self::maybe_force_array( $filtered, $field, $allow_array );
 				return $filtered;
 			}
 		}
 
-        $prev_val = '';
-		if ( $field && $dynamic_default ) {
-            if ( FrmField::is_option_value_in_object( $field, 'dyn_default_value' ) ) {
-                $prev_val = $value;
-                $value = $field->field_options['dyn_default_value'];
-            }
-        }
+		$prev_val = '';
+		if ( $dynamic_value !== '' ) {
+			$prev_val = $value;
+			$value    = $dynamic_value;
+		}
 
 		$pass_args = array(
 			'allow_array' => $allow_array,
@@ -39,6 +42,19 @@ class FrmProFieldsHelper{
 		self::do_shortcode( $value, $allow_array );
 		self::maybe_force_array( $value, $field, $allow_array );
 
+		return $value;
+	}
+
+	/**
+	 * @since 3.0.06
+	 */
+	private static function get_dynamic_default( $field, $dynamic_default ) {
+		$value = '';
+		if ( $field && $dynamic_default ) {
+			if ( FrmField::is_option_value_in_object( $field, 'dyn_default_value' ) ) {
+				$value = $field->field_options['dyn_default_value'];
+			}
+		}
 		return $value;
 	}
 
@@ -419,13 +435,18 @@ class FrmProFieldsHelper{
      * @since 2.0
      */
     private static function maybe_force_array( &$value, $field, $return_array ) {
-        if ( ! $return_array || is_array($value) || strpos($value, ',') === false ) {
+        if ( ! $return_array || is_array($value) || strpos($value, ',') === false || ! is_object( $field ) ) {
             // this is already in the correct format
             return;
         }
 
-		//If checkbox, multi-select dropdown, or checkbox data from entries field and default value has a comma
-		if ( FrmField::is_field_with_multiple_values( $field ) && ( in_array( $field->type, array( 'data', 'lookup' ) ) || ! in_array( $value, $field->options ) ) ) {
+		if ( $field->type === 'address' ) {
+			$field_obj = FrmFieldFactory::get_field_object( $field );
+			$value = $field_obj->address_string_to_array( $value );
+
+		} elseif ( FrmField::is_field_with_multiple_values( $field ) && ( in_array( $field->type, array( 'data', 'lookup' ) ) || ! in_array( $value, $field->options ) ) ) {
+			//If checkbox, multi-select dropdown, or checkbox data from entries field and default value has a comma
+
 			//If the default value does not match any options OR if data from entries field (never would have commas in values), explode to array
 			$value = explode(',', $value);
 		}
@@ -547,11 +568,26 @@ class FrmProFieldsHelper{
 		$values['hide_field_cond'] = (array) $values['hide_field_cond'];
 		$values['hide_opt'] = (array) $values['hide_opt'];
 
-		if ( ! FrmAppHelper::is_admin_page( 'formidable' ) ) {
+		if ( ! self::is_builder_page() ) {
 			$values['name'] = self::get_default_value( $values['name'], $field, false );
 			$values['description'] = self::get_default_value( $values['description'], $field, false );
 			self::prepare_field_types( $field, $values );
 		}
+	}
+
+	/**
+	 * Ajax calls on the builder page also need to be excluded
+	 *
+	 * @since 3.0.06
+	 * @return bool
+	 */
+	private static function is_builder_page() {
+		global $frm_vars;
+		if ( isset( $frm_vars['is_admin'] ) && $frm_vars['is_admin'] ) {
+			return true;
+		}
+
+		return FrmAppHelper::is_admin_page( 'formidable' );
 	}
 
 	private static function prepare_field_types( $field, &$values ) {

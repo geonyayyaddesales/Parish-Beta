@@ -237,11 +237,13 @@ class FrmProEntriesHelper{
     }
 
     public static function show_duplicate_link($entry) {
+		_deprecated_function( __METHOD__, '3.0' );
         echo self::duplicate_link($entry);
     }
 
 	public static function duplicate_link( $entry ) {
 		if ( current_user_can('frm_create_entries') ) {
+			_deprecated_function( __METHOD__, '3.0' );
 			return '<a href="' . esc_url( '?page=formidable-entries&frm_action=duplicate&form=' . $entry->form_id . '&id=' . $entry->id ) . '" class="button-secondary">' .
 				esc_html__( 'Duplicate', 'formidable-pro' ) .
 				'</a>';
@@ -283,7 +285,6 @@ class FrmProEntriesHelper{
         }
 ?>
 		<div id="publishing-action">
-			<?php self::show_duplicate_link( $entry ); ?>
 			<a href="<?php echo esc_url( add_query_arg( 'frm_action', 'edit' ) ) ?>" class="button-primary">
 				<?php _e( 'Edit', 'formidable-pro' ) ?>
 			</a>
