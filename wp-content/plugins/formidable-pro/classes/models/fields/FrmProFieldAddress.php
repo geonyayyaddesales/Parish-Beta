@@ -17,12 +17,11 @@ class FrmProFieldAddress extends FrmFieldType {
 	 */
 	protected $has_for_label = false;
 
-	protected $is_tall = true;
-
 	protected function field_settings_for_type() {
 		$settings = array(
 			'clear_on_focus' => true,
 			'default_blank' => true,
+			'default_value' => true,
 			'visibility'    => true,
 		);
 		FrmProFieldsHelper::fill_default_field_display( $settings );
@@ -77,6 +76,15 @@ class FrmProFieldAddress extends FrmFieldType {
 		return $input_html;
 	}
 
+	protected function fill_default_atts( &$atts ) {
+		parent::fill_default_atts( $atts );
+		$defaults = array(
+			'line_sep'    => ' <br/>',
+			'force_array' => false,
+		);
+		$atts = wp_parse_args( $atts, $defaults );
+	}
+
 	protected function prepare_display_value( $value, $atts ) {
 		if ( ! is_array( $value ) ) {
 			return $value;
@@ -84,26 +92,80 @@ class FrmProFieldAddress extends FrmFieldType {
 
 		$new_value = '';
 		if ( ! empty( $value['line1'] ) ) {
-			$defaults = $this->empty_value_array();
-			$this->fill_values( $value, $defaults );
-
-			$new_value = $value['line1'] . ' <br/>';
-			if ( ! empty( $value['line2'] ) ) {
-				$new_value .= $value['line2'] . ' <br/>';
-			}
-
-			$address_type = FrmField::get_option( $this->field, 'address_type' );
-			if ( 'europe' === $address_type ) {
-				$new_value .= $value['zip'] . ' ' . $value['city'];
-			} else {
-				$new_value .= $value['city'] . ', ' . $value['state'] . ' ' . $value['zip'];
-			}
-
-			if ( isset( $value['country'] ) && ! empty( $value['country'] ) ) {
-				$new_value .= ' <br/>' . $value['country'];
-			}
+			$new_value = $this->format_address_for_display( $value, $atts );
 		}
+
 		return $new_value;
+	}
+
+	/**
+	 * @since 3.0.06
+	 *
+	 * @param array $value
+	 * @param array $atts
+	 */
+	public function format_address_for_display( $value, $atts = array() ) {
+		$defaults = $this->empty_value_array();
+		$this->fill_values( $value, $defaults );
+
+		$this->fill_default_atts( $atts );
+
+		if ( $atts['force_array'] ) {
+			return $value;
+		}
+
+		$format = $this->address_format_for_display( $atts );
+		foreach ( $defaults as $k => $part ) {
+			$format = str_replace( '[' . $k . ']', $value[ $k ], $format );
+		}
+		$format = str_replace( $atts['line_sep'] . $atts['line_sep'], $atts['line_sep'], $format );
+
+		return $format;
+	}
+
+	/**
+	 * @since 3.0.06
+	 * @param array $atts
+	 */
+	private function address_format_for_display( $atts ) {
+		if ( isset( $atts['show'] ) && ! empty( $atts['show'] ) ) {
+			return '[' . $atts['show'] . ']';
+		}
+
+		$line_sep = $atts['line_sep'];
+		$address_type = FrmField::get_option( $this->field, 'address_type' );
+
+		$address_format = '[line1]' . $line_sep . '[line2]' . $line_sep;
+		if ( 'europe' === $address_type ) {
+			$address_format .= '[zip] [city]';
+		} else {
+			$address_format .= '[city], [state] [zip]';
+		}
+		$address_format .= $line_sep . '[country]';
+
+		/**
+		 * Change the format of a displayed address
+		 * @since 3.0.06
+		 */
+		return apply_filters( 'frm_address_format', $address_format, array( 'field' => $this->field ) );
+	}
+
+	public function address_string_to_array( $value ) {
+		$value = array_map( 'trim', explode( ',', $value ) );
+
+		$empty_array = array_keys( $this->empty_value_array() );
+
+		$array_length_diff = count( $empty_array ) - count( $value );
+		if ( $array_length_diff === 1 ) {
+			$value[] = '';
+		} elseif ( $array_length_diff > 1 ) {
+			$filler_array = array_fill( 0, $array_length_diff, '' );
+			$value = array_merge( $value, $filler_array );
+		} elseif ( $array_length_diff < 0 ) {
+			$value = array_slice( $value, 0, count( $empty_array ) );
+		}
+
+		return array_combine( $empty_array, $value );
 	}
 
 	private function empty_value_array() {

@@ -2,12 +2,12 @@
 
 class FrmProDb{
 
-	public static $db_version = 59;
+	public static $db_version = 60;
 
 	/**
 	 * @since 3.0.02
 	 */
-	public static $plug_version = '3.0.05';
+	public static $plug_version = '3.0.06';
 
 	/**
 	 * @since 2.3
