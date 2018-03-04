@@ -39,6 +39,9 @@
 <?php wp_footer(); ?>
 <script src="/wp-content/themes/parish/js/jquery.doubletaptogo.js"></script>
 <script type="text/javascript">
+  jQuery(document).ajaxComplete(function(){
+	  jQuery('iframe[src="javascript:false"]').hide();
+  });
   jQuery(document).ready(function(){
     	tinysort('.meet-me li',{attr:'date'});
 	});
