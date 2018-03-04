@@ -186,8 +186,6 @@ get_header(homepage);
 	                <?php } ?>
 	        </div><!-- end thirdcol right -->
             <div class="thirdcol middle">
-            
-			<?php if (get_field('override')) { ?>
 				
 				<?php 
 		            if (get_field('middle_column_replacement_type') == 'Custom Ad Image'){                            
@@ -202,17 +200,8 @@ get_header(homepage);
 					              </div>  
 		
 	
-					<?php }
-			} elseif ($dcfpOverride == '1') { ?>
-					
-					              <div class="middle_ad_img">
-					              	<?php include('./wp-content/themes/parish_child/doubleclick.php'); ?>
-					              </div>  
+					<?php } ?>
 						
-		
-			<?php } ?>
-				
-				
             	<div class="button left"><?php if(get_field('bottom_link_1')) { ?><?php the_field('bottom_link_1'); ?><?php } ?></div>
             	<div class="button right"><?php if(get_field('bottom_link_2')) { ?><?php the_field('bottom_link_2'); ?><?php } ?></div>
             
