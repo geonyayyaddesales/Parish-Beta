@@ -41,6 +41,7 @@
 <script type="text/javascript">
   jQuery(document).ajaxComplete(function(){
 	  jQuery('iframe[src="javascript:false"]').hide();
+	  console.log('test');
   });
   jQuery(document).ready(function(){
     	tinysort('.meet-me li',{attr:'date'});
