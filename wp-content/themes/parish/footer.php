@@ -35,8 +35,6 @@
 
     </footer><!-- #colophon -->
 </div><!-- #page -->
-
-<?php wp_footer(); ?>
 <script src="/wp-content/themes/parish/js/jquery.doubletaptogo.js"></script>
 <script type="text/javascript">
   jQuery(document).ajaxComplete(function(){
@@ -52,5 +50,6 @@
     });
     });
 </script>
+<?php wp_footer(); ?>
 </body>
 </html>
