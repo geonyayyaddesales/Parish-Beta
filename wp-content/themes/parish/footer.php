@@ -35,12 +35,10 @@
 
     </footer><!-- #colophon -->
 </div><!-- #page -->
+
+<?php wp_footer(); ?>
 <script src="/wp-content/themes/parish/js/jquery.doubletaptogo.js"></script>
 <script type="text/javascript">
-  jQuery(document).ajaxComplete(function(){
-	  jQuery('iframe[src="javascript:false"]').hide();
-	  console.log('test');
-  });
   jQuery(document).ready(function(){
     	tinysort('.meet-me li',{attr:'date'});
 	});
@@ -51,6 +49,5 @@
     });
     });
 </script>
-<?php wp_footer(); ?>
 </body>
 </html>
