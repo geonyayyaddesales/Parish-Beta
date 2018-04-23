@@ -1,6 +1,6 @@
 <?php
 
-class FrmProHooksController{
+class FrmProHooksController {
 
 	/**
 	 * @since 3.0
@@ -48,8 +48,9 @@ class FrmProHooksController{
 	public static function load_hooks() {
 		add_action( 'plugins_loaded', 'FrmProAppController::load_lang' );
         add_action( 'init', 'FrmProAppController::create_taxonomies', 0 );
-		add_action( 'wp_before_admin_bar_render', 'FrmProAppController::admin_bar_configure', 25 );
 		add_filter( 'frm_combined_js_files', 'FrmProAppController::combine_js_files' );
+		add_filter( 'frm_js_location', 'FrmProAppController::pro_js_location' );
+		add_action( 'wp_before_admin_bar_render', 'FrmProAppController::admin_bar_configure', 25 );
 		add_action( 'frm_before_get_form', 'FrmProAppController::register_scripts' );
 
 		add_filter( 'frm_db_needs_upgrade', 'FrmProDb::needs_upgrade' );
@@ -60,6 +61,7 @@ class FrmProHooksController{
 
         add_shortcode('frm_set_get', 'FrmProAppController::set_get');
         add_shortcode('frm-set-get', 'FrmProAppController::set_get');
+		add_shortcode( 'frm-condition', 'FrmProAppController::frm_condition_shortcode' );
 
         add_action('genesis_init', 'FrmProAppController::load_genesis');
 
@@ -85,6 +87,7 @@ class FrmProHooksController{
         add_action('deleted_post', 'FrmProEntriesController::delete_entry');
         add_action('trashed_post', 'FrmProEntriesController::trashed_post');
         add_action('untrashed_post', 'FrmProEntriesController::trashed_post');
+		add_filter( 'frm_show_entry_defaults', 'FrmProEntriesController::show_entry_defaults' );
 
 		add_filter( 'frmpro_fields_replace_shortcodes', 'FrmProEntriesController::filter_shortcode_value', 10, 4 );
 		add_filter( 'frm_display_value_custom', 'FrmProEntriesController::filter_display_value', 1, 3 );
@@ -177,6 +180,8 @@ class FrmProHooksController{
 
 		// Styles Controller
 		add_action( 'frm_include_front_css', 'FrmProStylesController::include_front_css' );
+		add_filter( 'frm_default_style_settings', 'FrmProStylesController::add_defaults' );
+		add_filter( 'frm_override_default_styles', 'FrmProStylesController::override_defaults' );
 
 		// Graphs Controller
 		add_shortcode('frm-graph', 'FrmProGraphsController::graph_shortcode');
@@ -319,7 +324,7 @@ class FrmProHooksController{
         // Settings Controller
         add_action('frm_style_general_settings', 'FrmProSettingsController::general_style_settings');
         add_action('frm_settings_form', 'FrmProSettingsController::more_settings', 1);
-        add_action('frm_update_settings',  'FrmProSettingsController::update');
+		add_action( 'frm_update_settings', 'FrmProSettingsController::update' );
         add_action('frm_store_settings', 'FrmProSettingsController::store');
 
 		// Styles Controller
@@ -463,6 +468,7 @@ class FrmProHooksController{
 
     public static function load_view_hooks() {
 		add_filter( 'frm_display_entry_content', 'FrmProContent::replace_shortcodes', 10, 7 );
+		add_filter( 'frm_after_display_content', 'FrmProDisplaysController::include_pagination', 9, 4 );
 
 		// address
 		add_filter( 'frm_keep_address_value_array', '__return_true' );

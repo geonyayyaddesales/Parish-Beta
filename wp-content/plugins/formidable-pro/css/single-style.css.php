@@ -16,9 +16,9 @@
 }
 
 .<?php echo esc_html( $settings['style_class'] ); ?> .frm_blank_field .frm_dropzone{
-	border-color:#<?php echo esc_html( $settings['border_color_error'] . $important ); ?>;
-	color:#<?php echo esc_html( $settings['text_color_error'] . $important ); ?>;
-	background-color:#<?php echo esc_html( $settings['bg_color_error'] . $important ); ?>;
+	border-color:<?php echo esc_html( $settings['border_color_error'] . $important ); ?>;
+	color:<?php echo esc_html( $settings['text_color_error'] . $important ); ?>;
+	background-color:<?php echo esc_html( $settings['bg_color_error'] . $important ); ?>;
 }
 
 /* File Upload */
@@ -43,10 +43,12 @@
 	color:<?php echo esc_html( $settings['text_color'] . $important ) ?>;
 }
 
+<?php if ( $settings['field_height'] != 'auto' && $settings['field_height'] != '' ) { ?>
 .<?php echo esc_html( $settings['style_class'] ) ?> .chosen-container-single .chosen-single{
-	height:<?php echo esc_html( ( $settings['field_height'] == 'auto' || $settings['field_height'] == '' ) ? '25px' : $settings['field_height'] ) ?>;
-	line-height:1.3<?php echo esc_html( $important ) ?>;
+	height:<?php echo esc_html( $settings['field_height'] ) ?>;
+	line-height:<?php echo esc_html( $settings['field_height'] . $important ) ?>;
 }
+<?php } ?>
 
 .<?php echo esc_html( $settings['style_class'] ) ?> .chosen-container-single .chosen-single div{
 	top:<?php echo esc_html( $top_margin . $pad_unit . $important ) ?>;
@@ -166,14 +168,9 @@
 <?php } ?>
 
 /* Start Range slider */
-<?php
-$bg_color = $settings['border_color'] . $important;
-$thumb_color = $settings['progress_active_bg_color'] . $important;
-$text_color = $settings['progress_active_color'] . $important;
-?>
 
 .<?php echo esc_html( $settings['style_class'] ) ?> .frm_range_value{
-	font-size:<?php echo esc_html( $settings['field_font_size'] ) ?>;
+	font-size:<?php echo esc_html( $settings['slider_font_size'] ) ?>;
 }
 
 .<?php echo esc_html( $settings['style_class'] ) ?> .form-field input[type=range],
@@ -183,14 +180,15 @@ $text_color = $settings['progress_active_color'] . $important;
 }
 
 .<?php echo esc_html( $settings['style_class'] ) ?> input[type=range]::-webkit-slider-runnable-track {
-	background-color:<?php echo esc_html( $bg_color ) ?>;
+	background-color:<?php echo esc_html( $settings['slider_bar_color'] . $important ) ?>;
 	border-radius:<?php echo esc_html( $settings['border_radius'] . $important ) ?>;
 }
 
 .<?php echo esc_html( $settings['style_class'] ) ?> input[type=range]::-webkit-slider-thumb {
 	<?php
+	$thumb_color = $settings['slider_color'] . $important;
 	echo $thumb = 'border: 1px solid rgba(' . esc_html( FrmStylesHelper::hex2rgb( $thumb_color ) ) . ',0.6);
-	color:'. esc_html( $text_color ) . ';
+	color:' . esc_html( $settings['progress_active_color'] . $important ) . ';
 	background-color: ' . esc_html( $thumb_color ) . ';';
 	?>
 }
@@ -207,12 +205,12 @@ $text_color = $settings['progress_active_color'] . $important;
 
 /* Start Toggle */
 .<?php echo esc_html( $settings['style_class'] ) ?> .frm_switch_opt{
-	font-size:<?php echo esc_html( $settings['font_size'] . $important ) ?>;
+	font-size:<?php echo esc_html( $settings['toggle_font_size'] . $important ) ?>;
 	font-weight:<?php echo esc_html( $settings['check_weight'] . $important ) ?>;
 }
 
 .<?php echo esc_html( $settings['style_class'] ) ?> .frm_on_label{
-	color:<?php echo esc_html( $thumb_color ) ?>;
+	color:<?php echo esc_html( $settings['toggle_on_color'] . $important ) ?>;
 }
 
 .<?php echo esc_html( $settings['style_class'] ) ?> .frm_off_label{
@@ -220,11 +218,11 @@ $text_color = $settings['progress_active_color'] . $important;
 }
 
 .<?php echo esc_html( $settings['style_class'] ) ?> .frm_slider {
-	background-color:<?php echo esc_html( $bg_color ) ?>;
+	background-color:<?php echo esc_html( $settings['toggle_off_color'] . $important ) ?>;
 }
 
 .<?php echo esc_html( $settings['style_class'] ) ?> input:checked + .frm_slider {
-	background-color:<?php echo esc_html( $thumb_color ) ?>;
+	background-color:<?php echo esc_html( $settings['toggle_on_color'] . $important ) ?>;
 }
 
 /* End Toggle */
