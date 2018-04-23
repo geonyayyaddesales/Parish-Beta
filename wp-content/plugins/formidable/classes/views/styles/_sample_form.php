@@ -1,111 +1,84 @@
-
-<div class="frm_form_field frm_section_heading form-field frm_half frm_first">
-    <h3 class="frm_pos_top frm_section_spacing"><?php _e( 'Repeatable Section', 'formidable-pro' ) ?></h3>
-    <div>
-        <div class="frm_repeat_sec">
-
-			<div class="frm_form_field form-field <?php echo esc_attr( $pos_class ) ?>">
-				<label class="frm_primary_label"><?php _e( 'Text Area', 'formidable-pro' ) ?></label>
-				<textarea></textarea>
-				<div class="frm_description"><?php _e( 'Another field with a description', 'formidable-pro' ) ?></div>
-			</div>
-
-			<div class="frm_form_field form-field frm_half frm_first <?php echo esc_attr( $pos_class ) ?>">
-				<label class="frm_primary_label"><?php _e( 'Radio Buttons', 'formidable-pro' ) ?></label>
-				<div class="frm_opt_container">
-					<div class="frm_radio"><label><input type="radio" /><?php _e( 'Option 1', 'formidable-pro' ) ?></label></div>
-					<div class="frm_radio"><label><input type="radio" /><?php _e( 'Option 2', 'formidable-pro' ) ?></label></div>
-				</div>
-			</div>
-
-			<div class="frm_form_field form-field frm_half <?php echo esc_attr( $pos_class ) ?>">
-				<label class="frm_primary_label"><?php _e( 'Check Boxes', 'formidable-pro' ) ?></label>
-				<div class="frm_opt_container">
-					<div class="frm_checkbox"><label><input type="checkbox" /><?php _e( 'Option 1', 'formidable-pro' ) ?></label></div>
-					<div class="frm_checkbox"><label><input type="checkbox" /><?php _e( 'Option 2', 'formidable-pro' ) ?></label></div>
-				</div>
-			</div>
-            <div class="frm_form_field frm_hidden_container">
-                <a href="javascript:void(0)" class="frm_button"><i class="frm_icon_font frm_minus_icon"> </i> <?php _e( 'Remove', 'formidable-pro' ) ?></a>
-                <a href="javascript:void(0)" class="frm_button"><i class="frm_icon_font frm_plus_icon"> </i> <?php _e( 'Add', 'formidable-pro' ) ?></a>
-            </div>
-        </div>
-    </div>
+<div class="frm_forms with_frm_style frm_style_<?php echo esc_attr( $style->post_name ) ?> <?php echo esc_attr( FrmAppHelper::pro_is_installed() ? 'frm_pro_form' : 'frm_lite_form' ) ?>">
+<div class="frm-show-form">
+<div class="frm_message">
+	<strong><?php esc_html_e( 'SAMPLE:', 'formidable' ) ?></strong>
+	<?php echo wp_kses_post( $frm_settings->success_msg ); ?>
 </div>
 
-<div class="frm_form_field frm_section_heading form-field frm_half">
-    <h3 class="frm_pos_top frm_trigger active frm_section_spacing"><i class="frm_icon_font frm_arrow_icon frm_before_collapse"></i><?php _e( 'Collapsible Section', 'formidable-pro' ) ?><i class="frm_icon_font frm_arrow_icon frm_after_collapse"></i></h3>
-    <div class="frm_toggle_container">
-
-		<div class="frm_form_field form-field">
-			<div id="datepicker_sample" style="margin-bottom:<?php echo esc_attr( $style->post_content['field_margin'] ) ?>;"></div>
-		</div>
-
-    </div>
+<div class="frm_error_style">
+	<strong><?php esc_html_e( 'SAMPLE:', 'formidable' ) ?></strong>
+	<?php echo wp_kses_post( $frm_settings->invalid_msg ); ?>
 </div>
 
-<div class="frm_form_field frm_section_heading form-field">
-    <h3 class="frm_pos_top frm_section_spacing"> </h3>
+<?php $pos_class = 'frm_pos_container frm_' . ( $style->post_content['position'] == 'none' ? 'top' : ( $style->post_content['position'] == 'no_label' ? 'none' : $style->post_content['position'] ) ) . '_container'; ?>
+
+<div class="frm_form_fields frm_sample_form">
+<fieldset>
+<h3 class="frm_form_title"><?php esc_html_e( 'Form Title', 'formidable' ) ?></h3>
+<div class="frm_description"><p><?php esc_html_e( 'This is an example form description for styling purposes.', 'formidable' ) ?></p></div>
+
+<div class="frm_fields_container">
+<div class="frm_form_field frm_half frm_first form-field <?php echo esc_attr( $pos_class ) ?>">
+<label class="frm_primary_label"><?php esc_html_e( 'Text field', 'formidable' ) ?> <span class="frm_required">*</span></label>
+<input type="text" value="<?php esc_attr_e( 'This is sample text', 'formidable' ) ?>"/>
+<div class="frm_description"><?php esc_html_e( 'A field with a description', 'formidable' ) ?></div>
 </div>
 
-<div class="frm_form_field form-field frm_first frm_third <?php echo esc_attr( $pos_class ) ?>">
-	<label for="field_toggle" class="frm_primary_label">
-		<?php esc_html_e( 'Toggle', 'formidable-pro' ); ?>
-	</label>
-	<div>
-		<span class="frm_off_label frm_switch_opt">No</span>
-		<label class="frm_switch">
-			<input type="checkbox" id="field_toggle" value="Yes" />
-			<span class="frm_slider"></span>
-		</label>
-		<span class="frm_on_label frm_switch_opt">Yes</span>
+<div class="frm_form_field form-field frm_half <?php echo esc_attr( $pos_class ) ?>">
+	<label for="field_wq7w5e" class="frm_primary_label"><?php esc_html_e( 'Drop-down Select', 'formidable' ) ?></label>
+
+	<select name="item_meta[1028]" id="field_wq7w5e" >
+		<option value=""> </option>
+		<option value=""><?php esc_html_e( 'Option 1', 'formidable' ) ?></option>
+	</select>
+</div>
+
+<div class="frm_form_field form-field frm_third frm_first frm_blank_field <?php echo esc_attr( $pos_class ) ?>">
+<label class="frm_primary_label"><?php esc_html_e( 'Text field with error', 'formidable' ) ?> <span class="frm_required">*</span></label>
+<input type="text" value="<?php esc_attr_e( 'This is sample text', 'formidable' ) ?>"/>
+<div class="frm_error"><?php echo esc_html( $frm_settings->blank_msg ) ?></div>
+</div>
+
+<div class="frm_form_field frm_third form-field frm_focus_field <?php echo esc_attr( $pos_class ) ?>">
+<label class="frm_primary_label"><?php esc_html_e( 'Text field in active state', 'formidable' ) ?> <span class="frm_required">*</span></label>
+<input type="text" value="<?php esc_attr_e( 'Active state will be seen when the field is clicked', 'formidable' ) ?>" />
+</div>
+
+<div class="frm_form_field frm_third form-field <?php echo esc_attr( $pos_class ) ?>">
+<label class="frm_primary_label"><?php esc_html_e( 'Read-only field', 'formidable' ) ?></label>
+<input type="text" value="<?php esc_attr_e( 'This field is not editable', 'formidable' ) ?>" disabled="disabled" />
+</div>
+
+<div class="frm_form_field form-field frm_half frm_first <?php echo esc_attr( $pos_class ) ?> frm_lite_style">
+	<label class="frm_primary_label"><?php esc_html_e( 'Text Area', 'formidable' ) ?></label>
+	<textarea></textarea>
+	<div class="frm_description"><?php esc_html_e( 'Another field with a description', 'formidable' ) ?></div>
+</div>
+
+<div class="frm_form_field form-field frm_fourth <?php echo esc_attr( $pos_class ) ?> frm_lite_style">
+	<label class="frm_primary_label"><?php esc_html_e( 'Radio Buttons', 'formidable' ) ?></label>
+	<div class="frm_opt_container">
+		<div class="frm_radio"><label><input type="radio" /><?php esc_html_e( 'Option 1', 'formidable' ) ?></label></div>
+		<div class="frm_radio"><label><input type="radio" /><?php esc_html_e( 'Option 2', 'formidable' ) ?></label></div>
 	</div>
 </div>
 
-<div class="frm_form_field form-field frm_two_thirds <?php echo esc_attr( $pos_class ) ?>">
-	<label for="field_slider" class="frm_primary_label">
-		<?php esc_html_e( 'Slider', 'formidable-pro' ); ?>
-	</label>
-	<div class="frm_range_container">
-		<input type="range" id="field_slider" value="150" min="100" max="200" step="1" />
-		<span class="frm_range_value">150</span>
+<div class="frm_form_field form-field frm_fourth <?php echo esc_attr( $pos_class ) ?> frm_lite_style">
+	<label class="frm_primary_label"><?php esc_html_e( 'Check Boxes', 'formidable' ) ?></label>
+	<div class="frm_opt_container">
+		<div class="frm_checkbox"><label><input type="checkbox" /><?php esc_html_e( 'Option 1', 'formidable' ) ?></label></div>
+		<div class="frm_checkbox"><label><input type="checkbox" /><?php esc_html_e( 'Option 2', 'formidable' ) ?></label></div>
 	</div>
 </div>
 
-<div class="frm_rootline_group">
-	<ul class="frm_page_bar frm_progress_line frm_show_lines">
-		<li class="frm_rootline_single">
-			<span class="frm_rootline_title">Step 1</span>
-			<input type="button" value="1" class="frm_page_back" disabled="disabled"  />
-		</li>
-		<li class="frm_rootline_single frm_current_page">
-			<span class="frm_rootline_title">Step 2</span>
-			<input type="button" value="2" class="frm_page_skip" disabled="disabled"  />
-		</li>
-		<li class="frm_rootline_single">
-			<span class="frm_rootline_title">Step 3</span>
-			<input type="button" value="3" class="frm_page_skip" disabled="disabled" />
-		</li>
-	</ul>
-	<div class="frm_percent_complete"><?php echo esc_html( sprintf( __( '%s Complete', 'formidable-pro' ), '33%' ) ) ?></div>
-	<div class="frm_pages_complete"><?php echo esc_html( sprintf( __( '%1$d of %2$d', 'formidable-pro' ), 2, 3 ) ) ?></div>
-	<div class="frm_clearfix"></div>
+<?php do_action( 'frm_sample_style_form', compact( 'style', 'pos_class' ) ); ?>
+
+<div class="frm_submit">
+<input type="submit" disabled="disabled" class="frm_full_opacity" value="<?php esc_attr_e( 'Submit', 'formidable' ) ?>" />
+</div>
 </div>
 
-<div class="frm_rootline_group">
-	<ul class="frm_page_bar frm_rootline frm_show_lines">
-		<li class="frm_rootline_single">
-			<input type="button" value="1" class="frm_page_back" disabled="disabled"  />
-			<span class="frm_rootline_title">Step 1</span>
-		</li>
-		<li class="frm_rootline_single frm_current_page">
-			<input type="button" value="2" class="frm_page_skip" disabled="disabled"  />
-			<span class="frm_rootline_title">Step 2</span>
-		</li>
-		<li class="frm_rootline_single">
-			<input type="button" value="3" class="frm_page_skip" disabled="disabled" />
-			<span class="frm_rootline_title">Step 3</span>
-		</li>
-	</ul>
-	<div class="frm_clearfix"></div>
+</fieldset>
+</div>
+</div>
 </div>
