@@ -719,7 +719,7 @@ if ( ! class_exists( 'SIB_Page_Home' ) ) {
 								'first_name' => __( 'First Name','sib_lang' ),
 								'last_name' => __( 'Last Name','sib_lang' ),
 								'user_url' => __( 'Website URL','sib_lang' ),
-								'role' => __( 'User Role','sib_lang' ),
+								'roles' => __( 'User Role','sib_lang' ),
 							);
 							// available sendinblue attributes.
 							$sibAllAttrs = SIB_API_Manager::get_attributes();
@@ -968,7 +968,14 @@ if ( ! class_exists( 'SIB_Page_Home' ) ) {
 					$user_info = get_userdata( $userId );
 					$userData = $user_info->user_email;
 					foreach ( $postData as $attrSibName => $attrWP ) {
-						$userData .= ';' . $user_info->$attrWP;
+					    if ( $attrWP == 'roles' )
+                        {
+                            $userData .= ';' . implode( ', ', $user_info->$attrWP ) ;
+                        }
+                        else {
+                            $userData .= ';' . $user_info->$attrWP;
+                        }
+
 					}
 					$contentData .= "\n" . $userData;
 				}
