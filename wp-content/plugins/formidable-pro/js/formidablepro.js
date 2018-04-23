@@ -166,6 +166,10 @@ function frmProFormJS(){
 			dictCancelUploadConfirmation: uploadFields[i].cancelConfirm,
 			dictRemoveFile: uploadFields[i].remove,
 			dictMaxFilesExceeded: uploadFields[i].maxFilesExceeded,
+			resizeMethod: 'contain',
+			resizeWidth: uploadFields[i].resizeWidth,
+			resizeHeight: uploadFields[i].resizeHeight,
+			timeout: uploadFields[i].timeout,
 			fallback: function() {
 				// Force ajax submit to turn off
 				jQuery(this.element).closest('form').removeClass('frm_ajax_submit');
@@ -892,7 +896,9 @@ function frmProFormJS(){
 			'==': function(c,d){ return c === d; },
 			'!=': function(c,d){ return c !== d; },
 			'<': function(c,d){ return c > d; },
+			'<=': function(c,d){ return c >= d;},
 			'>': function(c,d){ return c < d; },
+			'>=': function(c,d){ return c <= d;},
 			'LIKE': function(c,d){
 				if(!d){
 					/* If no value, then assume no match */
@@ -1363,13 +1369,16 @@ function frmProFormJS(){
 		var defaultValue = $input.data('frmval');
 
 		if ( typeof defaultValue !== 'undefined' ) {
+			var numericKey = new RegExp( /\[\d*\]$/i );
 
 			if ( input.type == 'checkbox' || input.type == 'radio' ) {
 				setCheckboxOrRadioDefaultValue( input.name, defaultValue );
 
-			} else if ( input.name.indexOf( '[]' ) > -1 ) {
-				// TODO: fix this for checkboxes, address, and multi-select fields
+			} else if ( input.type == 'hidden' && input.name.indexOf( '[]' ) > -1 ) {
 				setHiddenCheckboxDefaultValue( input.name, defaultValue );
+
+			} else if ( input.type == 'hidden' && input.name.indexOf( '][' ) > -1 && numericKey.test( input.name ) ) {
+				setHiddenCheckboxDefaultValue( input.name.replace( numericKey, '' ), defaultValue );
 
 			} else {
 				if ( defaultValue.constructor === Object ) {
@@ -1422,7 +1431,7 @@ function frmProFormJS(){
 	// Set the default value for hidden checkbox or multi-select dropdown fields
 	function setHiddenCheckboxDefaultValue( inputName, defaultValue ){
 		// Get all the hidden inputs with the same name
-		var hiddenInputs = document.getElementsByName( inputName );
+		var hiddenInputs = jQuery( 'input[name^="' + inputName + '"]' ).get();
 
 		if ( jQuery.isArray(defaultValue) ) {
 			for ( var i = 0, l = defaultValue.length; i < l; i++ ) {
@@ -1432,7 +1441,7 @@ function frmProFormJS(){
 					// TODO: accommodate for when there are multiple default values but the user has removed some
 				}
 			}
-		} else if ( hiddenInputs[0] !== null ) {
+		} else if ( hiddenInputs[0] !== null && typeof hiddenInputs[0] !== 'undefined' ) {
 			hiddenInputs[0].value = defaultValue;
 		}
 	}
@@ -2725,6 +2734,23 @@ function frmProFormJS(){
 		return hidden;
 	}
 
+	function maybeShowCalculationsErrorAlert( err, field_key, thisFullCalc ) {
+
+		var alertMessage = '';
+
+		if ( ( !jQuery( 'form' ).hasClass( 'frm-admin-viewing' ) ) ) {
+			return;
+		}
+
+		alertMessage += frm_js.calc_error + ' ' + field_key + ':\n\n';
+		alertMessage += thisFullCalc + '\n\n';
+
+		if ( err.message ) {
+			alertMessage += err.message + '\n\n';
+		}
+		alert( alertMessage );
+	}
+
 	function doSingleCalculation( all_calcs, field_key, vals, triggerField ) {
 		var thisCalc = all_calcs.calc[ field_key ];
 		var thisFullCalc = thisCalc.calc;
@@ -2765,7 +2791,13 @@ function frmProFormJS(){
 
 			thisFullCalc = trimNumericCalculation( thisFullCalc );
 
-			total = parseFloat(eval(thisFullCalc));
+			try {
+				total = parseFloat( eval( thisFullCalc ) );
+			}
+
+			catch ( err ) {
+				maybeShowCalculationsErrorAlert( err, field_key, thisFullCalc );
+			}
 
 			if ( typeof total === 'undefined' || isNaN(total) ) {
 				total = 0;
@@ -2773,7 +2805,7 @@ function frmProFormJS(){
 
 			// Set decimal points
 			if ( isNumeric( dec ) ) {
-				total = total.toFixed(dec);
+				total = total.toFixed( dec );
 			}
 		}
 
@@ -3839,7 +3871,7 @@ function frmProFormJS(){
 	}
 
 	function loadSliders() {
-		jQuery( document ).on( 'input', 'input[data-frmrange]', function() {
+		jQuery( document ).on( 'input change', 'input[data-frmrange]', function() {
 			var range = jQuery( this );
 			range.next( '.frm_range_value' ).html( range.val() );
 		} );

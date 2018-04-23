@@ -23,7 +23,7 @@ class FrmProFieldData extends FrmFieldType {
 
 	protected function field_settings_for_type() {
 		$settings = array();
-		
+
 		if ( $this->field && isset( $this->field->field_options['data_type'] ) ) {
 			$settings['default_value'] = true;
 			$settings['read_only'] = true;
@@ -35,10 +35,9 @@ class FrmProFieldData extends FrmFieldType {
 					$settings['default_blank'] = false;
 					$settings['read_only'] = false;
 					$settings['unique'] = false;
-				break;
+					break;
 				case 'select':
 					$settings['size'] = true;
-				break;
 			}
 		}
 
@@ -149,9 +148,10 @@ class FrmProFieldData extends FrmFieldType {
 	}
 
 	private function get_single_data_value( $linked_id, $atts ) {
+		$atts['includes_list_data'] = true;
 		$value = FrmProFieldsHelper::get_data_value( $linked_id, $this->field, $atts );
 
-		if ( $linked_id === $value ) {
+		if ( $linked_id === $value && ! FrmProField::is_list_field( $this->field ) ) {
 			$value = false;
 		} elseif ( is_array( $value ) ) {
 			$value = implode( $atts['sep'], $value );

@@ -34,7 +34,40 @@ class FrmProFieldFile extends FrmFieldType {
 			'attach' => false,
 			'delete' => false,
 			'restrict' => 0,
+			'resize'     => false,
+			'new_size'  => '600',
+			'resize_dir' => 'width',
 		);
+	}
+
+	/**
+	 * @since 3.01.01
+	 */
+	public function show_options( $field, $display, $values ) {
+		$mimes = $this->get_mime_options( $field );
+		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/file-options.php' );
+
+		parent::show_options( $field, $display, $values );
+	}
+
+	/**
+	 * @since 3.01.01
+	 */
+	private function get_mime_options( $field ) {
+		$mimes = get_allowed_mime_types();
+		$selected_mimes = $field['ftypes'];
+
+		$ordered = array();
+		foreach ( (array) $selected_mimes as $mime ) {
+			$key = array_search( $mime, $mimes );
+			if ( $key !== false ) {
+				$ordered[ $key ] = $mimes[ $key ];
+				unset( $mimes[ $key ] );
+			}
+		}
+
+		$mimes = $ordered + $mimes;
+		return $mimes;
 	}
 
 	public function validate( $args ) {
@@ -106,7 +139,7 @@ class FrmProFieldFile extends FrmFieldType {
 				'show_filename' => ( isset( $atts['show_filename'] ) && $atts['show_filename'] ) ? true : false,
 				'show_image' => ( isset( $atts['show_image'] ) && $atts['show_image'] ) ? true : false,
 				'add_link' => ( isset( $atts['add_link'] ) && $atts['add_link'] ) ? true : false,
-				'new_tab' => ( isset ( $atts['new_tab'] ) && $atts['new_tab'] ) ? true: false,
+				'new_tab' => ( isset( $atts['new_tab'] ) && $atts['new_tab'] ) ? true : false,
 			);
 
 			$this->modify_atts_for_reverse_compatibility( $atts, $new_atts );
@@ -353,7 +386,7 @@ class FrmProFieldFile extends FrmFieldType {
 			$value = explode(',', $value);
 		}
 
-		foreach ( (array) $value as $pos => $m) {
+		foreach ( (array) $value as $pos => $m ) {
 			$m = trim( $m );
 			if ( empty( $m ) ) {
 				continue;
@@ -361,7 +394,7 @@ class FrmProFieldFile extends FrmFieldType {
 
 			if ( ! is_numeric( $m ) ) {
 				//get the ID from the URL if on this site
-				$m = FrmDb::get_col( $wpdb->posts, array( 'guid' => $m), 'ID' );
+				$m = FrmDb::get_col( $wpdb->posts, array( 'guid' => $m ), 'ID' );
 			}
 
 			if ( ! is_numeric( $m ) ) {
