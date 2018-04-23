@@ -113,6 +113,10 @@ In order to create a signup form, you need to:
 
 
 == Changelog ==
+= 2.9.1 =
+* fix "reply-to" email address issue
+* fix the issue that doesn't sync "user role" attribute
+
 = 2.9.0 =
 * add country code prefix to sms field.
 * send final confirmation email in Double Opt_in form

@@ -3,7 +3,7 @@
  * Plugin Name: SendinBlue Subscribe Form And WP SMTP
  * Plugin URI: https://www.sendinblue.com/?r=wporg
  * Description: Easily send emails from your WordPress blog using SendinBlue SMTP and easily add a subscribe form to your site
- * Version: 2.9.0
+ * Version: 2.9.1
  * Author: SendinBlue
  * Author URI: https://www.sendinblue.com/?r=wporg
  * License: GPLv2 or later
@@ -820,7 +820,8 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 							case 'bcc':
 							    if ( strpos( $content, '<') !== false )
                                 {
-                                    $bcc_content = substr( $content, 0, strpos( $content, '<' ) - 1 );
+                                    $bcc_content = substr( $content, strpos( $content, '<' ) + 1 );
+                                    $bcc_content = str_replace( '>', '', $bcc_content );
                                     $bcc[ trim( $bcc_content ) ] = '';
                                 } else {
                                     $bcc[ trim( $content ) ] = '';
@@ -829,7 +830,8 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 							case 'cc':
                                 if ( strpos( $content, '<') !== false )
                                 {
-                                    $cc_content = substr( $content, 0, strpos( $content, '<' ) - 1 );
+                                    $cc_content = substr( $content, strpos( $content, '<' ) + 1 );
+                                    $cc_content = str_replace( '>', '', $cc_content );
                                     $cc[ trim( $cc_content ) ] = '';
                                 } else {
                                     $bcc[ trim( $content ) ] = '';
@@ -838,7 +840,8 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 							case 'reply-to':
                                 if ( strpos( $content, '<') !== false )
                                 {
-                                    $reply_content = substr( $content, 0, strpos( $content, '<' ) - 1 );
+                                    $reply_content = substr( $content, strpos( $content, '<' ) + 1 );
+                                    $reply_content = str_replace( '>', '', $reply_content );
                                     $reply[] = trim( $reply_content );
                                 } else {
                                     $reply[] = trim( $content );
