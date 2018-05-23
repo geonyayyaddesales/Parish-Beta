@@ -39,7 +39,10 @@
 <body <?php body_class(); ?>>
 <div id="page" class="hfeed site">
 	<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'parish' ); ?></a>
-
+	<div class="gdpr-popup">
+				This site uses cookies to store information on your computer. By using this site, you consent to the placement and use of these cookies. Read our <a href="/privacy-policy/">Privacy Policy</a> to learn more.  
+				<a href="#" class="accept">ACCEPT </a> 
+			</div>
 	<div class="header-wide">
     
     <header id="masthead" class="site-header" role="banner">
