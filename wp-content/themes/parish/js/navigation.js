@@ -64,3 +64,16 @@ function getCookie(name) {
 	else{
 		jQuery('.gdpr-popup').show();
 	}
+	jQuery(document).ready(function(){
+	  $url = window.location.href;
+	  $n = $url.indexOf("#faq");
+	  if($n != -1){
+	    jQuery('html, body').animate({
+	        scrollTop: jQuery(".questions").offset().top
+	    }, 1000);
+	  }
+		jQuery('.gdpr-popup .accept').click(function(){
+			setCookie('gdpraccept','true',28);
+			jQuery('.gdpr-popup').fadeOut();
+		});
+	});
