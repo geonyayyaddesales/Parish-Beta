@@ -863,6 +863,7 @@ body #page iframe { display:block; }
 }
 .gdpr-popup a {
 	text-decoration:none;
+	color:#9299a2;
 }
 @media (max-width: 600px) { 
 	.gdpr-popup { 
