@@ -21,8 +21,8 @@ if ( ! is_active_sidebar( 'sidebar-1' ) ) {
                 <input class="required email" id="mce-EMAIL" type="email" name="EMAIL" value="" placeholder="Email Address" >
                 
                 <input class="button" id="mc-embedded-subscribe" type="submit" name="subscribe" value="Sign up">
-<a href="http://thetablet.org/emailsignup/" target="_blank" >See sample</a>
-                <span class="gdpr">I'm aware that my information is being collected for marketing purposes. <a href="/privacy-policy/">More info</a></span>
+				<span class="gdpr">I'm aware that my information is being collected for marketing purposes. <a href="/privacy-policy/">More info</a></span>
+<a href="http://thetablet.org/emailsignup/" target="_blank" >See sample Newsletter</a>
                 <div class="clear"></div>
                 
                 <div class="clear" id="mce-responses"></div>
