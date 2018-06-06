@@ -868,6 +868,8 @@ body #page iframe { display:block; }
 .gdpr-popup a:hover {
 	color:#edda3a;
 }
+.gdpr { font-size:12px; }
+.gdpr a { display:inline; }
 @media (max-width: 600px) { 
 	.gdpr-popup { 
 	display:none;
