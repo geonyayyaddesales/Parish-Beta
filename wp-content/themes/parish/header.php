@@ -11,7 +11,9 @@
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="<?php echo get_post_meta(get_the_ID(), '_yoast_wpseo_metadesc', true);  ?>"/>
+<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
+<meta name="description" content="<?php echo substr(wp_strip_all_tags(get_the_content()), 0,155); ?>"/>
+<?php endwhile; endif; ?>
 <link rel="profile" href="http://gmpg.org/xfn/11">
 <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 <link rel="shortcut icon" href="/wp-content/themes/parish/favicon.ico" />
