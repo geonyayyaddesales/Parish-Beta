@@ -41,7 +41,7 @@ class FrmProFormsController {
 			return;
 		}
 
-		wp_enqueue_style( $theme_css, FrmStylesHelper::jquery_css_url( $theme_css ) );
+		wp_enqueue_style( $theme_css, FrmProStylesController::jquery_css_url( $theme_css ) );
 	}
 
 	public static function enqueue_footer_js() {
@@ -78,7 +78,7 @@ class FrmProFormsController {
 
 			if ( ! empty( $frm_vars['datepicker_loaded'] ) ) {
 				wp_enqueue_script( 'jquery-ui-datepicker' );
-				FrmStylesHelper::enqueue_jquery_css();
+				FrmProStylesController::enqueue_jquery_css();
 			}
 		}
 
@@ -589,28 +589,21 @@ class FrmProFormsController {
 		FrmAppHelper::permission_check( 'frm_edit_forms' );
 		check_ajax_referer( 'frm_ajax', 'nonce' );
 
-		$meta_name         = FrmAppHelper::get_post_param( 'meta_name', '', 'absint' );
-		$hide_field        = '';
-		$form_id           = FrmAppHelper::get_param( 'form_id', '', 'get', 'absint' );
-		$form_fields       = FrmField::get_all_for_form( $form_id );
+		$meta_name   = FrmAppHelper::get_post_param( 'meta_name', '', 'absint' );
+		$hide_field  = '';
+		$form_id     = FrmAppHelper::get_param( 'form_id', '', 'get', 'absint' );
+		$form        = FrmForm::getOne( $form_id );
+		$form_fields = FrmField::get_all_for_form( $form_id );
 		if ( ! $form_fields ) {
 			wp_die();
 		}
+		$exclude_fields = array_merge( FrmField::no_save_fields(), array( 'file', 'rte', 'date' ) );
 
-		$condition = array(
+		$condition         = array(
 			'hide_field'      => '',
 			'hide_field_cond' => '==',
 		);
-
-		$form              = FrmForm::getOne( $form_id );
-		$submit_conditions = FrmForm::get_option( array(
-			'form'    => $form,
-			'option'  => 'submit_conditions',
-			'default' => $condition,
-		) );
-
-		$form_fields       = FrmField::get_all_for_form( $form_id );
-		$exclude_fields    = array_merge( FrmField::no_save_fields(), array( 'file', 'rte', 'date' ) );
+		$submit_conditions = array( $condition );
 
 		include( FrmProAppHelper::plugin_path() . '/classes/views/frmpro-forms/_submit_logic_row.php' );
 

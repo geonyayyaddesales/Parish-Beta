@@ -100,6 +100,7 @@ class FrmProHooksController {
 		add_filter( 'frm_validate_entry', 'FrmProFileField::upload_files_no_js', 10, 1 );
 		add_action( 'frm_before_destroy_entry', 'FrmProFileField::delete_files_with_entry', 10, 2 );
 		add_action( 'frm_after_duplicate_entry', 'FrmProFileField::duplicate_files_with_entry', 10, 3 );
+		add_filter( 'rest_attachment_query', 'FrmProFileField::filter_api_attachments' );
 
         // Entry and Meta Helpers
         add_filter('frm_show_new_entry_page', 'FrmProEntriesHelper::allow_form_edit', 10, 2);
@@ -179,6 +180,9 @@ class FrmProHooksController {
 
 		// Stats Controller
 		add_shortcode('frm-stats', 'FrmProStatisticsController::stats_shortcode');
+
+		// Math Controller
+		add_shortcode( 'frm-math', 'FrmProMathController::math_shortcode' );
 
 		// Styles Controller
 		add_action( 'frm_include_front_css', 'FrmProStylesController::include_front_css' );

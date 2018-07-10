@@ -9,6 +9,7 @@ function frmProFormJS(){
 	var action = '';
 	var processesRunning = 0;
 	var lookupQueues = {};
+	var hiddenSubmitButtons = [];
 
 	function setNextPage(e){
 		/*jshint validthis:true */
@@ -101,6 +102,7 @@ function frmProFormJS(){
 		}
 
 		jQuery(this).datepicker( jQuery.extend(
+			{},
 			jQuery.datepicker.regional[ dateFields[ opt_key ].locale ],
 			dateFields[ opt_key ].options
 		) );
@@ -1010,7 +1012,7 @@ function frmProFormJS(){
 		var onCurrentPage;
 
 		if ( depFieldArgs.fieldType === 'submit' ) {
-			onCurrentPage = isSubmitButtonOnPage( depFieldArgs );
+			onCurrentPage = isSubmitButtonOnPage( depFieldArgs.containerId );
 		}
 		else {
 			onCurrentPage = isFieldDivOnPage( depFieldArgs.containerId );
@@ -1040,8 +1042,8 @@ function frmProFormJS(){
 	 * @param depFieldArgs
 	 * @returns {boolean}
 	 */
-	function isSubmitButtonOnPage (depFieldArgs){
-		var submitButton = document.querySelector( '#' + depFieldArgs.containerId );
+	function isSubmitButtonOnPage( container ) {
+		var submitButton = document.querySelector( '#' + container );
 
 		return submitButton != null;
 	}
@@ -1121,6 +1123,19 @@ function frmProFormJS(){
 		} else {
 			showFieldContainer( depFieldArgs.containerId );
 		}
+
+		removeSubmitButtonFromHiddenList( depFieldArgs );
+	}
+
+	/**
+	 * Remove submit button from list of hidden submit buttons on page
+	 *
+	 * @param depFieldArgs
+	 */
+	function removeSubmitButtonFromHiddenList( depFieldArgs ) {
+		hiddenSubmitButtons = hiddenSubmitButtons.filter( function ( button ) {
+			return button !== depFieldArgs.formKey;
+		} );
 	}
 
 	/**
@@ -1283,11 +1298,32 @@ function frmProFormJS(){
 			depFieldArgs.containerId = getSubmitButtonContainerID( depFieldArgs );
 		}
 
+		addSubmitButtonToHiddenList( depFieldArgs );
+
 		if ( depFieldArgs.hideDisable && depFieldArgs.hideDisable == 'disable' ) {
 			disableButton( '#' + depFieldArgs.containerId );
 		} else {
 			hideFieldContainer( depFieldArgs.containerId );
 		}
+	}
+
+	/**
+	 * Add submit button to list of hidden submit buttons on page
+	 *
+	 * @param depFieldArgs
+	 */
+	function addSubmitButtonToHiddenList( depFieldArgs ) {
+		hiddenSubmitButtons.push( depFieldArgs.formKey );
+	}
+
+	/**
+	 * Checks if a particular submit button on the current page is hidden
+	 *
+	 * @param {string} form_key
+	 * @returns {boolean}
+	 */
+	function isOnPageSubmitButtonHidden( form_key ) {
+		return hiddenSubmitButtons.indexOf( form_key ) !== -1;
 	}
 
 	/**
@@ -1303,6 +1339,16 @@ function frmProFormJS(){
 		if ( depFieldArgs ) {
 			hideOrDisableSubmitButton( depFieldArgs );
 		}
+	}
+
+	/**
+	 * Get the form key (e.g. t3cq5) from the form element id (e.g. form_t3cq5)
+	 *
+	 * @param element_id
+	 * @returns {string} form key
+	 */
+	function getFormKeyFromFormElementID( element_id ){
+		return element_id.replace( 'form_', '' );
 	}
 
 	function hideFieldContainer( containerId ) {
@@ -3381,12 +3427,12 @@ function frmProFormJS(){
 			var formID = jQuery(object).find('input[name="form_id"]').val();
 			var prevPage = jQuery(object).find('input[name="frm_page_order_'+ formID +'"]');
 			if ( prevPage.length ) {
-				prevPage = prevPage.val();
+				prevPage = parseInt( prevPage.val() );
 			} else {
 				prevPage = 0;
 			}
 
-			if ( ! prevPage || ( nextPage.val() < prevPage ) ) {
+			if ( ! prevPage || ( parseInt( nextPage.val() ) < prevPage ) ) {
 				goingBack = true;
 			}
 		}
@@ -4013,7 +4059,7 @@ function frmProFormJS(){
 
 			if ( i === 12 ) {
 				for ( var c = 0; c < layoutClasses.length; c++ ) {
-				    if ( classList.includes( layoutClasses[ c ] ) ) {
+				    if ( classList.indexOf( layoutClasses[ c ] ) !== -1 ) {
 				        return true;
 				    }
 
@@ -4120,6 +4166,53 @@ function frmProFormJS(){
 		return !jQuery.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
 	}
 
+	function checkPasswordField() {
+		if ( this.className.indexOf( 'frm_strength_meter' ) > -1 ) {
+			var fieldId = this.name.replace(/\D/g,''),
+				checks = passwordChecks();
+
+			for ( var check in checks ) {
+				var span = document.getElementById( 'frm-pass-' + check + '-' + fieldId );
+				addOrRemoveVerifyPass( checks[ check ], this.value, span );
+			}
+		}
+	}
+
+	function passwordChecks() {
+		return {
+			'eight-char': /^.{8,}$/,
+			'number': /\d/,
+			'uppercase': /[A-Z]/,
+			'lowercase': /[a-z]/,
+			'special-char': /(?=.*[^a-zA-Z0-9])/,
+		};
+	}
+
+	function addOrRemoveVerifyPass( regEx, password, span ) {
+		if ( span !== null ) {
+			var remove = regEx.test( password );
+			if ( remove ) {
+				maybeRemovePassReq( span );
+			} else {
+				maybeRemovePassVerified( span );
+			}
+		}
+	}
+
+	function maybeRemovePassReq( span ) {
+		if ( span.classList.contains( 'frm-pass-req' ) ) {
+			span.classList.remove( 'frm-pass-req' );
+			span.classList.add( 'frm-pass-verified' );
+		}
+	}
+
+	function maybeRemovePassVerified( span ) {
+		if ( span.classList.contains( 'frm-pass-verified' ) ) {
+			span.classList.remove( 'frm-pass-verified' );
+			span.classList.add( 'frm-pass-req' );
+		}
+	}
+
 	return{
 		init: function(){
 			jQuery(document).on('frmFormComplete', afterFormSubmitted);
@@ -4138,6 +4231,8 @@ function frmProFormJS(){
 			});
 
 			jQuery(document).on('frmFieldChanged', maybeCheckDependent);
+
+			jQuery(document).on('keyup', 'input.frm_strength_meter', checkPasswordField);
 
 			jQuery(document).on('mouseenter click', '.frm-star-group input', loadStars);
 			jQuery(document).on('mouseenter', '.frm-star-group .star-rating:not(.star-rating-readonly)', hoverStars);
@@ -4213,6 +4308,18 @@ function frmProFormJS(){
 					container.style.display = 'none';
 				}
 			}
+		},
+
+		submitAllowed: function ( object ) {
+			var form_element_id = object.getAttribute( 'id' );
+
+			if ( ! isSubmitButtonOnPage( form_element_id + ' .frm_final_submit' ) || goingToPrevPage( object ) || savingDraftEntry( object ) ) {
+				return true;
+			}
+
+			var form_key = getFormKeyFromFormElementID( form_element_id );
+
+			return ! isOnPageSubmitButtonHidden( form_key );
 		},
 
 		checkDependentDynamicFields: function(ids){
