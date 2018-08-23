@@ -3,7 +3,7 @@
  * Plugin Name: SendinBlue Subscribe Form And WP SMTP
  * Plugin URI: https://www.sendinblue.com/?r=wporg
  * Description: Easily send emails from your WordPress blog using SendinBlue SMTP and easily add a subscribe form to your site
- * Version: 2.9.1
+ * Version: 2.9.2
  * Author: SendinBlue
  * Author URI: https://www.sendinblue.com/?r=wporg
  * License: GPLv2 or later
@@ -623,6 +623,18 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 			}
 
 			$listID = $formData['listID'];
+			$interestingLists = isset( $_POST['interestingLists']) ? $_POST['interestingLists'] : array();
+			$expectedLists = isset( $_POST['listIDs'] ) ? $_POST['listIDs'] : array();
+			if ( empty($interestingLists) )
+            {
+                $unlinkedLists = null;
+            }
+            else{
+			    $unwantedLists = array_diff( $interestingLists, $expectedLists );
+			    $unlinkedLists = array_diff( $unwantedLists, $listID);
+			    $listID = array_unique(array_merge( $listID, $expectedLists ));
+            }
+
 			$email = isset( $_POST['email'] ) ? sanitize_text_field( $_POST['email'] ) : '';
 			if ( ! is_email( $email ) ) {
 				return;
@@ -650,21 +662,21 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
                  * 3. send confirmation email with activate code
                  */
 				// Create/updated subscriber.
-				$result = SIB_API_Manager::create_subscriber( 'double-optin', $email, $listID, $info );
+				$result = SIB_API_Manager::create_subscriber( 'double-optin', $email, $listID, $info, $unlinkedLists );
 				// Send a double optin confirm email.
 				if ( 'success' == $result ) {
 					// Add a recode with activate code in db.
-					$activateCode = $this->create_activate_code( $email, $info, $formID, $listID, $redirectUrlInEmail );
+					$activateCode = $this->create_activate_code( $email, $info, $formID, $listID, $redirectUrlInEmail, $unlinkedLists );
 					SIB_API_Manager::send_comfirm_email( 'double-optin', $email, $templateID, $info, $activateCode );
 				}
 			} elseif ( $isOptin ) {
-				$result = SIB_API_Manager::create_subscriber( 'confirm', $email, $listID, $info );
+				$result = SIB_API_Manager::create_subscriber( 'confirm', $email, $listID, $info, $unlinkedLists );
 				if ( 'success' == $result ) {
 					// Send a confirm email.
 					SIB_API_Manager::send_comfirm_email( 'confirm', $email, $templateID, $info );
 				}
 			} else {
-				$result = SIB_API_Manager::create_subscriber( 'simple', $email, $listID, $info );
+				$result = SIB_API_Manager::create_subscriber( 'simple', $email, $listID, $info, $unlinkedLists );
 			}
 			$msg = array(
 				'successMsg' => $formData['successMsg'],
@@ -692,8 +704,12 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 		 * @param string $redirectUrl - redirect url.
 		 * @return string - activate code.
 		 */
-		function create_activate_code( $email, $info, $formID, $listIDs, $redirectUrl ) {
+		function create_activate_code( $email, $info, $formID, $listIDs, $redirectUrl, $unlinkedLists = null ) {
 			$data = SIB_Model_Users::get_data_by_email( $email, $formID );
+			if ( $unlinkedLists != null )
+            {
+                $info['unlinkedLists'] = $unlinkedLists;
+            }
 			if ( false == $data ) {
 				$uniqid = uniqid();
 				$data = array(

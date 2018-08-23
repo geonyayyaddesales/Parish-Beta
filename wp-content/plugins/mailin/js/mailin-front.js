@@ -36,6 +36,15 @@ jQuery(document).ready(function(){
                     err_index++;
                 }
             });
+            var multi_lists = form.find(jQuery('.sib-multi-lists'));
+            if( multi_lists != undefined && multi_lists.data('require') == 'required' )
+            {
+                if ( multi_lists.find('input:checked').length == 0 )
+                {
+                    err_index++;
+                    multi_lists.addClass('sib_error');
+                }
+            }
             if(err_index > 0)
             {
                 form.find('.sib_msg_disp').html('<p class="sib-alert-message sib-alert-message-warning ">' + sibErrMsg.requiredField + '</p>').show();
@@ -109,6 +118,14 @@ jQuery(document).ready(function(){
             {
                 postData.push({"name": "g-recaptcha-response", "value": captchaRes});
             }
+
+            if( jQuery('.sib-multi-lists') .length )
+            {
+                var interesting_lists = [];
+                jQuery('.sib-interesting-lists').each(function () {
+                    postData.push({"name":"interestingLists[]", "value": jQuery(this).val()})
+                });
+            }
             var formURL = form.attr("action");
             form.addClass('sib_processing');
 
@@ -121,6 +138,10 @@ jQuery(document).ready(function(){
                     data: postData,
                     success: function (data, textStatus, jqXHR) {
                         jQuery('.sib_loader').hide();
+                        if( jQuery('.sib-multi-lists').length )
+                        {
+                            jQuery('.sib-multi-lists').removeClass('sib_error');
+                        }
                         if (data.redirect) {
                             window.location.href = data.redirect;
                         } else if (data.status === 'success' || data.status === 'update') {
