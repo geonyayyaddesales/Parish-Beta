@@ -42,7 +42,7 @@ Template Name: Homepage template
 * @package Parish
 */
 
-get_header(homepage); 
+get_header('homepage'); 
 ?>
 
 	<div id="primary" class="content-area homeprimary">
