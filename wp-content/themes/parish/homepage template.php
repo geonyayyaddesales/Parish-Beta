@@ -180,7 +180,9 @@ get_header(homepage);
                            }
                           echo '</div>';
                         }
-   echo '</div></aside><div class="textwidget view-all"><a href="/calendar/">View All Events</a></div>';
+					    echo '</div></aside><div class="textwidget view-all">';
+					 	dynamic_sidebar('Home Calendar');
+					 	echo '</div>';
                         ?>
 		                </div><!-- end googlecal -->
 	                <?php } ?>
