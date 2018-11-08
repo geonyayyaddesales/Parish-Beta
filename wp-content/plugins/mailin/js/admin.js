@@ -139,7 +139,7 @@ $jQ(document).ready(function(){
                         '<div class="sib-toggle sib-country-flg"><div class="sib-cflags"></div> ' +
                         '<div class="sib-icon-arrow"></div></div> '+
                         '</div>' + '<ul class="sib-country-list" style="display: none;"></ul>' +
-                        '<input type="hidden" name="sib_SMS_prefix"><input type="text" name="SMS" class="sib-sms" value="+33" ';
+                        '<input type="hidden" name="sib_SMS_prefix" value="+33"><input type="text" name="SMS" class="sib-sms" value="+33" ';
                     if(field_placeholder != '') {
                         field_html += 'placeholder="' + field_placeholder + '" ';
                     }

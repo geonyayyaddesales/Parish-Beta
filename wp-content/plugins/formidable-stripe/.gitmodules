@@ -1,0 +1,3 @@
+[submodule "formidable-payments"]
+	path = formidable-payments
+	url = https://github.com/Strategy11/formidable-payments

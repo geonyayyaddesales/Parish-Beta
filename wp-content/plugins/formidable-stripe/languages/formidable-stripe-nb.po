@@ -1,0 +1,144 @@
+# Translation of Formidable Stripe in Norwegian (Bokmål)
+# This file is distributed under the same license as the Formidable Stripe package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2017-08-17 19:22:37+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.3.1\n"
+"Language: nb_NO\n"
+"Project-Id-Version: Formidable Stripe\n"
+
+#. Description of the plugin
+msgid "Collect Stripe payments using your Formidable Forms"
+msgstr "Motta Stripe-betalinger ved bruk av Formidable form"
+
+#. Name of the plugin
+msgid "Formidable Stripe"
+msgstr "Formidable Stripe"
+
+#: views/settings/form.php:31
+msgid "Stripe notifies your site of any recurring payments, refunds issued, and failed payments. In order to receive these notifications, you must add a new Webhook URL for your site in your Stripe Dashboard > Settings > Webhooks. The URL should be set to:"
+msgstr "Stripe sender deg notifikasjon om gjentakende betalinger, tilbakebetalinger og ikke fullførte betalinger. For å motta disse notifikasjonene, må du legge til Webhook URL på din side i din Stripe Dashboard > Settings > Webhooks. URL-en skal være:"
+
+#: views/settings/form.php:28
+msgid "Automatic Processing"
+msgstr "Automatisk prosessering"
+
+#: views/settings/form.php:12
+msgid "Your site is not using SSL. Before using Stripe to collect live payments, you will need to install an SSL certificate on your site."
+msgstr "Din side bruker ikek SSL. Før du kan ta imot live betalinger, må du installere et SSL sertifikat."
+
+#: views/settings/form.php:9
+msgid "Use the Stripe test mode"
+msgstr "Bruk Stripe testmodus"
+
+#: views/settings/form.php:4
+msgid "Test Mode"
+msgstr "Testmodus"
+
+#: views/payments/manage-cards.php:5
+msgid "Expires"
+msgstr "Utløper"
+
+#: views/payments/manage-cards.php:4
+msgid "Card ending in"
+msgstr "Kortet utløper om"
+
+#: helpers/FrmStrpApiHelper.php:242
+msgid "The card's swipe data is invalid."
+msgstr "Kortets svipedata er ugyldig."
+
+#: helpers/FrmStrpApiHelper.php:241
+msgid "An error occurred due to requests hitting the API too quickly. Please let us know if you're consistently running into this error."
+msgstr ""
+
+#: helpers/FrmStrpApiHelper.php:240
+msgid "An error occurred while processing the card."
+msgstr "En feil oppstod under prosessering av kortet."
+
+#: helpers/FrmStrpApiHelper.php:239
+msgid "There is no card on a customer that is being charged."
+msgstr "Det finnes ikke noe kort på kunden."
+
+#: helpers/FrmStrpApiHelper.php:238
+msgid "The card was declined."
+msgstr "Kortet ble avslått."
+
+#: helpers/FrmStrpApiHelper.php:237
+msgid "The card's zip code failed validation."
+msgstr "Kortets postadresse kunne ikke bekreftes."
+
+#: helpers/FrmStrpApiHelper.php:236
+msgid "The card's security code is incorrect."
+msgstr "Sikkerhetskoden er feil."
+
+#: helpers/FrmStrpApiHelper.php:235
+msgid "The card has expired."
+msgstr "Kortet har utgått."
+
+#: helpers/FrmStrpApiHelper.php:234
+msgid "The card's security code is invalid."
+msgstr "Sikkerhetskoden er ugyldig."
+
+#: helpers/FrmStrpApiHelper.php:233
+msgid "The card's expiration year is invalid."
+msgstr "Utløpsår er ugyldig."
+
+#: helpers/FrmStrpApiHelper.php:232
+msgid "The card's expiration month is invalid."
+msgstr "Utløpsmåned er ugyldig."
+
+#: helpers/FrmStrpApiHelper.php:231
+msgid "The card number is not a valid credit card number."
+msgstr "Kortnummeret er ikke et gyldig kortnummer."
+
+#: helpers/FrmStrpApiHelper.php:230
+msgid "The card number is incorrect."
+msgstr "Kortnummeret er ukorrekt."
+
+#: controllers/FrmStrpSettingsController.php:46
+msgid "Settings Saved"
+msgstr "Innstillinger lagret"
+
+#: controllers/FrmStrpSettingsController.php:30
+msgid "Live Publishable Key"
+msgstr "Live publiseringsnøkkel"
+
+#: controllers/FrmStrpSettingsController.php:29
+msgid "Live Secret Key"
+msgstr "Live hemmelig nøkkel"
+
+#: controllers/FrmStrpSettingsController.php:28
+msgid "Test Publishable Key"
+msgstr "Test publiseringsnøkkel"
+
+#: controllers/FrmStrpSettingsController.php:27
+msgid "Test Secret Key"
+msgstr "Test hemmelig nøkkel"
+
+#: controllers/FrmStrpPaymentsController.php:14
+msgid "Delete card"
+msgstr "Slett kort"
+
+#: controllers/FrmStrpEventsController.php:151
+msgid "None"
+msgstr "Ingen"
+
+#: controllers/FrmStrpAppController.php:22
+msgid "Credit Card"
+msgstr "Kredittkort"
+
+#: controllers/FrmStrpActionsController.php:45
+msgid "There was a problem communicating with Stripe. Please try again."
+msgstr "Får ikke forbindelse med Stripe. Vennligst prøv igjen."
+
+#: controllers/FrmStrpActionsController.php:40
+msgid "The Stripe Token is missing."
+msgstr "Stripe-nøkkelen mangler."
+
+#: controllers/FrmStrpActionsController.php:34
+msgid "Please specify an amount for the payment"
+msgstr "Vennligst spesifiser et beløp for betalingen"

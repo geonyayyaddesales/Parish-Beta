@@ -799,6 +799,15 @@ For your information, you cannot select a template with the tag [DOUBLEOPTIN].',
 										<?php echo esc_html( SIB_Page_Home::get_narration_script( __( 'Invalid email address', 'sib_lang' ), __( 'Set up the message that will appear when the email address used to sign up is not valid', 'sib_lang' ) ) ); ?>
 									</div>
 								</div>
+                                <div class="row small-content">
+                                    <span class="col-md-3"><?php esc_attr_e( 'Required Field', 'sib_lang' ); ?></span>
+
+                                    <div class="col-md-8">
+                                        <input type="text" class="col-md-11" name="alert_required_message"
+                                               value="<?php echo esc_attr( $formData['requiredMsg'] ); ?>" required>&nbsp;
+                                        <?php echo esc_html( SIB_Page_Home::get_narration_script( __( 'Required Field', 'sib_lang' ), __( 'Set up the message that will appear when the required field is empty', 'sib_lang' ) ) ); ?>
+                                    </div>
+                                </div>
 								<div class="row small-content" style="margin-top: 30px;">
 									<div class="col-md-3">
 										<button class="btn btn-primary"><?php esc_attr_e( 'Save', 'sib_lang' ); ?></button>
@@ -917,6 +926,7 @@ For your information, you cannot select a template with the tag [DOUBLEOPTIN].',
 			$errorMsg = isset( $_POST['alert_error_message'] ) ? sanitize_text_field( esc_attr( $_POST['alert_error_message'] ) ) : '';
 			$existMsg = isset( $_POST['alert_exist_subscriber'] ) ? sanitize_text_field( esc_attr( $_POST['alert_exist_subscriber'] ) ) : '';
 			$invalidMsg = isset( $_POST['alert_invalid_email'] ) ? sanitize_text_field( esc_attr( $_POST['alert_invalid_email'] ) ) : '';
+			$requiredMsg = isset( $_POST['alert_required_message']) ? sanitize_text_field( esc_attr($_POST['alert_required_message'])) : '';
 			$formData = array(
 				'title' => $form_name,
 				'html' => addslashes( $form_html ),
@@ -933,6 +943,7 @@ For your information, you cannot select a template with the tag [DOUBLEOPTIN].',
 				'errorMsg' => $errorMsg,
 				'existMsg' => $existMsg,
 				'invalidMsg' => $invalidMsg,
+				'requiredMsg' => $requiredMsg,
 				'attributes' => implode( ',', $available_attrs ),
 				'gcaptcha'   => $gCaptcha,
 				'gcaptcha_secret' => $gCaptchaSecret,

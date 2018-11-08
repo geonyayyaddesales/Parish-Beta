@@ -3,7 +3,7 @@
  * Plugin Name: SendinBlue Subscribe Form And WP SMTP
  * Plugin URI: https://www.sendinblue.com/?r=wporg
  * Description: Easily send emails from your WordPress blog using SendinBlue SMTP and easily add a subscribe form to your site
- * Version: 2.9.2
+ * Version: 2.9.3
  * Author: SendinBlue
  * Author URI: https://www.sendinblue.com/?r=wporg
  * License: GPLv2 or later
@@ -182,24 +182,12 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 				// register widget.
 				add_action( 'widgets_init', array( &$this, 'sib_create_widget' ) );
 
-				// check if updated into new configuration. to 2.x.x.
-				$use_new_version = get_option( 'sib_use_new_version', '0' );
-				if ( '1' === $use_new_version ) {
-					update_option( 'sib_use_new_version', '2.9.0' );
-					// create forms tables and create default form.
-					SIB_Forms::createTable();
-					// create users table.
-					SIB_Model_Users::createTable();
-					// create old form.
-					$oldFormData = SIB_Forms::get_old_form();
-					$oldFormID = SIB_Forms::addForm( $oldFormData );
-					update_option( 'sib_old_form_id', $oldFormID );
-				} elseif ( '2.9.0' !== $use_new_version ) {
-					update_option( 'sib_use_new_version', '2.9.0' );
-					SIB_Forms::alterTable();
-					SIB_Forms::addTermsColumn();
-					SIB_Forms::addConfirmIDColumn();
-				}
+                // create forms tables and create default form.
+                SIB_Forms::createTable();
+                // create users table.
+                SIB_Model_Users::createTable();
+                // add columns for old versions
+                SIB_Forms::alterTable();
 			}
 
 			$use_api_version = get_option( 'sib_use_apiv2', '0' );
@@ -531,6 +519,7 @@ if ( ! class_exists( 'SIB_Manager' ) ) {
 							src="<?php echo esc_url( includes_url() ); ?>/images/spinner.gif" alt="loader"></div>
 				<input type="hidden" name="sib_form_action" value="subscribe_form_submit">
 				<input type="hidden" name="sib_form_id" value="<?php echo esc_attr( $frmID ); ?>">
+                                <input type="hidden" name="sib_form_alert_notice" value="<?php echo esc_attr($formData['requiredMsg']); ?>">
 				<div class="sib_signup_box_inside_<?php echo esc_attr( $frmID ); ?>">
 					<div style="/*display:none*/" class="sib_msg_disp">
 					</div>

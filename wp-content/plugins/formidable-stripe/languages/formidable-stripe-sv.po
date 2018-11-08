@@ -1,0 +1,144 @@
+# Translation of Formidable Stripe in Swedish
+# This file is distributed under the same license as the Formidable Stripe package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2018-02-22 18:47:49+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.3.1\n"
+"Language: sv_SE\n"
+"Project-Id-Version: Formidable Stripe\n"
+
+#. Description of the plugin
+msgid "Collect Stripe payments using your Formidable Forms"
+msgstr "Ta betalt med Stripe via Formidable Forms"
+
+#. Name of the plugin
+msgid "Formidable Stripe"
+msgstr "Formidable Stripe"
+
+#: views/settings/form.php:31
+msgid "Stripe notifies your site of any recurring payments, refunds issued, and failed payments. In order to receive these notifications, you must add a new Webhook URL for your site in your Stripe Dashboard > Settings > Webhooks. The URL should be set to:"
+msgstr "Stripe meddelar din webbplats om återkommande betalningar, återbetalningar och nekade betalningar. För att ta emot dessa meddelanden måste lägga till en ny Webhook ULR för webbplatsen i Stripes Dashboard > Settings > Webhooks. Den URL som ska anges är:"
+
+#: views/settings/form.php:28
+msgid "Automatic Processing"
+msgstr "Automatisk behandling"
+
+#: views/settings/form.php:12
+msgid "Your site is not using SSL. Before using Stripe to collect live payments, you will need to install an SSL certificate on your site."
+msgstr "Webbplatsen använder SSL. För att ta betalt via Stripe måste du installera ett SSL-certifikat för din webbplats."
+
+#: views/settings/form.php:9
+msgid "Use the Stripe test mode"
+msgstr "Använd Stripes testläge"
+
+#: views/settings/form.php:4
+msgid "Test Mode"
+msgstr "Testläge"
+
+#: views/payments/manage-cards.php:5
+msgid "Expires"
+msgstr "Giltigt till och med"
+
+#: views/payments/manage-cards.php:4
+msgid "Card ending in"
+msgstr "Kortnumrets sista siffror"
+
+#: helpers/FrmStrpApiHelper.php:242
+msgid "The card's swipe data is invalid."
+msgstr "Kortets swipe data är ogiltigt"
+
+#: helpers/FrmStrpApiHelper.php:241
+msgid "An error occurred due to requests hitting the API too quickly. Please let us know if you're consistently running into this error."
+msgstr "Ett fel uppstod för att API anropades för snabbt och för ofta. Vänligen meddela oss om detta fel uppstår kontinuerligt."
+
+#: helpers/FrmStrpApiHelper.php:240
+msgid "An error occurred while processing the card."
+msgstr "Ett fel uppstod när transaktionen hanterades"
+
+#: helpers/FrmStrpApiHelper.php:239
+msgid "There is no card on a customer that is being charged."
+msgstr "Det finns inget kort som tillhör en kund som blir debiterat"
+
+#: helpers/FrmStrpApiHelper.php:238
+msgid "The card was declined."
+msgstr "Transaktionen nekades"
+
+#: helpers/FrmStrpApiHelper.php:237
+msgid "The card's zip code failed validation."
+msgstr "Kortets postnummer kunde inte valideras"
+
+#: helpers/FrmStrpApiHelper.php:236
+msgid "The card's security code is incorrect."
+msgstr "Cvc-koden är ogiltig"
+
+#: helpers/FrmStrpApiHelper.php:235
+msgid "The card has expired."
+msgstr "Kortet har gått ut"
+
+#: helpers/FrmStrpApiHelper.php:234
+msgid "The card's security code is invalid."
+msgstr "Cvc-koden är ogiltig"
+
+#: helpers/FrmStrpApiHelper.php:233
+msgid "The card's expiration year is invalid."
+msgstr "Felaktig årtal"
+
+#: helpers/FrmStrpApiHelper.php:232
+msgid "The card's expiration month is invalid."
+msgstr "Felaktig månad"
+
+#: helpers/FrmStrpApiHelper.php:231
+msgid "The card number is not a valid credit card number."
+msgstr "Kortnumret är inte giltigt"
+
+#: helpers/FrmStrpApiHelper.php:230
+msgid "The card number is incorrect."
+msgstr "Kortnumret är inte giltigt"
+
+#: controllers/FrmStrpSettingsController.php:46
+msgid "Settings Saved"
+msgstr "Inställningarna är sparade"
+
+#: controllers/FrmStrpSettingsController.php:30
+msgid "Live Publishable Key"
+msgstr "Live Publishable Key"
+
+#: controllers/FrmStrpSettingsController.php:29
+msgid "Live Secret Key"
+msgstr "Live Secret Key"
+
+#: controllers/FrmStrpSettingsController.php:28
+msgid "Test Publishable Key"
+msgstr "Test Publishable Key"
+
+#: controllers/FrmStrpSettingsController.php:27
+msgid "Test Secret Key"
+msgstr "Test Secret Key"
+
+#: controllers/FrmStrpPaymentsController.php:14
+msgid "Delete card"
+msgstr "Radera kort"
+
+#: controllers/FrmStrpEventsController.php:151
+msgid "None"
+msgstr "Ingen"
+
+#: controllers/FrmStrpAppController.php:22
+msgid "Credit Card"
+msgstr "Kreditkort"
+
+#: controllers/FrmStrpActionsController.php:45
+msgid "There was a problem communicating with Stripe. Please try again."
+msgstr "Det blev fel i kommunikationen med Stripe. Var vänlig försök igen."
+
+#: controllers/FrmStrpActionsController.php:40
+msgid "The Stripe Token is missing."
+msgstr "Ett Stripe Token saknas"
+
+#: controllers/FrmStrpActionsController.php:34
+msgid "Please specify an amount for the payment"
+msgstr "Var vänlig ange ett belopp för betalningen"

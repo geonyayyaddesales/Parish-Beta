@@ -269,7 +269,7 @@ class FrmAddon {
 			}
 
 			$response = $this->get_license_status();
-			if ( 'revoked' === $response['status'] ) {
+			if ( 'revoked' === $response['status'] || 'blocked' === $response['status'] || 'disabled' === $response['status'] ) {
 				$this->clear_license();
 			}
 		}
@@ -284,10 +284,14 @@ class FrmAddon {
 		check_ajax_referer( 'frm_ajax', 'nonce' );
 
 		if ( ! isset( $_POST['license'] ) || empty( $_POST['license'] ) ) {
-			wp_die( json_encode( array(
-				'message' => __( 'Oops! You forgot to enter your license number.', 'formidable' ),
-				'success' => false,
-			) ) );
+			wp_die(
+				json_encode(
+					array(
+						'message' => __( 'Oops! You forgot to enter your license number.', 'formidable' ),
+						'success' => false,
+					)
+				)
+			);
 		}
 
 		$license = stripslashes( sanitize_text_field( $_POST['license'] ) );
@@ -424,8 +428,9 @@ class FrmAddon {
 
 		$message = __( 'Your License Key was invalid', 'formidable' );
 		if ( is_wp_error( $resp ) ) {
+			$link = FrmAppHelper::admin_upgrade_link( 'api', 'knowledgebase/why-cant-i-activate-formidable-pro/' );
 			/* translators: %1$s: Start link HTML, %2$s: End link HTML */
-			$message = sprintf( __( 'You had an error communicating with the Formidable API. %1$sClick here%2$s for more information.', 'formidable' ), '<a href="https://formidableforms.com/knowledgebase/why-cant-i-activate-formidable-pro/" target="_blank">', '</a>' );
+			$message = sprintf( __( 'You had an error communicating with the Formidable API. %1$sClick here%2$s for more information.', 'formidable' ), '<a href="' . esc_url( $link ) . '" target="_blank">', '</a>' );
 			$message .= ' ' . $resp->get_error_message();
 		} elseif ( 'error' === $body || is_wp_error( $body ) ) {
 			$message = __( 'You had an HTTP error connecting to the Formidable API', 'formidable' );
