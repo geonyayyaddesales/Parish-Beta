@@ -90,7 +90,8 @@ $arrow_icons = FrmStylesHelper::arrow_icons();
 	margin-top:<?php echo esc_html( $field_margin . $important ) ?>;
 }
 
-.<?php echo esc_html( $style_class ) ?> label.frm_primary_label{
+.<?php echo esc_html( $style_class ) ?> label.frm_primary_label,
+.<?php echo esc_html( $style_class ) ?>.frm_login_form label{
     font-family:<?php echo FrmAppHelper::kses( $font ); // WPCS: XSS ok. ?>;
     font-size:<?php echo esc_html( $font_size . $important ) ?>;
     color:<?php echo esc_html( $label_color . $important ) ?>;
@@ -305,7 +306,7 @@ if ( ! empty( $important ) ) {
     box-sizing:border-box;
     outline:none<?php echo esc_html( $important ) ?>;
     font-weight:<?php echo esc_html( $field_weight ) ?>;
-    box-shadow:<?php echo esc_html( ( isset( $remove_box_shadow ) && $remove_box_shadow ) ? 'none' : '0 1px 1px rgba(0, 0, 0, 0.075) inset' ) . esc_html( $important ) ?>;
+    box-shadow:<?php echo esc_html( ( isset( $remove_box_shadow ) && $remove_box_shadow ) ? 'none' : '0 1px 1px rgba(0, 0, 0, 0.075) inset' ) ?>;
 }
 
 .<?php echo esc_html( $style_class ) ?> input[type=text],
@@ -431,7 +432,8 @@ if ( ! empty( $important ) ) {
 .<?php echo esc_html( $style_class ) ?> input[type=submit],
 .<?php echo esc_html( $style_class ) ?> .frm_submit input[type=button],
 .<?php echo esc_html( $style_class ) ?> .frm_submit button,
-.frm_form_submit_style{
+.frm_form_submit_style,
+.<?php echo esc_html( $style_class ) ?>.frm_login_form input[type=submit]{
     width:<?php echo esc_html( ( $submit_width == '' ? 'auto' : $submit_width ) . $important ) ?>;
     font-family:<?php echo FrmAppHelper::kses( $font ); // WPCS: XSS ok. ?>;
     font-size:<?php echo esc_html( $submit_font_size . $important ); ?>;
@@ -479,7 +481,8 @@ if ( ! empty( $important ) ) {
 <?php if ( empty( $submit_bg_img ) ) { ?>
 .<?php echo esc_html( $style_class ); ?> input[type=submit]:hover,
 .<?php echo esc_html( $style_class ); ?> .frm_submit input[type=button]:hover,
-.<?php echo esc_html( $style_class ); ?> .frm_submit button:hover{
+.<?php echo esc_html( $style_class ); ?> .frm_submit button:hover,
+.<?php echo esc_html( $style_class ); ?>.frm_login_form input[type=submit]:hover{
     background: <?php echo esc_html( $submit_hover_bg_color . $important ) ?>;
     border-color: <?php echo esc_html( $submit_hover_border_color . $important ) ?>;
     color: <?php echo esc_html( $submit_hover_color . $important ) ?>;
@@ -492,9 +495,11 @@ if ( ! empty( $important ) ) {
 .<?php echo esc_html( $style_class ) ?> input[type=submit]:focus,
 .<?php echo esc_html( $style_class ) ?> .frm_submit input[type=button]:focus,
 .<?php echo esc_html( $style_class ) ?> .frm_submit button:focus,
+.<?php echo esc_html( $style_class ) ?>.frm_login_form input[type=submit]:focus,
 .<?php echo esc_html( $style_class ) ?> input[type=submit]:active,
 .<?php echo esc_html( $style_class ) ?> .frm_submit input[type=button]:active,
-.<?php echo esc_html( $style_class ) ?> .frm_submit button:active{
+.<?php echo esc_html( $style_class ) ?> .frm_submit button:active,
+.<?php echo esc_html( $style_class ) ?>.frm_login_form input[type=submit]:active{
     background: <?php echo esc_html( $submit_active_bg_color . $important ) ?>;
     border-color: <?php echo esc_html( $submit_active_border_color . $important ) ?>;
     color: <?php echo esc_html( $submit_active_color . $important ) ?>;

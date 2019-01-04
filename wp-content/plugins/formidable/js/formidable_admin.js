@@ -6,9 +6,6 @@ function frmAdminBuildJS(){
 	var $newFields = jQuery(document.getElementById('new_fields'));
 	var this_form_id = jQuery(document.getElementById('form_id')).val();
 	var cancelSort = false;
-
-	// Global settings
-	var s;
 	
 	function showElement(element){
 		element[0].style.display = '';
@@ -131,10 +128,7 @@ function frmAdminBuildJS(){
 		};
 
 		var wrapClass = jQuery('.wrap, .frm_wrap');
-
-		wrapClass.on( 'click', '.frm_remove_tag, .frm_remove_form_action', removeThisTag );
-		wrapClass.on( 'click', 'a[data-frmverify]', confirmClick );
-		wrapClass.on( 'click', '.widget-top,a.widget-action', clickWidget );
+		wrapClass.on('click', '.widget-top,a.widget-action', clickWidget);
 
 		wrapClass.on('mouseenter.frm', '.frm_help', function(){
 			jQuery(this).off('mouseenter.frm');
@@ -210,22 +204,15 @@ function frmAdminBuildJS(){
 		return false;
 	}
 	
-	function clickWidget( event, b ) {
+	function clickWidget(b){
 		/*jshint validthis:true */
-		var target = event.target;
-		if ( typeof b === 'undefined' ) {
+		if(typeof b.target !== 'undefined'){
 			b = this;
 		}
 
 		popCalcFields(b);
 
 		var cont = jQuery(b).closest('.frm_form_action_settings');
-		if ( cont.length && typeof target !== 'undefined' && ( target.parentElement.className.indexOf( 'frm_email_icons' ) > -1 || target.parentElement.className.indexOf( 'frm_toggle' ) > -1 ) ) {
-			// clicking on delete icon shouldn't open it
-			event.stopPropagation();
-			return;
-		}
-
 		if ( cont.length && cont.find('.form-table').length < 1 ) {
 			var action_id = cont.find('input[name$="[ID]"]').val();
 			var action_type = cont.find('input[name$="[post_excerpt]"]').val();
@@ -308,7 +295,6 @@ function frmAdminBuildJS(){
 
 	/* Form Builder */
 	function setupSortable(sort){
-		var startSort = false;
 		var opts = {
 			connectWith:'ul.frm_sorting',
 			items: '> li.frm_field_box',
@@ -368,25 +354,6 @@ function frmAdminBuildJS(){
 					moving.sortable('cancel');
 				}
 				moving.children('.edit_field_type_end_divider').appendTo(this);
-			},
-			sort:function(event){
-				jQuery( window ).scrollTop( function(i, v) {
-					if ( startSort === false ) {
-						startSort = event.clientY;
-						return v;
-					}
-
-					var moved = event.clientY - startSort;
-					var h = jQuery( window ).height();
-					var y = event.clientY - h / 2;
-					if ( event.clientY > ( h - 100 ) && moved > 5 ) {
-						// scrolling down
-						return v + y * 0.1;
-					} else if ( event.clientY < 100 && moved < -5 ) {
-						//scrolling up
-						return v - Math.abs( y * 0.1 );
-					}
-				});
 			}
 		};
 
@@ -768,7 +735,7 @@ function frmAdminBuildJS(){
 	 * @returns {RegExp}
 	 */
 	function getNonFormShortcodes() {
-		return /\[id\]|\[key\]|\[if\s\w+\]|\[foreach\s\w+\]|\[created-at(\s*)?/g;
+		return /\[(if\b|foreach|created-at|created-by|updated-at|updated-by)|((key|id)\])/;
 	}
 
 	function popCalcFields(v){
@@ -1234,7 +1201,7 @@ function frmAdminBuildJS(){
 	function clickSectionVis(e){
 		/*jshint validthis:true */
 		if(typeof jQuery(e.target).closest('.widget-top').attr('class') !== 'undefined'){
-			clickWidget( e, jQuery(e.target).closest('.widget-top') );
+			clickWidget(jQuery(e.target).closest('.widget-top'));
 		}
 
         // Do not stop propagation if opening TB_iframe
@@ -1748,48 +1715,6 @@ function frmAdminBuildJS(){
 		}, 2000);
 	}
 
-	function openUpgradeModal() {
-		var $info = jQuery('#frm_upgrade_modal');
-		if ( $info.length < 1 ) {
-			return;
-		}
-
-		$info.dialog({
-			dialogClass: 'wp-dialog',
-			modal: true,
-			autoOpen: false,
-			closeOnEscape: true,
-			width: '550px',
-			resizable: false,
-			draggable: false,
-			open: function( event ) {
-				jQuery('.ui-dialog-titlebar').addClass('frm_hidden').removeClass('ui-helper-clearfix');
-				jQuery('#wpwrap').addClass('frm_overlay');
-				jQuery('.wp-dialog').removeClass('ui-widget ui-widget-content ui-corner-all');
-				jQuery('#frm_upgrade_modal').removeClass('ui-dialog-content ui-widget-content');
-
-				// close dialog by clicking the overlay behind it
-				jQuery('.ui-widget-overlay, a.dismiss').bind('click', function() {
-					$info.dialog('close');
-				});
-			},
-			close: function() {
-				jQuery('#wpwrap').removeClass('frm_overlay');
-			}
-		});
-
-		jQuery('.frm_show_upgrade').click( function( event ) {
-			event.preventDefault();
-			jQuery('.frm_feature_label').html( jQuery(this).data('upgrade') );
-			$info.dialog('open');
-
-			// set the utm medium
-			var button = $info.find('.button-primary');
-			var link = button.attr('href').replace( /(medium=)[a-z_-]+/ig, '$1' + jQuery(this).data('medium') );
-			button.attr( 'href', link );
-		} );
-	}
-
 	/* Form settings */
 	function showSuccessOpt(){
 		/*jshint validthis:true */
@@ -1807,48 +1732,7 @@ function frmAdminBuildJS(){
 			jQuery('.'+c+'_action_message_box.'+c+'_action_box').fadeIn('slow');
 		}
 	}
-
-	function copyFormAction() {
-		/*jshint validthis:true */
-		var action = jQuery(this).closest('.frm_form_action_settings').clone();
-		var currentID = action.attr('id').replace( 'frm_form_action_', '' );
-		var newID = newActionId( currentID );
-		action.find('.frm_action_id, .frm-btn-group').remove();
-		action.find('input[name$="[' + currentID + '][ID]"]').val('');
-		action.find('.widget-inside').hide();
-
-		// the .html() gets original values, so they need to be set
-		action.find('input[type=text], textarea, input[type=number]').prop('defaultValue', function() {
-			return this.value;
-		});
-
-		action.find('input[type=checkbox], input[type=radio]').prop('defaultChecked', function() {
-			return this.checked;
-		});
-
-		var rename  = new RegExp( '\\[' + currentID + '\\]', 'g' );
-		var reid    = new RegExp( '_' + currentID + '"', 'g' );
-		var reclass = new RegExp( '-' + currentID + '"', 'g' );
-		var revalue = new RegExp( '"' + currentID + '"', 'g' ); // if a field id matches, this could cause trouble
-
-		var html = action.html().replace( rename, '[' + newID + ']' ).replace( reid, '_' + newID + '"' );
-		html = html.replace( reclass, '-' + newID + '"' ).replace( revalue, '"' + newID + '"' );
-		var div = '<div id="frm_form_action_' + newID + '" class="widget frm_form_action_settings frm_single_email_settings" data-actionkey="' + newID + '">';
-
-		jQuery('#frm_notification_settings').append( div + html + '</div>' );
-		initiateMultiselect();
-	}
-
-	function newActionId( currentID ) {
-		var newID = parseInt( currentID ) + 11;
-		var exists = document.getElementById( 'frm_form_action_' + newID );
-		if ( exists !== null ) {
-			newID++;
-			newID = newActionId( newID );
-		}
-		return newID;
-	}
-
+	
 	function addFormAction(){
 		/*jshint validthis:true */
 		var actionId = getNewActionId();
@@ -2717,15 +2601,16 @@ function frmAdminBuildJS(){
 		/*jshint validthis:true */
 		var button = jQuery(this);
 		var pluginSlug = button.data('plugin');
-		var input = document.getElementById('edd_'+pluginSlug+'_license_key');
-		var license = input.value;
+		var license = document.getElementById('edd_'+pluginSlug+'_license_key').value;
 		var wpmu = document.getElementById('proplug-wpmu');
 		if ( wpmu === null ) {
 			wpmu = 0;
-		} else if ( wpmu.checked ) {
-			wpmu = 1;
 		} else {
-			wpmu = 0;
+			if ( wpmu.checked ) {
+				wpmu = 1;
+			} else {
+				wpmu = 0;
+			}
 		}
 
 		jQuery.ajax({
@@ -2734,20 +2619,19 @@ function frmAdminBuildJS(){
 			success:function(msg){
 				var messageBox = jQuery('.frm_pro_license_msg');
 				if ( msg.success === true ) {
+					document.getElementById('frm_license_top').style.display = 'none';
 					document.getElementById('frm_license_bottom').style.display = 'block';
-					messageBox.removeClass('frm_error_style').addClass('frm_message frm_updated_message');
-					input.value = '•••••••••••••••••••';
+					messageBox.removeClass('frm_error_style').addClass('frm_message');
 				}else{
-					messageBox.addClass('frm_error_style').removeClass('frm_message frm_updated_message');
+					messageBox.addClass('frm_error_style').removeClass('frm_message');
 				}
 
-				messageBox.removeClass('frm_hidden');
 				messageBox.html(msg.message);
 				if ( msg.message !== '' ){
 					setTimeout(function(){
 						messageBox.html('');
-						messageBox.addClass('frm_hidden').removeClass('frm_error_style frm_message frm_updated_message');
-					},10000);
+						messageBox.removeClass('frm_error_style frm_message');
+					},5000);
 				}
 			}
 		});
@@ -2761,18 +2645,29 @@ function frmAdminBuildJS(){
 		var $link = jQuery(this);
 		$link.next('.spinner').show();
 		var pluginSlug = $link.data('plugin');
-		var input = document.getElementById('edd_'+pluginSlug+'_license_key');
-		var license = input.value;
+		var license = document.getElementById('edd_'+pluginSlug+'_license_key').value;
 		jQuery.ajax({
 			type:'POST',url:ajaxurl,
 			data:{action:'frm_addon_deactivate',license:license,plugin:pluginSlug,nonce:frmGlobal.nonce},
 			success:function(msg){
-				jQuery('.spinner, #frm_license_bottom').fadeOut('slow');
-				input.value = '';
+				jQuery('.spinner').fadeOut('slow');
 				$link.fadeOut('slow');
+				showAuthForm();
 			}
 		});
 		return false;
+	}
+
+	function showAuthForm(){
+		var form = document.getElementById('frm_license_top');
+		var cred = jQuery('#frm_license_bottom');
+		if(cred.is(':visible')){
+			cred.hide();
+			form.style.display = 'block';
+		}else{
+			cred.show();
+			form.style.display = 'none';
+		}
 	}
 
 	function saveAddonLicense() {
@@ -2840,96 +2735,6 @@ function frmAdminBuildJS(){
 	}
 
 	/* Import/Export page */
-
-	function startFormMigration( event ) {
-		event.preventDefault();
-
-		var checkedBoxes = jQuery( '#frm_form_importer input:checked' );
-		if ( checkedBoxes.length ) {
-
-			var ids = [];
-			checkedBoxes.each( function ( i ) {
-				ids[i] = this.value;
-			});
-
-			// Begin the import process.
-			importForms( ids );
-		}
-	}
-
-	/**
-	* Begins the process of importing the forms.
-	*/
-	function importForms( forms ) {
-
-		var $processSettings = jQuery( '#frm-importer-process' );
-
-		// Display total number of forms we have to import.
-		$processSettings.find( '.form-total' ).text( forms.length );
-		$processSettings.find( '.form-current' ).text( '1' );
-
-		// Hide the form select section.
-		jQuery( '#frm_form_importer' ).hide();
-
-		// Show processing status.
-		$processSettings.show();
-		$processSettings.find( '.process-completed' ).hide();
-
-		// Create global import queue.
-		s.importQueue = forms;
-		s.imported    = 0;
-
-		// Import the first form in the queue.
-		importForm();
-	}
-
-	/**
-	* Imports a single form from the import queue.
-	*/
-	function importForm() {
-		var $processSettings = jQuery( '#frm-importer-process' ),
-			formID           = s.importQueue[0],
-			provider         = jQuery('input[name="slug"]').val(),
-			data             = {
-				action:  'frm_import_' + provider,
-				form_id: formID,
-				nonce:   frmGlobal.nonce
-			};
-
-		// Trigger AJAX import for this form.
-		jQuery.post( ajaxurl, data, function( res ) {
-
-			if ( res.success ){
-				var statusUpdate;
-
-				if ( res.data.error ) {
-					statusUpdate = '<p>' + res.data.name + ': ' + res.data.msg + '</p>';
-				} else {
-					statusUpdate = '<p>Imported <a href="' + res.data.link + '" target="_blank">' + res.data.name + '</a></p>';
-				}
-
-				$processSettings.find( '.status' ).prepend( statusUpdate );
-				$processSettings.find( '.status' ).show();
-
-				// Remove this form ID from the queue.
-				s.importQueue = jQuery.grep(s.importQueue, function(value) {
-				  return value != formID;
-				});
-				s.imported++;
-
-				if ( s.importQueue.length === 0 ) {
-					$processSettings.find( '.process-count' ).hide();
-					$processSettings.find( '.forms-completed' ).text( s.imported );
-					$processSettings.find( '.process-completed' ).show();
-				} else {
-					// Import next form in the queue.
-					$processSettings.find( '.form-current' ).text( s.imported+1 );
-					importForm();
-				}
-			}
-		});
-	}
-
 	function validateExport(e){
         /*jshint validthis:true */
 		e.preventDefault();
@@ -3034,132 +2839,6 @@ function frmAdminBuildJS(){
         });
     }
 
-	/* Addons page */
-	function installAddon( e ) {
-		e.preventDefault();
-
-		// Remove any leftover error messages, output an icon and get the plugin basename that needs to be activated.
-		jQuery('.frm-addon-error').remove();
-		var button  = jQuery(this);
-		var plugin  = button.attr('rel');
-		var el      = button.parent();
-		var message = el.parent().find('.addon-status-label');
-		var loader  = button.next();
-
-		button.html( frm_admin_js.installing );
-		loader.css({ 'visibility': 'visible', 'display': 'inline-block' });
-
-		// Process the Ajax to perform the activation.
-		jQuery.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			async: true,
-			cache: false,
-			dataType: 'json',
-			data: {
-				action: 'frm_install_addon',
-				nonce:  frmGlobal.nonce,
-				plugin: plugin
-			},
-			success: function(response) {
-				// If there is a WP Error instance, output it here and quit the script.
-				if ( response.error ) {
-					addonError( response, el, button, loader );
-					return;
-				}
-
-				// If we need more credentials, output the form sent back to us.
-				if ( response.form ) {
-					// Display the form to gather the users credentials.
-
-					button.append('<div class="frm-addon-error frm_error_style">' + response.form + '</div>');
-					loader.hide();
-
-					// Add a disabled attribute the install button if the creds are needed.
-					button.attr('disabled', true);
-
-					el.on( 'click', '#upgrade', 'installAddonWithCreds' );
-
-					// No need to move further if we need to enter our creds.
-					return;
-				}
-
-				// The Ajax request was successful, so let's update the output.
-				button.css({ 'visibility': 'hidden' });
-				message.text( frm_admin_js.active );
-
-				// Proceed with CSS changes
-				el.parent().removeClass('frm-addon-not-installed').addClass('frm-addon-active');
-				loader.hide();
-			},
-			error: function(xhr, textStatus, e) {
-				loader.hide();
-			}
-		});
-	}
-
-	function installAddonWithCreds( e ) {
-		// Prevent the default action, let the user know we are attempting to install again and go with it.
-		e.preventDefault();
-
-		// Now let's make another Ajax request once the user has submitted their credentials.
-		var proceed   = jQuery(this);
-		var el        = proceed.parent().parent();
-		var loader    = proceed.next();
-
-		proceed.html( frm_admin_js.installing );
-		loader.css({ 'visibility': 'visible', 'display': 'inline-block' });
-
-		jQuery.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			async: true,
-			cache: false,
-			dataType: 'json',
-			data: {
-				action: 'frm_install_addon',
-				nonce:  frm_admin_js.nonce,
-				plugin: plugin,
-				hostname: el.find('#hostname').val(),
-				username: el.find('#username').val(),
-				password: el.find('#password').val()
-			},
-			success: function(response) {
-				// If there is a WP Error instance, output it here and quit the script.
-				if ( response.error ) {
-					addonError( response, el, button, loader );
-					return;
-				}
-
-				if ( response.form ) {
-					loader.hide();
-					jQuery('.frm-inline-error').remove();
-					//proceed.val(monsterinsights_admin.proceed);
-					//proceed.after('<span class="frm-inline-error">' + monsterinsights_admin.connect_error + '</span>');
-					return;
-				}
-
-				// The Ajax request was successful, so let's update the output.
-				button.hide();
-				jQuery(message).text( frm_admin_js.active );
-
-				// Proceed with CSS changes
-				jQuery(el).removeClass('frm-addon-not-installed').addClass('frm-addon-active');
-				loader.hide();
-			},
-			error: function(xhr, textStatus ,e) {
-				loader.hide();
-			}
-		});
-	}
-
-	function addonError( response, el, button, loader ) {
-		el.append('<div class="frm-addon-error frm_error_style"><p><strong>' + response.error + '</strong></p></div>');
-		button.html( frm_admin_js.install );
-		loader.hide();
-		jQuery('.frm-addon-error').delay(4000).fadeOut();
-	}
-
 	/* Helpers */
 	function toggle( cname, id ) {
 		if(id === '#'){
@@ -3189,8 +2868,6 @@ function frmAdminBuildJS(){
 
 	return{
 		init: function(){
-			s = {};
-
 			// Bootstrap dropdown button
 			jQuery('.wp-admin').click(function(e){
 				var t = jQuery(e.target);
@@ -3238,6 +2915,10 @@ function frmAdminBuildJS(){
 
 			loadTooltips();
 
+			jQuery(document).on('click', 'a[data-frmverify]', confirmClick);
+
+            jQuery(document.getElementById('wpbody')).on('click', '.frm_remove_tag, .frm_remove_form_action', removeThisTag);
+
 			// used on build, form settings, and view settings
 			var $shortCodeDiv = jQuery(document.getElementById('frm_shortcodediv'));
 			if($shortCodeDiv.length > 0){
@@ -3276,8 +2957,6 @@ function frmAdminBuildJS(){
 			
 			jQuery(document.getElementById('frm_deauthorize_link')).click(deauthorize);
 			jQuery('.frm_authorize_link').click(authorize);
-
-			jQuery('.frm-install-addon').click( installAddon );
 
 			// prevent annoying confirmation message from WordPress
 			jQuery('button, input[type=submit]').on('click', removeWPUnload);
@@ -3382,8 +3061,6 @@ function frmAdminBuildJS(){
 			$newFields.on('change', 'select.conf_field', addConf);
 
 			$newFields.on('change', '.frm_get_field_selection', getFieldSelection);
-
-			openUpgradeModal();
 		},
 		
 		settingsInit: function(){
@@ -3399,7 +3076,6 @@ function frmAdminBuildJS(){
 			$formActions.on('click', '.frm_add_postmeta_row', addPostmetaRow);
 			$formActions.on('click', '.frm_add_posttax_row', addPosttaxRow);
 			$formActions.on('click', '.frm_toggle_cf_opts', toggleCfOpts);
-			$formActions.on( 'click', '.frm_duplicate_form_action', copyFormAction );
 			jQuery('select[data-toggleclass], input[data-toggleclass]').change(toggleFormOpts);
 			jQuery('.frm_actions_list').on('click', '.frm_active_action', addFormAction);
 			initiateMultiselect();
@@ -3498,8 +3174,6 @@ function frmAdminBuildJS(){
 					jQuery('.edit_action_message_box').fadeOut('slow');//Hide On Update message box
 				}
 			});
-
-			openUpgradeModal();
 		},
 		
 		panelInit: function(){
@@ -3735,6 +3409,7 @@ function frmAdminBuildJS(){
 
 		globalSettingsInit: function(){
 			var $globalForm = jQuery(document.getElementById('form_global_settings'));
+			$globalForm.on('click', '.frm_show_auth_form', showAuthForm);
 			jQuery(document.getElementById('frm_uninstall_now')).click(uninstallNow);
             initiateMultiselect();
 
@@ -3742,18 +3417,9 @@ function frmAdminBuildJS(){
 			var licenseTab = document.getElementById('licenses_settings');
 			jQuery(licenseTab).on('click', '.edd_frm_save_license', saveAddonLicense);
 			jQuery(licenseTab).on('click', '.edd_frm_fill_license', fillLicenses);
-
-			jQuery('.settings-lite-cta .dismiss').click( function( event ) {
-				event.preventDefault();
-				jQuery.post( ajaxurl, {
-					action: 'frm_lite_settings_upgrade'
-				} );
-				jQuery( '.settings-lite-cta' ).remove();
-			} );
 		},
 
 		exportInit: function(){
-			jQuery('#frm_form_importer').submit( startFormMigration );
 			jQuery(document.getElementById('frm_export_xml')).submit(validateExport);
 			jQuery('#frm_export_xml input, #frm_export_xml select').change(removeExportError);
 			jQuery('input[name="frm_import_file"]').change(checkCSVExtension);

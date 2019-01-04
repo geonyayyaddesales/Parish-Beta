@@ -20,8 +20,6 @@ class FrmProLookupFieldsController {
 	/**
 	 * Get the data types for Lookup fields, formatted for Insert Field tab
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
-	 *
 	 * @return array $lookup_display_options
 	 */
 	public static function get_lookup_options_for_insert_fields_tab() {
@@ -35,7 +33,6 @@ class FrmProLookupFieldsController {
 	 *
 	 * @since 2.01.0
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 * @param array $values
 	 * @param object $field
 	 * @param array $opts
@@ -122,7 +119,6 @@ class FrmProLookupFieldsController {
 	 * Add some of the standard field options to Lookup fields
 	 *
 	 * @since 2.01.0
-	 * @codeCoverageIgnore
 	 * @return array $add_options
 	 */
 	public static function add_standard_field_options() {
@@ -510,9 +506,7 @@ class FrmProLookupFieldsController {
 			return array();
 		}
 
-		$args = array(
-			'lookup_field' => $values,
-		);
+		$args = array();
 
 		if ( self::need_to_filter_values_for_current_user( $values['id'], $values ) ) {
 			$current_user = get_current_user_id();
@@ -537,34 +531,23 @@ class FrmProLookupFieldsController {
 	}
 
 	/**
-	 * Formats meta values for a lookup field.
+	 * Formats meta values for a lookup field associated to an address field.
 	 *
-	 * @since 3.03.03
+	 * @since 3.01
 	 * @param array  $metas
 	 * @param object $linked_field
 	 * @return array
 	 */
-	private static function format_field_value_for_lookup( $metas, $linked_field, $args ) {
-
-		// don't mess with formats for select fields since existing fields won't be selected on edit
-		$lookup_type = isset( $args['lookup_field'] ) ? FrmField::get_option( $args['lookup_field'], 'data_type' ) : '';
-		$alter_lookup_value = empty( $lookup_type ) || 'text' === $lookup_type || 'address' === $linked_field->type;
-		if ( ! $alter_lookup_value ) {
+	private static function format_address_metas_for_lookup_field( $metas, $linked_field ) {
+		if ( 'address' !== $linked_field->type ) {
 			return $metas;
 		}
 
-		$field_class = FrmFieldFactory::get_field_object( $linked_field );
-		if ( ! is_callable( array( $field_class, 'prepare_field_value' ) ) ) {
-			return $metas;
-		}
+		$address_class = FrmFieldFactory::get_field_object( $linked_field );
 
 		$result = array();
 		foreach ( $metas as $value ) {
-			if ( 'address' === $linked_field->type ) {
-				$result[] = $field_class->format_address_for_display( $value, array( 'line_sep' => ' ' ) );
-			} else {
-				$result[] = $field_class->prepare_field_value( $value, array() );
-			}
+			$result[] = $address_class->format_address_for_display( $value, array( 'line_sep' => ' ' ) );
 		}
 
 		return $result;
@@ -961,30 +944,14 @@ class FrmProLookupFieldsController {
 		if ( is_array( $parent_val ) ) {
 			$entry_ids = array( 'first' => true );
 			foreach ( $parent_val as $p_val ) {
-				self::get_save_value_from_display( $linked_field, $p_val );
 				$new_entry_ids = FrmProEntryMeta::get_entry_ids_for_field_and_value( $linked_field, $p_val, $args );
 				$entry_ids = self::filter_or_merge_entry_ids( $entry_ids, $new_entry_ids, $args['and_or'] );
 			}
 		} else {
-			self::get_save_value_from_display( $linked_field, $parent_val );
 			$entry_ids = FrmProEntryMeta::get_entry_ids_for_field_and_value( $linked_field, $parent_val, $args );
 		}
 
 		return $entry_ids;
-	}
-
-	/**
-	 * Get the value in the format saved to the database in order to
-	 * correctly compare with an SQL call
-	 *
-	 * @since 3.03.03
-	 * @param object $field
-	 * @param string $value
-	 * @return string
-	 */
-	private static function get_save_value_from_display( $field, &$value ) {
-		$field_obj = FrmFieldFactory::get_field_object( $field );
-		$value = $field_obj->set_value_before_save( $value );
 	}
 
 	/**
@@ -1042,8 +1009,7 @@ class FrmProLookupFieldsController {
 		}
 
 		$args = array(
-			'entry_ids'    => $entry_ids,
-			'lookup_field' => $child_field,
+			'entry_ids' => $entry_ids,
 		);
 
 		if ( FrmField::is_option_true_in_object( $child_field, 'get_most_recent_value' ) ) {
@@ -1064,7 +1030,7 @@ class FrmProLookupFieldsController {
 	 */
 	private static function get_filtered_lookup_options( $field, $args ) {
 		$options = FrmProEntryMeta::get_all_metas_for_field( $field, $args );
-		$options = self::format_field_value_for_lookup( $options, $field, $args );
+		$options = self::format_address_metas_for_lookup_field( $options, $field );
 		$options = self::flatten_and_unserialize_meta_values( $options );
 		self::get_unique_values( $options );
 

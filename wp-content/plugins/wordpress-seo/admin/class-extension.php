@@ -69,6 +69,7 @@ class WPSEO_Extension {
 		}
 
 		return $this->get_title();
+
 	}
 
 	/**

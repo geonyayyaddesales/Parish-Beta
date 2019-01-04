@@ -585,12 +585,10 @@ class FrmFieldsHelper {
 			return FrmProDisplaysHelper::get_shortcodes( $content, $form_id );
         }
 
-		$fields = FrmField::getAll(
-			array(
-				'fi.form_id'  => (int) $form_id,
-				'fi.type not' => FrmField::no_save_fields(),
-			)
-		);
+		$fields = FrmField::getAll( array(
+			'fi.form_id'  => (int) $form_id,
+			'fi.type not' => FrmField::no_save_fields(),
+		) );
 
 		$tagregexp = self::allowed_shortcodes( $fields );
 
@@ -1062,14 +1060,12 @@ class FrmFieldsHelper {
 		}
 
 		// Get text for "other" text field
-		$other_args['value'] = self::get_other_val(
-			array(
-				'opt_key' => $args['opt_key'],
-				'field'   => $args['field'],
-				'parent'  => $parent,
-				'pointer' => $pointer,
-			)
-		);
+		$other_args['value'] = self::get_other_val( array(
+			'opt_key' => $args['opt_key'],
+			'field'   => $args['field'],
+			'parent'  => $parent,
+			'pointer' => $pointer,
+		) );
 	}
 
 	/**
@@ -1209,7 +1205,7 @@ class FrmFieldsHelper {
     }
 
 	public static function get_us_states() {
-		$states = array(
+		return apply_filters( 'frm_us_states', array(
 			'AL' => 'Alabama',
 			'AK' => 'Alaska',
 			'AR' => 'Arkansas',
@@ -1261,8 +1257,7 @@ class FrmFieldsHelper {
 			'WV' => 'West Virginia',
 			'WI' => 'Wisconsin',
 			'WY' => 'Wyoming',
-		);
-		return apply_filters( 'frm_us_states', $states );
+		) );
 	}
 
 	public static function get_countries() {

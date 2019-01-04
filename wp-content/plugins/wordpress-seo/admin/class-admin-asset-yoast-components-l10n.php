@@ -7,7 +7,6 @@
  * Localizes JavaScript files.
  */
 final class WPSEO_Admin_Asset_Yoast_Components_L10n {
-
 	/**
 	 * Localizes the given script with the JavaScript translations.
 	 *
@@ -16,11 +15,10 @@ final class WPSEO_Admin_Asset_Yoast_Components_L10n {
 	 * @return void
 	 */
 	public function localize_script( $script_handle ) {
-		$translations = array(
+		wp_localize_script( $script_handle, 'wpseoYoastJSL10n', array(
 			'yoast-components' => $this->get_translations( 'yoast-components' ),
 			'wordpress-seo'    => $this->get_translations( 'wordpress-seojs' ),
-		);
-		wp_localize_script( $script_handle, 'wpseoYoastJSL10n', $translations );
+		) );
 	}
 
 	/**

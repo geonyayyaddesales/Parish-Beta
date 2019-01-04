@@ -16,11 +16,6 @@ class WPSEO_Admin_Asset_Manager {
 	protected $asset_location;
 
 	/**
-	 * @var array The backport dependencies.
-	 */
-	protected static $backport_dependencies;
-
-	/**
 	 *  Prefix for naming the assets.
 	 */
 	const PREFIX = 'yoast-seo-';
@@ -132,12 +127,13 @@ class WPSEO_Admin_Asset_Manager {
 	 */
 	public function special_styles() {
 		$flat_version = $this->flatten_version( WPSEO_VERSION );
-		$asset_args   = array(
-			'name' => 'inside-editor',
-			'src'  => 'inside-editor-' . $flat_version,
-		);
 
-		return array( 'inside-editor' => new WPSEO_Admin_Asset( $asset_args ) );
+		return array(
+			'inside-editor' => new WPSEO_Admin_Asset( array(
+				'name' => 'inside-editor',
+				'src'  => 'inside-editor-' . $flat_version,
+			) ),
+		);
 	}
 
 	/**
@@ -173,47 +169,27 @@ class WPSEO_Admin_Asset_Manager {
 	}
 
 	/**
-	 * Reregisters the globals backport asset with the correct dependencies.
+	 * Returns the scripts that need to be registered.
 	 *
-	 * This function can be removed when WordPress 5.1 has been released, because from 5.0 wp-elements will be
-	 * registered earlier, which means we don't have to reregister things.
+	 * @todo Data format is not self-documenting. Needs explanation inline. R.
 	 *
-	 * @return void
+	 * @return array scripts that need to be registered.
 	 */
-	public function register_wp_assets() {
-		// The dependencies that are registered on 'admin_init'.
-		$previous_deps = self::$backport_dependencies;
+	protected function scripts_to_be_registered() {
 
-		// The dependencies that are present on 'admin_init'.
-		$current_deps = $this->get_backport_dependencies();
+		$select2_language = 'en';
+		$user_locale      = WPSEO_Utils::get_user_locale();
+		$language         = WPSEO_Utils::get_language( $user_locale );
 
-		/*
-		 * This is false when Gutenberg is active, because in that case Gutenberg's scripts are not registered yet
-		 * on 'admin_init', but they are on 'admin_enqueue_scripts'.
-		 */
-		if ( $current_deps === $previous_deps ) {
-			return;
+		if ( file_exists( WPSEO_PATH . "js/dist/select2/i18n/{$user_locale}.js" ) ) {
+			$select2_language = $user_locale; // Chinese and some others use full locale.
+		}
+		elseif ( file_exists( WPSEO_PATH . "js/dist/select2/i18n/{$language}.js" ) ) {
+			$select2_language = $language;
 		}
 
-		wp_deregister_script( self::PREFIX . 'wp-globals-backport' );
-
 		$flat_version = $this->flatten_version( WPSEO_VERSION );
-		$args = array(
-			'name' => 'wp-globals-backport',
-			'src'  => 'wp-seo-wp-globals-backport-' . $flat_version,
-			'deps' => $current_deps,
-		);
 
-		$script = new WPSEO_Admin_Asset( $args );
-		$this->register_script( $script );
-	}
-
-	/**
-	 * Gets the correct dependencies for the global backport.
-	 *
-	 * @return array The dependencies for the global backport.
-	 */
-	protected function get_backport_dependencies() {
 		$backport_wp_dependencies = array( self::PREFIX . 'react-dependencies' );
 
 		// If Gutenberg is present we can borrow their globals for our own.
@@ -241,46 +217,11 @@ class WPSEO_Admin_Asset_Manager {
 			}
 			else {
 				if ( ! wp_script_is( self::PREFIX . 'lodash', 'registered' ) ) {
-					wp_register_script( self::PREFIX . 'lodash-base', plugins_url( 'js/vendor/lodash.min.js', WPSEO_FILE ), array(), false, true );
-					wp_register_script( self::PREFIX . 'lodash', plugins_url( 'js/vendor/lodash-noconflict.js', WPSEO_FILE ), array( self::PREFIX . 'lodash-base' ), false, true );
+					wp_register_script( self::PREFIX . 'lodash', plugins_url( 'js/vendor/lodash.min.js', WPSEO_FILE ) );
+					wp_add_inline_script( self::PREFIX . 'lodash', 'window.lodash = _.noConflict();', 'after' );
 				}
 				$backport_wp_dependencies[] = self::PREFIX . 'lodash';
 			}
-		}
-
-		// Save the $backport_dependencies to use in register_wp_assets.
-		self::$backport_dependencies = $backport_wp_dependencies;
-
-		return $backport_wp_dependencies;
-	}
-
-	/**
-	 * Returns the scripts that need to be registered.
-	 *
-	 * @todo Data format is not self-documenting. Needs explanation inline. R.
-	 *
-	 * @return array The scripts that need to be registered.
-	 */
-	protected function scripts_to_be_registered() {
-		$select2_language = 'en';
-		$user_locale      = WPSEO_Utils::get_user_locale();
-		$language         = WPSEO_Utils::get_language( $user_locale );
-
-		if ( file_exists( WPSEO_PATH . "js/dist/select2/i18n/{$user_locale}.js" ) ) {
-			$select2_language = $user_locale; // Chinese and some others use full locale.
-		}
-		elseif ( file_exists( WPSEO_PATH . "js/dist/select2/i18n/{$language}.js" ) ) {
-			$select2_language = $language;
-		}
-
-		$flat_version = $this->flatten_version( WPSEO_VERSION );
-
-		$backport_wp_dependencies = $this->get_backport_dependencies();
-
-		// If Gutenberg's babel polyfill is not present, use our own.
-		$babel_polyfill = 'wp-polyfill-ecmascript';
-		if ( ! wp_script_is( 'wp-polyfill-ecmascript', 'registered' ) ) {
-			$babel_polyfill = self::PREFIX . 'babel-polyfill';
 		}
 
 		return array(
@@ -288,15 +229,11 @@ class WPSEO_Admin_Asset_Manager {
 				'name' => 'react-dependencies',
 				// Load webpack-commons for bundle support.
 				'src'  => 'commons-' . $flat_version,
-				'deps' => array( $babel_polyfill ),
 			),
 			array(
 				'name' => 'search-appearance',
 				'src'  => 'search-appearance-' . $flat_version,
-				'deps' => array(
-					self::PREFIX . 'react-dependencies',
-					self::PREFIX . 'components',
-				),
+				'deps' => 'react-dependencies',
 			),
 			array(
 				'name' => 'wp-globals-backport',
@@ -309,7 +246,6 @@ class WPSEO_Admin_Asset_Manager {
 				'deps' => array(
 					'jquery',
 					self::PREFIX . 'wp-globals-backport',
-					self::PREFIX . 'components',
 				),
 			),
 			array(
@@ -318,7 +254,6 @@ class WPSEO_Admin_Asset_Manager {
 				'deps' => array(
 					'jquery',
 					self::PREFIX . 'wp-globals-backport',
-					self::PREFIX . 'components',
 				),
 			),
 			array(
@@ -397,11 +332,9 @@ class WPSEO_Admin_Asset_Manager {
 					self::PREFIX . 'replacevar-plugin',
 					self::PREFIX . 'shortcode-plugin',
 					'wp-util',
-					'wp-api',
 					self::PREFIX . 'wp-globals-backport',
 					self::PREFIX . 'analysis',
 					self::PREFIX . 'react-dependencies',
-					self::PREFIX . 'components',
 				),
 			),
 			array(
@@ -411,7 +344,6 @@ class WPSEO_Admin_Asset_Manager {
 					self::PREFIX . 'replacevar-plugin',
 					self::PREFIX . 'wp-globals-backport',
 					self::PREFIX . 'analysis',
-					self::PREFIX . 'components',
 				),
 			),
 			array(
@@ -420,7 +352,6 @@ class WPSEO_Admin_Asset_Manager {
 				'deps' => array(
 					self::PREFIX . 'react-dependencies',
 					self::PREFIX . 'analysis',
-					self::PREFIX . 'components',
 				),
 			),
 			array(
@@ -449,7 +380,6 @@ class WPSEO_Admin_Asset_Manager {
 					'jquery',
 					'wp-util',
 					self::PREFIX . 'react-dependencies',
-					self::PREFIX . 'wp-globals-backport',
 				),
 			),
 			array(
@@ -477,7 +407,6 @@ class WPSEO_Admin_Asset_Manager {
 				'deps' => array(
 					'jquery',
 					self::PREFIX . 'wp-globals-backport',
-					self::PREFIX . 'components',
 				),
 			),
 			array(
@@ -523,7 +452,6 @@ class WPSEO_Admin_Asset_Manager {
 					self::PREFIX . 'api',
 					'jquery',
 					self::PREFIX . 'wp-globals-backport',
-					self::PREFIX . 'components',
 				),
 			),
 			array(
@@ -537,23 +465,11 @@ class WPSEO_Admin_Asset_Manager {
 			array(
 				'name' => 'analysis',
 				'src'  => 'analysis-' . $flat_version,
-				'deps' => array(
-					self::PREFIX . 'react-dependencies',
-				),
-			),
-			array(
-				'name' => 'components',
-				'src'  => 'components-' . $flat_version,
-				'deps' => array( self::PREFIX . 'analysis' ),
 			),
 			array(
 				'name' => 'structured-data-blocks',
 				'src'  => 'wp-seo-structured-data-blocks-' . $flat_version,
 				'deps' => array( 'wp-blocks', 'wp-i18n', 'wp-element' ),
-			),
-			array(
-				'name' => 'babel-polyfill',
-				'src'  => 'babel-polyfill-' . $flat_version,
 			),
 		);
 	}
@@ -655,15 +571,24 @@ class WPSEO_Admin_Asset_Manager {
 	/**
 	 * Checks if the Gutenberg assets must be loaded.
 	 *
-	 * @return bool True when the Gutenberg assets must be loaded.
+	 * @return bool True wheter Gutenberg assets must be loaded.
 	 */
 	protected function should_load_gutenberg_assets() {
+		// When Gutenberg is not active, just return false.
+		if ( ! function_exists( 'gutenberg_register_scripts_and_styles' ) ) {
+			return false;
+		}
 
 		// When working in the classic editor shipped with Gutenberg, the assets shouldn't be loaded. Fixes IE11 bug.
 		if ( isset( $_GET['classic-editor'] ) ) {
 			return false;
 		}
 
-		return wp_script_is( 'wp-element', 'registered' );
+		// When classic editor plugin and Gutenberg are active, the Gutenberg assets shouldn't be loaded.
+		if ( function_exists( 'classic_editor_is_gutenberg_active' ) && classic_editor_is_gutenberg_active() ) {
+			return false;
+		}
+
+		return true;
 	}
 }

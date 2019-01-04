@@ -50,6 +50,7 @@ class WPSEO_Export {
 	 */
 	private $dir = array();
 
+
 	/**
 	 * Class constructor
 	 *

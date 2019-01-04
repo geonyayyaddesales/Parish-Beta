@@ -585,7 +585,10 @@ class FrmForm {
 				$where['status'] = array( null, '', 'published' );
 			}
 
-			$results = FrmDb::get_results( 'frm_forms', $where, '*', compact( 'order_by', 'limit' ) );
+			$results = FrmDb::get_results( 'frm_forms', $where, '*', array(
+				'order_by' => $order_by,
+				'limit'    => $limit,
+			) );
 		} else {
 			global $wpdb;
 
@@ -638,15 +641,11 @@ class FrmForm {
     	    return $counts;
     	}
 
-		$results = (array) FrmDb::get_results(
-			'frm_forms',
-			array(
-				'or'               => 1,
-				'parent_form_id'   => null,
-				'parent_form_id <' => 0,
-			),
-			'status, is_template'
-		);
+		$results = (array) FrmDb::get_results( 'frm_forms', array(
+			'or' => 1,
+			'parent_form_id' => null,
+			'parent_form_id <' => 0,
+		), 'status, is_template' );
 
 		$statuses = array( 'published', 'draft', 'template', 'trash' );
     	$counts = array_fill_keys( $statuses, 0 );

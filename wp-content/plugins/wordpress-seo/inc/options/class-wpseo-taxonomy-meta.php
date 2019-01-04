@@ -31,6 +31,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 	 */
 	protected $defaults = array();
 
+
 	/**
 	 * @var  string  Option name - same as $option_name property, but now also available to static methods.
 	 * @static
@@ -55,11 +56,9 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		'wpseo_opengraph-title'       => '',
 		'wpseo_opengraph-description' => '',
 		'wpseo_opengraph-image'       => '',
-		'wpseo_opengraph-image-id'    => '',
 		'wpseo_twitter-title'         => '',
 		'wpseo_twitter-description'   => '',
 		'wpseo_twitter-image'         => '',
-		'wpseo_twitter-image-id'      => '',
 	);
 
 	/**
@@ -95,6 +94,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		add_action( 'update_option_' . $this->option_name, array( 'WPSEO_Utils', 'flush_w3tc_cache' ) );
 	}
 
+
 	/**
 	 * Get the singleton instance of this class.
 	 *
@@ -109,6 +109,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		return self::$instance;
 	}
 
+
 	/**
 	 * Add extra default options received from a filter.
 	 */
@@ -118,6 +119,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 			self::$defaults_per_term = array_merge( $extra_defaults_per_term, self::$defaults_per_term );
 		}
 	}
+
 
 	/**
 	 * Helper method - Combines a fixed array of default values with an options array
@@ -174,6 +176,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		}
 	*/
 
+
 	/**
 	 * Validate the option.
 	 *
@@ -193,6 +196,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 
 			return $dirty;
 		}
+
 
 		foreach ( $dirty as $taxonomy => $terms ) {
 			/* Don't validate taxonomy - may not be registered yet and we don't want to remove valid ones. */
@@ -226,6 +230,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 
 		return $clean;
 	}
+
 
 	/**
 	 * Validate the meta data for one individual term and removes default values (no need to save those).
@@ -311,6 +316,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		return array_diff_assoc( $clean, self::$defaults_per_term );
 	}
 
+
 	/**
 	 * Clean a given option value.
 	 * - Convert old option values to new
@@ -383,6 +389,7 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 
 		return $option_value;
 	}
+
 
 	/**
 	 * Retrieve a taxonomy term's meta value(s).

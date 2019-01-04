@@ -152,7 +152,7 @@ function frmProFormJS(){
 
 		field.dropzone({
 			url:frm_js.ajax_url,
-			addRemoveLinks: false,
+			addRemoveLinks: true,
 			paramName: field.attr('id').replace('_dropzone', ''),
 			maxFilesize: uploadFields[i].maxFilesize,
 			maxFiles: max,
@@ -171,10 +171,7 @@ function frmProFormJS(){
 			resizeMethod: 'contain',
 			resizeWidth: uploadFields[i].resizeWidth,
 			resizeHeight: uploadFields[i].resizeHeight,
-			thumbnailWidth: 60,
-			thumbnailHeight: 60,
 			timeout: uploadFields[i].timeout,
-			previewTemplate: filePreviewHTML( uploadFields[i] ),
 			fallback: function() {
 				// Force ajax submit to turn off
 				jQuery(this.element).closest('form').removeClass('frm_ajax_submit');
@@ -269,35 +266,6 @@ function frmProFormJS(){
 		});
 	}
 
-	function filePreviewHTML( field ) {
-		return "<div class=\"dz-preview dz-file-preview frm_clearfix\">\n" +
-		"<div class=\"dz-image\"><img data-dz-thumbnail /></div>\n" +
-		"<div class=\"dz-column\">\n" +
-		"<div class=\"dz-details\">\n" +
-		"<div class=\"dz-filename\"><span data-dz-name></span></div>\n" +
-		"<div class=\"dz-size\"><span data-dz-size></span></div>\n" +
-		'<a class="dz-remove frm_icon_font frm_cancel1_icon" href="javascript:undefined;" data-dz-remove title="' + field.remove + '"></a>' +
-		"</div>\n" +
-		"<div class=\"dz-progress\"><span class=\"dz-upload\" data-dz-uploadprogress></span></div>\n" +
-		"<div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n" +
-		"</div>\n" +
-		"</div>";
-	}
-
-	function getHiddenUploadHTML( field, mediaID, fieldName ) {
-		return '<input name="'+ fieldName +'[]" type="hidden" value="'+ mediaID +'" data-frmfile="'+ field.fieldID +'" />';
-	}
-
-	function removeFile(){
-		/*jshint validthis:true */
-		var fieldName = jQuery(this).data('frm-remove');
-		fadeOut(jQuery(this).closest('.dz-preview'));
-		var singleField = jQuery('input[name="'+ fieldName +'"]');
-		if ( singleField.length ) {
-			singleField.val('');
-		}
-	}
-
 	function isSpam( formID ) {
 		if ( isHoneypotSpam( formID ) || isHeadless() ) {
 			return true;
@@ -377,6 +345,20 @@ function frmProFormJS(){
 		}
 	}
 
+	function getHiddenUploadHTML( field, mediaID, fieldName ) {
+		return '<input name="'+ fieldName +'[]" type="hidden" value="'+ mediaID +'" data-frmfile="'+ field.fieldID +'" />';
+	}
+
+	function removeFile(){
+		/*jshint validthis:true */
+		var fieldName = jQuery(this).data('frm-remove');
+		fadeOut(jQuery(this).parent('.dz-preview'));
+		var singleField = jQuery('input[name="'+ fieldName +'"]');
+		if ( singleField.length ) {
+			singleField.val('');
+		}
+	}
+
 	/**
 	 * Show "Other" text box when Other item is checked/selected
 	 * Hide and clear text box when item is unchecked/unselected
@@ -391,7 +373,7 @@ function frmProFormJS(){
         if ( type === 'select-one' ) {
             select = true;
             var curOpt = this.options[this.selectedIndex];
-            if ( typeof curOpt !== 'undefined' && curOpt.className === 'frm_other_trigger' ) {
+            if ( curOpt.className === 'frm_other_trigger' ) {
                 other = true;
             }
         } else if ( type === 'select-multiple' ) {
@@ -1244,8 +1226,11 @@ function frmProFormJS(){
 		if ( inputs.length ) {
 
 			var prevInput;
+			var typeArray = ['checkbox','radio'];
 			for ( var i = 0; i < inputs.length; i++ ) {
-				if ( skipSetValue( i, prevInput, inputs ) ) {
+				// Don't loop through every input in a radio/checkbox field
+				// TODO: Improve this for checkboxes and address fields
+				if ( i > 0 && typeof prevInput !== 'undefined' && prevInput.name == inputs[i].name && typeArray.indexOf( prevInput.type ) > -1 ) {
 					continue;
 				}
 
@@ -1261,21 +1246,6 @@ function frmProFormJS(){
 				prevInput = inputs[i];
 			}
 		}
-	}
-
-	/**
-	 * Don't loop through every input in a radio/checkbox/other field
-	 * TODO: Improve this for checkboxes and address fields
-	 */
-	function skipSetValue( i, prevInput, inputs ) {
-		var typeArray = ['checkbox','radio'];
-
-		if ( i < 1 || typeof prevInput === 'undefined' ) {
-			return false;
-		}
-
-		var isOther = inputs[i].className.indexOf('frm_other_input') !== -1;
-		return isOther || ( prevInput.name == inputs[i].name && typeArray.indexOf( prevInput.type ) > -1 );
 	}
 
 	// Check if a field input inside of a section or embedded form is conditionally hidden
@@ -1581,9 +1551,6 @@ function frmProFormJS(){
 
 			if ( input.tagName == 'SELECT' ) {
 				maybeUpdateChosenOptions( input );
-				if ( input.value === '' ) {
-					setOtherSelectValue( input, defaultValue );
-				}
 			}
 
 			triggerChange( $input );
@@ -1592,16 +1559,10 @@ function frmProFormJS(){
 
 	function setCheckboxOrRadioDefaultValue( inputName, defaultValue ) {
 		// Get all checkbox/radio inputs for this field
-		var radioInputs = document.getElementsByName( inputName ),
-			isSet = false,
-			firstInput = false;
+		var radioInputs = document.getElementsByName( inputName );
 
 		// Loop through options and set the default value
 		for ( var i = 0, l = radioInputs.length; i < l; i++ ) {
-			if ( firstInput === false ) {
-				firstInput = radioInputs[i];
-			}
-
 			if ( radioInputs[i].type == 'hidden' ) {
 				// If field is read-only and there is a hidden input
 				if ( jQuery.isArray(defaultValue) && defaultValue[i] !== null ) {
@@ -1609,21 +1570,15 @@ function frmProFormJS(){
 				} else {
 					radioInputs[i].value = defaultValue;
 				}
-				isSet = true;
 			} else if (radioInputs[i].value == defaultValue ||
 				( jQuery.isArray(defaultValue) && defaultValue.indexOf( radioInputs[i].value ) > -1 ) ) {
 				// If input's value matches the default value, set checked to true
 
 				radioInputs[i].checked = true;
-				isSet = true;
 				if ( radioInputs[i].type == 'radio') {
 					break;
 				}
 			}
-		}
-
-		if ( ! isSet && firstInput !== false ) {
-			setOtherValueLimited( firstInput, defaultValue );
 		}
 	}
 
@@ -2610,10 +2565,6 @@ function frmProFormJS(){
 		}
 		var listInput = document.getElementById(inputId);
 
-		if ( listInput === null ) {
-			return;
-		}
-
 		// Set the new value
 		listInput.value = newValue;
 
@@ -2994,14 +2945,12 @@ function frmProFormJS(){
 
 			thisFullCalc = trimNumericCalculation( thisFullCalc );
 
-			if ( thisFullCalc !== '' ) {
-				try {
-					total = parseFloat( eval( thisFullCalc ) );
-				}
+			try {
+				total = parseFloat( eval( thisFullCalc ) );
+			}
 
-				catch ( err ) {
-					maybeShowCalculationsErrorAlert( err, field_key, thisFullCalc );
-				}
+			catch ( err ) {
+				maybeShowCalculationsErrorAlert( err, field_key, thisFullCalc );
 			}
 
 			if ( typeof total === 'undefined' || isNaN(total) ) {
@@ -3459,54 +3408,7 @@ function frmProFormJS(){
 
 	/* Get value from Other text field in a visible dropdown field */
 	function getOtherSelectValue( currentOpt ) {
-		var fields = getOtherSelects( currentOpt );
-		return fields.val();
-	}
-
-	/**
-	 * Fill in the other text, and select the other option from a dropdown
-	 */
-	function setOtherSelectValue( thisField, value ) {
-		var i, fields = getOtherSelects( thisField );
-		if ( fields.length < 1 ) {
-			return;
-		}
-
-		fields.val( value );
-
-		for ( i = 0; i < thisField.options.length; i++ ) {
-			if ( thisField.options[i].className.indexOf('frm_other_trigger') !== -1 ) {
-		   		thisField.options[i].selected = true;
-			}
-		}
-	}
-
-	function getOtherSelects( currentOpt ) {
-		return jQuery( currentOpt ).closest( '.frm_other_container' ).find( '.frm_other_input' );
-	}
-
-	function setOtherValueLimited( thisField, value ) {
-		var otherText, baseId, parentInput,
-			i = 0,
-			idParts = thisField.id.split('-');
-		idParts.pop(); //remove the last id
-		baseId = idParts.join('-');
-
-		if ( typeof( document.querySelectorAll ) === 'function' ) {
-			otherText = document.querySelectorAll( '[id^='+baseId+'-other][id$=otext]' );
-
-			if ( otherText.length > 0 ) {
-				for ( i = 0; i < otherText.length; i++ ) {
-					if ( otherText[i].value === '' ) {
-						otherText[i].value = value;
-						parentInput = document.getElementById( otherText[i].id.replace( '-otext', '' ) );
-						if ( parentInput !== null ) {
-							parentInput.checked = true;
-						}
-					}
-				}
-			}
-		}
+		return jQuery(currentOpt).closest('.frm_other_container').find('.frm_other_input').val();
 	}
 
 	function savingDraftEntry( object ) {

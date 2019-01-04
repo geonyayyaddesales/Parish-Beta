@@ -35,4 +35,5 @@ class WPSEO_Import_Premium_SEO_Pack extends WPSEO_Import_Squirrly {
 	protected function retrieve_posts_query() {
 		return "SELECT URL AS identifier FROM {$this->table_name} WHERE blog_id = %d";
 	}
+
 }

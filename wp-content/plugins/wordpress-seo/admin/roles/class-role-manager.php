@@ -9,7 +9,6 @@
  * Role Manager interface.
  */
 interface WPSEO_Role_Manager {
-
 	/**
 	 * Registers a role.
 	 *

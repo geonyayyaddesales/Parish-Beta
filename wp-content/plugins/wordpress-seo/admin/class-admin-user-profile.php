@@ -10,7 +10,6 @@
  * Customizes user profile.
  */
 class WPSEO_Admin_User_Profile {
-
 	/**
 	 * Class constructor.
 	 */

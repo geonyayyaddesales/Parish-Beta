@@ -9,7 +9,6 @@
  * Config Component interface
  */
 interface WPSEO_Config_Component {
-
 	/**
 	 * @return string
 	 */

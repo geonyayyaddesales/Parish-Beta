@@ -244,4 +244,6 @@ class WPSEO_Taxonomy_Columns {
 
 		return WPSEO_Utils::is_metabox_active( $taxonomy, 'taxonomy' );
 	}
+
+
 }

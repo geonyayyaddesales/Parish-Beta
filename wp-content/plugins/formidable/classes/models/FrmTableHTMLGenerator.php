@@ -73,15 +73,14 @@ class FrmTableHTMLGenerator {
 	 * @param array $atts
 	 */
 	private function init_style_settings( $atts ) {
-		$style_settings = array(
+		$this->style_settings = apply_filters( 'frm_show_entry_styles', array(
 			'border_color' => 'dddddd',
 			'bg_color'     => 'f7f7f7',
 			'text_color'   => '444444',
 			'font_size'    => '12px',
 			'border_width' => '1px',
 			'alt_bg_color' => 'ffffff',
-		);
-		$this->style_settings = apply_filters( 'frm_show_entry_styles', $style_settings );
+		) );
 
 		foreach ( $this->style_settings as $key => $setting ) {
 			if ( isset( $atts[ $key ] ) && $atts[ $key ] !== '' ) {

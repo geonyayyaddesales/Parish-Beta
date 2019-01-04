@@ -149,13 +149,10 @@ class FrmFieldsController {
 			unset( $new_val );
 		}
 
-		FrmField::update(
-			$field_id,
-			array(
-				'field_options' => $field->field_options,
-				'form_id'       => $field->form_id,
-			)
-		);
+        FrmField::update( $field_id, array(
+            'field_options' => $field->field_options,
+			'form_id'       => $field->form_id,
+        ) );
         wp_die();
     }
 
@@ -168,15 +165,13 @@ class FrmFieldsController {
 
 		$copy_field = FrmField::getOne( $field_id );
         if ( ! $copy_field ) {
-			wp_die();
+            wp_die();
         }
 
 		do_action( 'frm_duplicate_field', $copy_field, $form_id );
 		do_action( 'frm_duplicate_field_' . $copy_field->type, $copy_field, $form_id );
 
-		$values = array(
-			'id' => $copy_field->id,
-		);
+		$values = array();
 		FrmFieldsHelper::fill_field( $values, $copy_field, $copy_field->form_id );
 		$values = apply_filters( 'frm_prepare_single_field_for_duplication', $values );
 

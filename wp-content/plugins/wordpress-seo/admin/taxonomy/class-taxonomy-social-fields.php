@@ -67,11 +67,6 @@ class WPSEO_Taxonomy_Social_Fields extends WPSEO_Taxonomy_Fields {
 				sprintf( __( 'The recommended image size for %1$s is %2$s pixels.', 'wordpress-seo' ), $settings['label'], $settings['size'] ),
 				'upload'
 			),
-			$settings['network'] . '-image-id' => $this->get_field_config(
-				'',
-				'',
-				'hidden'
-			),
 		);
 	}
 

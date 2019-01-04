@@ -28,15 +28,7 @@ class Yoast_Form {
 	 * @var array
 	 * @since 2.0
 	 */
-	public $options = array();
-
-	/**
-	 * Option instance.
-	 *
-	 * @since 8.4
-	 * @var WPSEO_Option|null
-	 */
-	protected $option_instance = null;
+	public $options;
 
 	/**
 	 * Get the singleton instance of this class
@@ -110,16 +102,7 @@ class Yoast_Form {
 	 */
 	public function set_option( $option_name ) {
 		$this->option_name = $option_name;
-
-		$this->options = WPSEO_Options::get_option( $option_name );
-		if ( $this->options === null ) {
-			$this->options = (array) get_option( $option_name, array() );
-		}
-
-		$this->option_instance = WPSEO_Options::get_option_instance( $option_name );
-		if ( ! $this->option_instance ) {
-			$this->option_instance = null;
-		}
+		$this->options     = $this->get_option();
 	}
 
 	/**
@@ -135,6 +118,22 @@ class Yoast_Form {
 		if ( $overwrite || ! array_key_exists( $key, $this->options ) ) {
 			$this->options[ $key ] = $value;
 		}
+	}
+
+	/**
+	 * Retrieve options based on whether we're on multisite or not.
+	 *
+	 * @since 1.2.4
+	 * @since 2.0   Moved to this class.
+	 *
+	 * @return array
+	 */
+	public function get_option() {
+		if ( is_network_admin() ) {
+			return get_site_option( $this->option_name );
+		}
+
+		return get_option( $this->option_name );
 	}
 
 	/**
@@ -207,13 +206,12 @@ class Yoast_Form {
 	 * @param array  $attr HTML attributes set.
 	 */
 	public function label( $text, $attr ) {
-		$defaults = array(
-			'class' => 'checkbox',
-			'close' => true,
-			'for'   => '',
+		$attr = wp_parse_args( $attr, array(
+				'class' => 'checkbox',
+				'close' => true,
+				'for'   => '',
+			)
 		);
-		$attr     = wp_parse_args( $attr, $defaults );
-
 		echo "<label class='" . esc_attr( $attr['class'] ) . "' for='" . esc_attr( $attr['for'] ) . "'>$text";
 		if ( $attr['close'] ) {
 			echo '</label>';
@@ -229,11 +227,11 @@ class Yoast_Form {
 	 * @param array  $attr HTML attributes set.
 	 */
 	public function legend( $text, $attr ) {
-		$defaults = array(
-			'id'    => '',
-			'class' => '',
+		$attr = wp_parse_args( $attr, array(
+				'id'    => '',
+				'class' => '',
+			)
 		);
-		$attr     = wp_parse_args( $attr, $defaults );
 
 		$id = ( '' === $attr['id'] ) ? '' : ' id="' . esc_attr( $attr['id'] ) . '"';
 		echo '<legend class="yoast-form-legend ' . esc_attr( $attr['class'] ) . '"' . $id . '>' . $text . '</legend>';
@@ -268,7 +266,7 @@ class Yoast_Form {
 			$class = 'double';
 		}
 
-		echo '<input class="checkbox ', esc_attr( $class ), '" type="checkbox" id="', esc_attr( $var ), '" name="', esc_attr( $this->option_name ), '[', esc_attr( $var ), ']" value="on"', checked( $this->options[ $var ], 'on', false ), disabled( $this->is_control_disabled( $var ), true, false ), '/>';
+		echo '<input class="checkbox ', esc_attr( $class ), '" type="checkbox" id="', esc_attr( $var ), '" name="', esc_attr( $this->option_name ), '[', esc_attr( $var ), ']" value="on"', checked( $this->options[ $var ], 'on', false ), '/>';
 
 		if ( ! empty( $label ) ) {
 			$this->label( $label, array( 'for' => $var ) );
@@ -319,7 +317,7 @@ class Yoast_Form {
 		echo "<div class='switch-container$help_class'>",
 		"<span class='switch-light-visual-label'>{$label}</span>" . $help,
 		'<label class="', $class, '"><b class="switch-yoast-seo-jaws-a11y">&nbsp;</b>',
-		'<input type="checkbox" aria-labelledby="', $aria_labelledby, '" id="', esc_attr( $var ), '" name="', esc_attr( $this->option_name ), '[', esc_attr( $var ), ']" value="on"', checked( $this->options[ $var ], 'on', false ), disabled( $this->is_control_disabled( $var ), true, false ), '/>',
+		'<input type="checkbox" aria-labelledby="', $aria_labelledby, '" id="', esc_attr( $var ), '" name="', esc_attr( $this->option_name ), '[', esc_attr( $var ), ']" value="on"', checked( $this->options[ $var ], 'on', false ), '/>',
 		"<b class='label-text screen-reader-text' id='{$aria_labelledby}'>{$label}</b>",
 		'<span aria-hidden="true">
 			<span>', esc_html( $off_button ) ,'</span>
@@ -345,13 +343,11 @@ class Yoast_Form {
 				'class' => $attr,
 			);
 		}
-
-		$defaults = array(
+		$attr = wp_parse_args( $attr, array(
 			'placeholder' => '',
 			'class'       => '',
-		);
-		$attr     = wp_parse_args( $attr, $defaults );
-		$val      = ( isset( $this->options[ $var ] ) ) ? $this->options[ $var ] : '';
+		) );
+		$val  = ( isset( $this->options[ $var ] ) ) ? $this->options[ $var ] : '';
 
 		$this->label(
 			$label . ':',
@@ -360,7 +356,7 @@ class Yoast_Form {
 				'class' => 'textinput',
 			)
 		);
-		echo '<input class="textinput ' . esc_attr( $attr['class'] ) . ' " placeholder="' . esc_attr( $attr['placeholder'] ) . '" type="text" id="', esc_attr( $var ), '" name="', esc_attr( $this->option_name ), '[', esc_attr( $var ), ']" value="', esc_attr( $val ), '"', disabled( $this->is_control_disabled( $var ), true, false ), '/>', '<br class="clear" />';
+		echo '<input class="textinput ' . esc_attr( $attr['class'] ) . ' " placeholder="' . esc_attr( $attr['placeholder'] ) . '" type="text" id="', esc_attr( $var ), '" name="', esc_attr( $this->option_name ), '[', esc_attr( $var ), ']" value="', esc_attr( $val ), '"/>', '<br class="clear" />';
 	}
 
 	/**
@@ -378,14 +374,12 @@ class Yoast_Form {
 				'class' => $attr,
 			);
 		}
-
-		$defaults = array(
+		$attr = wp_parse_args( $attr, array(
 			'cols'  => '',
 			'rows'  => '',
 			'class' => '',
-		);
-		$attr     = wp_parse_args( $attr, $defaults );
-		$val      = ( isset( $this->options[ $var ] ) ) ? $this->options[ $var ] : '';
+		) );
+		$val  = ( isset( $this->options[ $var ] ) ) ? $this->options[ $var ] : '';
 
 		$this->label(
 			$label . ':',
@@ -394,7 +388,7 @@ class Yoast_Form {
 				'class' => 'textinput',
 			)
 		);
-		echo '<textarea cols="' . esc_attr( $attr['cols'] ) . '" rows="' . esc_attr( $attr['rows'] ) . '" class="textinput ' . esc_attr( $attr['class'] ) . '" id="' . esc_attr( $var ) . '" name="' . esc_attr( $this->option_name ) . '[' . esc_attr( $var ) . ']"', disabled( $this->is_control_disabled( $var ), true, false ), '>' . esc_textarea( $val ) . '</textarea><br class="clear" />';
+		echo '<textarea cols="' . esc_attr( $attr['cols'] ) . '" rows="' . esc_attr( $attr['rows'] ) . '" class="textinput ' . esc_attr( $attr['class'] ) . '" id="' . esc_attr( $var ) . '" name="' . esc_attr( $this->option_name ) . '[' . esc_attr( $var ) . ']">' . esc_textarea( $val ) . '</textarea><br class="clear" />';
 	}
 
 	/**
@@ -423,11 +417,11 @@ class Yoast_Form {
 	 *
 	 * @since 2.0
 	 *
-	 * @param string $var            The variable within the option to create the select for.
+	 * @param string $field_name     The variable within the option to create the select for.
 	 * @param string $label          The label to show for the variable.
 	 * @param array  $select_options The select options to choose from.
 	 */
-	public function select( $var, $label, array $select_options ) {
+	public function select( $field_name, $label, array $select_options ) {
 
 		if ( empty( $select_options ) ) {
 			return;
@@ -436,19 +430,16 @@ class Yoast_Form {
 		$this->label(
 			$label . ':',
 			array(
-				'for'   => $var,
+				'for'   => $field_name,
 				'class' => 'select',
 			)
 		);
 
-		$select_name   = esc_attr( $this->option_name ) . '[' . esc_attr( $var ) . ']';
-		$active_option = ( isset( $this->options[ $var ] ) ) ? $this->options[ $var ] : '';
+		$select_name   = esc_attr( $this->option_name ) . '[' . esc_attr( $field_name ) . ']';
+		$active_option = ( isset( $this->options[ $field_name ] ) ) ? $this->options[ $field_name ] : '';
 
-		$select = new Yoast_Input_Select( $var, $select_name, $select_options, $active_option );
+		$select = new Yoast_Input_Select( $field_name, $select_name, $select_options, $active_option );
 		$select->add_attribute( 'class', 'select' );
-		if ( $this->is_control_disabled( $var ) ) {
-			$select->add_attribute( 'disabled', 'disabled' );
-		}
 		$select->output_html();
 
 		echo '<br class="clear"/>';
@@ -476,7 +467,7 @@ class Yoast_Form {
 				'class' => 'select',
 			)
 		);
-		echo '<input type="file" value="' . esc_attr( $val ) . '" class="textinput" name="' . esc_attr( $this->option_name ) . '[' . $var_esc . ']" id="' . $var_esc . '"', disabled( $this->is_control_disabled( $var ), true, false ), '/>';
+		echo '<input type="file" value="' . esc_attr( $val ) . '" class="textinput" name="' . esc_attr( $this->option_name ) . '[' . $var_esc . ']" id="' . $var_esc . '"/>';
 
 		// Need to save separate array items in hidden inputs, because empty file inputs type will be deleted by settings API.
 		if ( ! empty( $this->options[ $var ] ) ) {
@@ -501,11 +492,6 @@ class Yoast_Form {
 			$val = $this->options[ $var ];
 		}
 
-		$id_value = '';
-		if ( isset( $this->options[ $var . '_id' ] ) ) {
-			$id_value = $this->options[ $var . '_id' ];
-		}
-
 		$var_esc = esc_attr( $var );
 
 		$this->label(
@@ -515,39 +501,8 @@ class Yoast_Form {
 				'class' => 'select',
 			)
 		);
-
-		$id_field_id = 'wpseo_' . $var_esc . '_id';
-
-		echo '<span>';
-			echo '<input',
-				' class="textinput"',
-				' id="wpseo_', $var_esc, '"',
-				' type="text" size="36"',
-				' name="', esc_attr( $this->option_name ), '[', $var_esc, ']"',
-				' value="', esc_attr( $val ), '"',
-				' readonly="readonly"',
-				' /> ';
-			echo '<input',
-				' id="wpseo_', $var_esc, '_button"',
-				' class="wpseo_image_upload_button button"',
-				' type="button"',
-				' value="', esc_attr__( 'Upload Image', 'wordpress-seo' ), '"',
-				' data-target-id="', esc_attr( $id_field_id ), '"',
-				disabled( $this->is_control_disabled( $var ), true, false ),
-				' /> ';
-			echo '<input',
-				' class="wpseo_image_remove_button button"',
-				' type="button"',
-				' value="', esc_attr__( 'Clear Image', 'wordpress-seo' ), '"',
-				disabled( $this->is_control_disabled( $var ), true, false ),
-				' />';
-			echo '<input',
-				' type="hidden"',
-				' id="', esc_attr( $id_field_id ), '"',
-				' name="', esc_attr( $this->option_name ), '[', $var_esc, '_id]"',
-				' value="', esc_attr( $id_value ), '"',
-				' />';
-		echo '</span>';
+		echo '<input class="textinput" id="wpseo_', $var_esc, '" type="text" size="36" name="', esc_attr( $this->option_name ), '[', $var_esc, ']" value="', esc_attr( $val ), '" />';
+		echo '<input id="wpseo_', $var_esc, '_button" class="wpseo_image_upload_button button" type="button" value="', esc_attr__( 'Upload Image', 'wordpress-seo' ), '" />';
 		echo '<br class="clear"/>';
 	}
 
@@ -575,18 +530,17 @@ class Yoast_Form {
 
 		if ( is_string( $legend ) && '' !== $legend ) {
 
-			$defaults    = array(
+			$legend_attr = wp_parse_args( $legend_attr, array(
 				'id'    => '',
 				'class' => 'radiogroup',
-			);
-			$legend_attr = wp_parse_args( $legend_attr, $defaults );
+			) );
 
 			$this->legend( $legend, $legend_attr );
 		}
 
 		foreach ( $values as $key => $value ) {
 			$key_esc = esc_attr( $key );
-			echo '<input type="radio" class="radio" id="' . $var_esc . '-' . $key_esc . '" name="' . esc_attr( $this->option_name ) . '[' . $var_esc . ']" value="' . $key_esc . '" ' . checked( $this->options[ $var ], $key_esc, false ) . disabled( $this->is_control_disabled( $var ), true, false ) . ' />';
+			echo '<input type="radio" class="radio" id="' . $var_esc . '-' . $key_esc . '" name="' . esc_attr( $this->option_name ) . '[' . $var_esc . ']" value="' . $key_esc . '" ' . checked( $this->options[ $var ], $key_esc, false ) . ' />';
 			$this->label(
 				$value,
 				array(
@@ -597,6 +551,7 @@ class Yoast_Form {
 		}
 		echo '</fieldset>';
 	}
+
 
 	/**
 	 * Create a toggle switch input field using two radio buttons.
@@ -629,9 +584,8 @@ class Yoast_Form {
 		$var_esc = esc_attr( $var );
 
 		printf( '<div class="%s">', esc_attr( 'switch-container' . $help_class ) );
-		echo '<fieldset id="', $var_esc, '" class="fieldset-switch-toggle"><legend>', $label, '</legend>', $help;
-		echo $this->get_disabled_note( $var );
-		echo '<div class="switch-toggle switch-candy switch-yoast-seo">';
+		echo '<fieldset id="', $var_esc, '" class="fieldset-switch-toggle"><legend>', $label, '</legend>', $help,
+		'<div class="switch-toggle switch-candy switch-yoast-seo">';
 
 		foreach ( $values as $key => $value ) {
 			$screen_reader_text      = '';
@@ -645,7 +599,7 @@ class Yoast_Form {
 
 			$key_esc = esc_attr( $key );
 			$for     = $var_esc . '-' . $key_esc;
-			echo '<input type="radio" id="' . $for . '" name="' . esc_attr( $this->option_name ) . '[' . $var_esc . ']" value="' . $key_esc . '" ' . checked( $this->options[ $var ], $key_esc, false ) . disabled( $this->is_control_disabled( $var ), true, false ) . ' />',
+			echo '<input type="radio" id="' . $for . '" name="' . esc_attr( $this->option_name ) . '[' . $var_esc . ']" value="' . $key_esc . '" ' . checked( $this->options[ $var ], $key_esc, false ) . ' />',
 			'<label for="', $for, '">', esc_html( $value ), $screen_reader_text_html,'</label>';
 		}
 
@@ -699,57 +653,5 @@ class Yoast_Form {
 		);
 
 		$this->toggle_switch( $var, $show_hide_switch, $label, $help );
-	}
-
-	/**
-	 * Checks whether a given control should be disabled.
-	 *
-	 * @param string $var The variable within the option to check whether its control should be disabled.
-	 *
-	 * @return bool True if control should be disabled, false otherwise.
-	 */
-	protected function is_control_disabled( $var ) {
-		if ( $this->option_instance === null ) {
-			return false;
-		}
-
-		return $this->option_instance->is_disabled( $var );
-	}
-
-	/**
-	 * Gets the explanation note to print if a given control is disabled.
-	 *
-	 * @param string $var The variable within the option to print a disabled note for.
-	 *
-	 * @return string Explanation note HTML string, or empty string if no note necessary.
-	 */
-	protected function get_disabled_note( $var ) {
-		if ( ! $this->is_control_disabled( $var ) ) {
-			return '';
-		}
-
-		return '<p class="disabled-note">' . esc_html__( 'This feature has been disabled by the network admin.', 'wordpress-seo' ) . '</p>';
-	}
-
-	/* ********************* DEPRECATED METHODS ********************* */
-
-	/**
-	 * Retrieve options based on whether we're on multisite or not.
-	 *
-	 * @since 1.2.4
-	 * @since 2.0   Moved to this class.
-	 * @deprecated 8.4
-	 * @codeCoverageIgnore
-	 *
-	 * @return array The option's value.
-	 */
-	public function get_option() {
-		_deprecated_function( __METHOD__, 'WPSEO 8.4' );
-
-		if ( is_network_admin() ) {
-			return get_site_option( $this->option_name );
-		}
-
-		return get_option( $this->option_name );
 	}
 }

@@ -5,21 +5,18 @@ class FrmFormActionsController {
     public static $registered_actions;
 
     public static function register_post_types() {
-		register_post_type(
-			self::$action_post_type,
-			array(
-				'label'       => __( 'Form Actions', 'formidable' ),
-				'description' => '',
-				'public'      => false,
-				'show_ui'     => false,
-				'exclude_from_search' => true,
-				'show_in_nav_menus' => false,
-				'show_in_menu' => true,
-				'capability_type' => 'page',
-				'supports'     => array( 'title', 'editor', 'excerpt', 'custom-fields', 'page-attributes' ),
-				'has_archive'  => false,
-			)
-		);
+        register_post_type( self::$action_post_type, array(
+            'label' => __( 'Form Actions', 'formidable' ),
+            'description' => '',
+            'public' => false,
+            'show_ui' => false,
+            'exclude_from_search' => true,
+            'show_in_nav_menus' => false,
+            'show_in_menu' => true,
+            'capability_type' => 'page',
+            'supports' => array( 'title', 'editor', 'excerpt', 'custom-fields', 'page-attributes' ),
+            'has_archive' => false,
+        ) );
 
         /**
          * post_content: json settings
@@ -37,7 +34,7 @@ class FrmFormActionsController {
     }
 
     public static function register_actions() {
-		$action_classes = array(
+        $action_classes = apply_filters( 'frm_registered_form_actions', array(
             'email'     => 'FrmEmailAction',
             'wppost'    => 'FrmDefPostAction',
             'register'  => 'FrmDefRegAction',
@@ -45,9 +42,8 @@ class FrmFormActionsController {
             //'aweber'    => 'FrmDefAweberAction',
             'mailchimp' => 'FrmDefMlcmpAction',
             'twilio'    => 'FrmDefTwilioAction',
-            'payment'   => 'FrmDefHrsAction',
-        );
-		$action_classes = apply_filters( 'frm_registered_form_actions', $action_classes );
+            'highrise'  => 'FrmDefHrsAction',
+        ) );
 
 		include_once( FrmAppHelper::plugin_path() . '/classes/views/frm-form-actions/email_action.php' );
 		include_once( FrmAppHelper::plugin_path() . '/classes/views/frm-form-actions/default_actions.php' );
@@ -112,10 +108,7 @@ class FrmFormActionsController {
 		 */
 		do_action( 'frm_before_list_actions', $form );
 
-		$filters = array(
-			'post_status' => 'all',
-		);
-		$form_actions = FrmFormAction::get_action_for_form( $form->id, 'all', $filters );
+		$form_actions = FrmFormAction::get_action_for_form( $form->id );
 
         $action_controls = self::get_form_actions();
 
@@ -217,14 +210,10 @@ class FrmFormActionsController {
 
         $registered_actions = self::$registered_actions->actions;
 
-		$old_actions = FrmDb::get_col(
-			$wpdb->posts,
-			array(
-				'post_type'  => self::$action_post_type,
-				'menu_order' => $form_id,
-			),
-			'ID'
-		);
+		$old_actions = FrmDb::get_col( $wpdb->posts, array(
+			'post_type' => self::$action_post_type,
+			'menu_order' => $form_id,
+		), 'ID' );
         $new_actions = array();
 
         foreach ( $registered_actions as $registered_action ) {
@@ -303,7 +292,7 @@ class FrmFormActionsController {
 				continue;
 			}
 
-			$child_entry = ( ( is_object( $form ) && is_numeric( $form->parent_form_id ) && $form->parent_form_id ) || ( $entry && ( $entry->form_id != $form->id || $entry->parent_item_id ) ) || ( isset( $args['is_child'] ) && $args['is_child'] ) );
+			$child_entry = ( ( $form && is_numeric( $form->parent_form_id ) && $form->parent_form_id ) || ( $entry && ( $entry->form_id != $form->id || $entry->parent_item_id ) ) || ( isset( $args['is_child'] ) && $args['is_child'] ) );
 
 			if ( $child_entry ) {
 				// maybe trigger actions for sub forms

@@ -1,8 +1,11 @@
 <?php
 
 if ( isset( $field['post_field'] ) && $field['post_field'] == 'post_category' ) {
-	$type = $field['type'];
-	do_action( 'frm_after_checkbox', compact( 'field', 'field_name', 'type' ) );
+	do_action( 'frm_after_checkbox', array(
+		'field'      => $field,
+		'field_name' => $field_name,
+		'type'       => $field['type'],
+	) );
 } elseif ( is_array( $field['options'] ) ) {
 	foreach ( $field['options'] as $opt_key => $opt ) {
 		if ( isset( $shortcode_atts ) && isset( $shortcode_atts['opt'] ) && ( $shortcode_atts['opt'] !== $opt_key ) ) {
@@ -31,19 +34,17 @@ if ( isset( $field['post_field'] ) && $field['post_field'] == 'post_category' ) 
 				echo ' ' . FrmAppHelper::kses( $opt, 'all' ) . '</label>'; // WPCS: XSS ok.
 			}
 
-			FrmFieldsHelper::include_other_input(
-				array(
-					'other_opt' => $other_opt,
-					'read_only' => $read_only,
-					'checked'   => $checked,
-					'name'      => $other_args['name'],
-					'value'     => $other_args['value'],
-					'field'     => $field,
-					'html_id'   => $html_id,
-					'opt_key'   => $opt_key,
-					'opt_label' => $opt,
-				)
-			);
+			FrmFieldsHelper::include_other_input( array(
+				'other_opt' => $other_opt,
+				'read_only' => $read_only,
+				'checked'   => $checked,
+				'name'      => $other_args['name'],
+				'value'     => $other_args['value'],
+				'field'     => $field,
+				'html_id'   => $html_id,
+				'opt_key'   => $opt_key,
+				'opt_label' => $opt,
+			) );
 
 			unset( $other_opt, $other_args );
 		?></div>

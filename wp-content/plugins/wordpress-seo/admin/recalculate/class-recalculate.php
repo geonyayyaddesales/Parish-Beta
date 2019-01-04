@@ -40,6 +40,7 @@ abstract class WPSEO_Recalculate {
 	 */
 	abstract protected function item_to_response( $item );
 
+
 	/**
 	 * Gets the items to recalculate
 	 *

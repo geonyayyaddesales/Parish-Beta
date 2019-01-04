@@ -16,4 +16,5 @@ interface WPSEO_Collection {
 	 * @return array The collection data.
 	 */
 	public function get();
+
 }

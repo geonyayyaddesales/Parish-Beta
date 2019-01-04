@@ -336,9 +336,6 @@ class FrmProFieldsController {
 	 *
 	 * @since 2.02.06
 	 * @param array $field
-	 *
-	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 */
 	public static function show_format_option( $field ) {
 		_deprecated_function( __FUNCTION__, '3.0', 'FrmFieldsController::show_format_option' );
@@ -835,10 +832,6 @@ class FrmProFieldsController {
 		}
 	}
 
-	/**
-	 * @deprecated 2.03
-	 * @codeCoverageIgnore
-	 */
 	public static function ajax_time_options() {
 		_deprecated_function( __FUNCTION__, '2.03', 'FrmProTimeFieldsController::ajax_time_options' );
 		FrmProTimeFieldsController::ajax_time_options();
@@ -1139,15 +1132,13 @@ class FrmProFieldsController {
 	}
 
 	/**
-	 *
-	 * Update the repeating form name when a repeating section name is updated
-	 *
-	 * @since 2.0.12
-	 * @deprecated 2.04
-	 * @codeCoverageIgnore
-	 *
-	 * @param array $atts
-	 */
+	*
+	* Update the repeating form name when a repeating section name is updated
+	*
+	* @since 2.0.12
+	*
+	* @param array $atts
+	*/
 	public static function update_repeating_form_name( $atts ) {
 		_deprecated_function( __FUNCTION__, '3.0.03', 'FrmProFieldsController::update_repeater_form_name' );
 		$field = FrmField::getOne( $atts['id'] );
@@ -1252,7 +1243,6 @@ class FrmProFieldsController {
 
 	/**
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 */
 	public static function show_normal_field( $show ) {
 		_deprecated_function( __METHOD__, '3.0' );
@@ -1261,7 +1251,6 @@ class FrmProFieldsController {
 
 	/**
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 */
 	public static function &normal_field_html( $show ) {
 		_deprecated_function( __METHOD__, '3.0' );
@@ -1270,7 +1259,6 @@ class FrmProFieldsController {
 
 	/**
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 */
 	public static function show_other() {
 		_deprecated_function( __METHOD__, '3.0' );
@@ -1278,7 +1266,6 @@ class FrmProFieldsController {
 
 	/**
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 */
 	public static function show( $field, $name = '' ) {
 		_deprecated_function( __FUNCTION__, '3.0', 'FrmFieldType::show_on_form_builder' );
@@ -1294,7 +1281,6 @@ class FrmProFieldsController {
 
 	/**
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 */
 	public static function display_field_options( $display ) {
 		_deprecated_function( __FUNCTION__, '3.0', 'FrmFieldType Modals' );
@@ -1303,7 +1289,6 @@ class FrmProFieldsController {
 
 	/**
 	 * @deprecated 3.0
-	 * @codeCoverageIgnore
 	 */
 	public static function form_fields( $field, $field_name, $atts ) {
 		_deprecated_function( __FUNCTION__, '3.0', 'FrmFieldType Modals' );
@@ -1311,7 +1296,6 @@ class FrmProFieldsController {
 
 	/**
 	 * @deprecated 2.03.10
-	 * @codeCoverageIgnore
 	 */
 	public static function prepare_single_field_for_duplication( $field_values ) {
 		_deprecated_function( __FUNCTION__, '2.03.10', 'custom code' );

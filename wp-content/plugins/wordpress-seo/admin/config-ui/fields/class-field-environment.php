@@ -9,7 +9,6 @@
  * Class WPSEO_Config_Field_Environment
  */
 class WPSEO_Config_Field_Environment extends WPSEO_Config_Field_Choice {
-
 	/**
 	 * WPSEO_Config_Field_Environment constructor.
 	 */

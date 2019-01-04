@@ -38,7 +38,7 @@
 				e.preventDefault();
 				
 				// unlock form
-				acf.unlockForm( $el );
+				acf.validation.unlockForm( $el );
 				
 				// alert
 				alert( acf.__('Field group title is required') );
@@ -315,6 +315,7 @@
 			
 			// get input value
 			var $input = this.$input( name );
+			//console.log($input );
 			var value = $input.length ? $input.val() : null;
 			
 			// set data silently (cache)
@@ -979,7 +980,7 @@
 			// check parent
 			var parent = this.getParent();
 			if( parent ) {
-				ID = parseInt(parent.prop('ID')) || parent.prop('key');
+				ID = parent.prop('ID') || parent.prop('key');
 			}
 			
 			// update
@@ -2506,3 +2507,4 @@
 // @codekit-prepend "../js/field-group-fields.js";
 // @codekit-prepend "../js/field-group-locations.js";
 // @codekit-prepend "../js/field-group-compatibility.js";
+
