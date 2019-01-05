@@ -13,14 +13,7 @@ class FrmAppController {
     }
 
 	private static function get_menu_position() {
-		$count = count( get_post_types( array(
-			'show_ui'      => true,
-			'_builtin'     => false,
-			'show_in_menu' => true,
-		) ) );
-		$pos = $count ? '22.7' : '29.3';
-		$pos = apply_filters( 'frm_menu_position', $pos );
-		return $pos;
+		return apply_filters( 'frm_menu_position', '29.3' );
 	}
 
 	/**
@@ -108,11 +101,11 @@ class FrmAppController {
 			),
 		);
 
-		$nav_items = apply_filters( 'frm_form_nav_list', $nav_items, array(
+		$nav_args = array(
 			'form_id' => $id,
 			'form'    => $form,
-		) );
-		return $nav_items;
+		);
+		return apply_filters( 'frm_form_nav_list', $nav_items, $nav_args );
 	}
 
     // Adds a settings link to the plugins page
@@ -142,17 +135,21 @@ class FrmAppController {
 				// if pro version is installed, include link to activate it
 				$inst_install_url = wp_nonce_url( self_admin_url( 'plugins.php?action=activate&plugin=formidable-pro/formidable-pro.php' ), 'activate-plugin_formidable-pro/formidable-pro.php' );
 			} else {
-				$inst_install_url = 'https://formidableforms.com/knowledgebase/install-formidable-forms/';
+				$inst_install_url = 'https://formidableforms.com/knowledgebase/install-formidable-forms/?utm_source=WordPress&utm_medium=get-started&utm_campaign=liteplugin';
 			}
         ?>
 <div class="error" class="frm_previous_install">
 		<?php
-		echo apply_filters( 'frm_pro_update_msg', // WPCS: XSS ok.
+		echo apply_filters( // WPCS: XSS ok.
+			'frm_pro_update_msg',
 			sprintf(
 				esc_html__( 'This site has been previously authorized to run Formidable Forms. %1$sInstall Formidable Pro%2$s or %3$sdeauthorize%4$s this site to continue running the free version and remove this message.', 'formidable' ),
-				'<br/><a href="' . esc_url( $inst_install_url ) . '" target="_blank">', '</a>',
-				'<a href="#" class="frm_deauthorize_link">', '</a>'
-			), esc_url( $inst_install_url )
+				'<br/><a href="' . esc_url( $inst_install_url ) . '" target="_blank">',
+				'</a>',
+				'<a href="#" class="frm_deauthorize_link">',
+				'</a>'
+			),
+			esc_url( $inst_install_url )
 		);
 		?>
 </div>
@@ -173,14 +170,33 @@ class FrmAppController {
 		$affiliate = FrmAppHelper::get_affiliate();
 		if ( ! empty( $affiliate ) ) {
 			$tip = FrmTipsHelper::get_banner_tip();
+			$link = FrmAppHelper::admin_upgrade_link( 'banner' );
 ?>
 <div class="update-nag frm-update-to-pro">
 	<?php echo FrmAppHelper::kses( $tip['tip'] ); // WPCS: XSS ok. ?>
 	<span><?php echo FrmAppHelper::kses( $tip['call'] ); // WPCS: XSS ok. ?></span>
-	<a href="<?php echo esc_url( FrmAppHelper::make_affiliate_url( 'https://formidableforms.com?banner=1&tip=' . absint( $tip['num'] ) ) ); ?>" class="button">Upgrade to Pro</a>
+	<a href="<?php echo esc_url( FrmAppHelper::make_affiliate_url( $link ) ); ?>" class="button">Upgrade to Pro</a>
 </div>
 <?php
 		}
+	}
+
+	/**
+	 * @since 3.04.02
+	 */
+	public static function include_upgrade_overlay() {
+		$is_pro = FrmAppHelper::pro_is_installed();
+		wp_enqueue_script( 'jquery-ui-dialog' );
+		wp_enqueue_style( 'jquery-ui-dialog' );
+		include( FrmAppHelper::plugin_path() . '/classes/views/shared/upgrade_overlay.php' );
+	}
+
+	/**
+	 * @since 3.04.02
+	 */
+	public static function remove_upsells() {
+		remove_action( 'frm_before_settings', 'FrmSettingsController::license_box' );
+		remove_action( 'frm_after_settings', 'FrmSettingsController::settings_cta' );
 	}
 
 	/**
@@ -201,11 +217,13 @@ class FrmAppController {
 	 * @return boolean
 	 */
 	public static function needs_update() {
-		$needs_upgrade = self::compare_for_update( array(
-			'option'             => 'frm_db_version',
-			'new_db_version'     => FrmAppHelper::$db_version,
-			'new_plugin_version' => FrmAppHelper::plugin_version(),
-		) );
+		$needs_upgrade = self::compare_for_update(
+			array(
+				'option'             => 'frm_db_version',
+				'new_db_version'     => FrmAppHelper::$db_version,
+				'new_plugin_version' => FrmAppHelper::plugin_version(),
+			)
+		);
 
 		if ( ! $needs_upgrade ) {
 			$needs_upgrade = apply_filters( 'frm_db_needs_upgrade', $needs_upgrade );
@@ -374,10 +392,11 @@ class FrmAppController {
 	 * @since 3.0
 	 */
 	public static function create_rest_routes() {
-		register_rest_route( 'frm-admin/v1', '/install', array(
+		$args = array(
 			'methods'  => 'GET',
 			'callback' => 'FrmAppController::api_install',
-		) );
+		);
+		register_rest_route( 'frm-admin/v1', '/install', $args );
 	}
 
 	/**
@@ -501,9 +520,10 @@ class FrmAppController {
 
 	public static function set_footer_text( $text ) {
 		if ( FrmAppHelper::is_formidable_admin() ) {
+			$link = FrmAppHelper::admin_upgrade_link( 'footer' );
 			$text = sprintf(
 				__( 'Help us spread the %1$sFormidable Forms%2$s love with %3$s %5$s on WordPress.org%4$s. Thank you heaps!', 'formidable' ),
-				'<a href="' . esc_url( FrmAppHelper::make_affiliate_url( 'https://formidableforms.com' ) ) . '" target="_blank">',
+				'<a href="' . esc_url( FrmAppHelper::make_affiliate_url( $link ) ) . '" target="_blank">',
 				'</a>',
 				'<a href="https://wordpress.org/support/plugin/formidable/reviews/?filter=5#new-post" target="_blank">',
 				'</a>',

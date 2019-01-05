@@ -35,8 +35,10 @@ class FrmProFieldFile extends FrmFieldType {
 			'delete' => false,
 			'restrict' => 0,
 			'resize'     => false,
-			'new_size'  => '600',
+			'new_size'   => '600',
 			'resize_dir' => 'width',
+			'drop_msg'   => __( 'Drop a file here or click to upload', 'formidable-pro' ),
+			'choose_msg' => __( 'Choose File', 'formidable-pro' ),
 		);
 	}
 
@@ -414,7 +416,7 @@ class FrmProFieldFile extends FrmFieldType {
 
 			if ( ! is_numeric( $m ) ) {
 				//get the ID from the URL if on this site
-				$m = FrmDb::get_col( $wpdb->posts, array( 'guid' => $m ), 'ID' );
+				$m = FrmDb::get_var( $wpdb->posts, array( 'guid' => $m ), 'ID' );
 			}
 
 			if ( ! is_numeric( $m ) ) {

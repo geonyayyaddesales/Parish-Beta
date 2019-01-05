@@ -52,10 +52,13 @@ class FrmFieldFormHtml {
 	 * @param array $atts
 	 */
 	private function set_html( $atts ) {
-		$this->set_from_field( $atts, array(
-			'param'   => 'html',
-			'default' => 'custom_html',
-		) );
+		$this->set_from_field(
+			$atts,
+			array(
+				'param'   => 'html',
+				'default' => 'custom_html',
+			)
+		);
 	}
 
 	/**
@@ -64,10 +67,13 @@ class FrmFieldFormHtml {
 	 * @param array $atts
 	 */
 	private function set_field_id( $atts ) {
-		$this->set_from_field( $atts, array(
-			'param'   => 'field_id',
-			'default' => 'id',
-		) );
+		$this->set_from_field(
+			$atts,
+			array(
+				'param'   => 'field_id',
+				'default' => 'id',
+			)
+		);
 	}
 
 	/**
@@ -317,6 +323,10 @@ class FrmFieldFormHtml {
 
 		if ( isset( $shortcode_atts['class'] ) ) {
 			unset( $shortcode_atts['class'] );
+		}
+
+		if ( isset( $this->pass_args['errors'][ 'field' . $this->field_id ] ) ) {
+			$shortcode_atts['aria-invalid'] = 'true';
 		}
 
 		$this->field_obj->set_field_column( 'shortcodes', $shortcode_atts );
