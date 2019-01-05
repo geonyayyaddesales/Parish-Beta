@@ -81,7 +81,7 @@ class FrmProFormsHelper {
 					continue;
 				}
 
-				if ( isset($frm_vars['prev_page'][ $form->id ]) || self::going_to_prev( $form->id ) || FrmProFormsHelper::saving_draft() ) {
+				if ( isset($frm_vars['prev_page'][ $form->id ]) || self::going_to_prev( $form->id ) || self::saving_draft() ) {
 					$initial_load = false;
 				} else {
 					$initial_load = true;
@@ -170,7 +170,7 @@ echo $custom_options;
 			if ( ! empty( $options['locale'] ) && ! $load_lang ) {
 				$load_lang = true;
 				$base_url = FrmAppHelper::jquery_ui_base_url();
-				wp_enqueue_script( 'jquery-ui-i18n', $base_url . '/i18n/jquery-ui-i18n.min.js', array( 'jquery-ui-core', 'jquery-ui-datepicker' ) );
+				wp_enqueue_script( 'jquery-ui-i18n', $base_url . '/i18n/jquery-ui-i18n.min.js', array( 'jquery-ui-core', 'jquery-ui-datepicker' ), FrmAppHelper::plugin_version() );
 				// this was enqueued late, so make sure it gets printed
 				add_action( 'wp_footer', 'print_footer_scripts', 21 );
 				add_action( 'admin_print_footer_scripts', 'print_footer_scripts', 99 );
@@ -510,7 +510,7 @@ echo $custom_options;
 		$user_limited_entry = $user_ID && $form->editable && isset( $form->options['single_entry'] ) && $form->options['single_entry'] && $form->options['single_entry_type'] == 'user' && ! FrmAppHelper::is_admin();
 		if ( $user_limited_entry ) {
 			$entry_id = FrmDb::get_var(
-				$wpdb->prefix . 'frm_items',
+				'frm_items',
 				array(
 					'user_id' => $user_ID,
 					'form_id' => $form->id,
@@ -707,7 +707,7 @@ echo $custom_options;
     }
 
 	/**
-	 * check if this entry is currently being saved as a draft
+	 * Check if this entry is currently being saved as a draft
 	 */
     public static function saving_draft() {
 		$saving_draft = FrmAppHelper::get_post_param( 'frm_saving_draft', '', 'sanitize_title' );

@@ -276,7 +276,7 @@ class FrmForm {
 	}
 
 	/**
-	 * updating the settings page
+	 * Updating the settings page
 	 */
 	private static function get_settings_page_html( $values, &$field ) {
 		if ( isset( $values['field_options'][ 'custom_html_' . $field->id ] ) ) {
@@ -434,6 +434,7 @@ class FrmForm {
 
 	/**
 	 * Delete trashed forms based on how long they have been trashed
+	 *
 	 * @return int The number of forms deleted
 	 */
 	public static function scheduled_delete( $delete_timestamp = '' ) {
@@ -488,18 +489,6 @@ class FrmForm {
 		return (int) FrmDb::get_var( 'frm_forms', array( 'form_key' => sanitize_title( $key ) ) );
     }
 
-	/**
-	 * @deprecated 3.0
-	 * @codeCoverageIgnore
-	 *
-     * @param string $key
-     * @return int form id
-     */
-	public static function getIdByKey( $key ) {
-		_deprecated_function( __METHOD__, '3.0', 'FrmForm::get_id_by_key' );
-		return self::get_id_by_key( $key );
-    }
-
     /**
 	 * @since 3.0
      * @param int $id
@@ -518,16 +507,8 @@ class FrmForm {
     }
 
 	/**
-	 * @deprecated 3.0
-	 * @codeCoverageIgnore
-	 */
-	public static function getKeyById( $id ) {
-		_deprecated_function( __METHOD__, '3.0', 'FrmForm::get_key_by_id' );
-		return self::get_key_by_id( $id );
-	}
-
-	/**
 	 * If $form is numeric, get the form object
+	 *
 	 * @param object|int $form
 	 * @since 2.0.9
 	 */
@@ -611,6 +592,7 @@ class FrmForm {
 
 	/**
 	 * Get all published forms
+	 *
 	 * @since 2.0
 	 * @return array of forms
 	 */
@@ -775,7 +757,7 @@ class FrmForm {
 	public static function get_admin_params( $form = null ) {
 		$form_id = $form;
 		if ( $form === null ) {
-			$form_id = FrmForm::get_current_form_id();
+			$form_id = self::get_current_form_id();
 		} else if ( $form && is_object( $form ) ) {
 			$form_id = $form->id;
 		}
@@ -876,5 +858,24 @@ class FrmForm {
 	public static function get_option( $atts ) {
 		$form = $atts['form'];
 		return isset( $form->options[ $atts['option'] ] ) ? $form->options[ $atts['option'] ] : $atts['default'];
+	}
+
+	/**
+	 * @deprecated 3.0
+	 * @codeCoverageIgnore
+	 *
+	 * @param string $key
+	 * @return int form id
+	 */
+	public static function getIdByKey( $key ) {
+		return FrmFormDeprecated::getIdByKey( $key );
+	}
+
+	/**
+	 * @deprecated 3.0
+	 * @codeCoverageIgnore
+	 */
+	public static function getKeyById( $id ) {
+		return FrmFormDeprecated::getKeyById( $id );
 	}
 }

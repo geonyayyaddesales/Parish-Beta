@@ -207,6 +207,7 @@ class FrmFormsController {
 	/**
 	 * Redirect to the url for creating from a template
 	 * Also delete the current form
+	 *
 	 * @since 2.0
 	 */
 	public static function _create_from_template() {
@@ -350,7 +351,7 @@ class FrmFormsController {
 	 */
 	public static function preview_content( $content ) {
 		if ( in_the_loop() ) {
-			$content = FrmFormsController::show_page_preview();
+			$content = self::show_page_preview();
 		}
 		return $content;
 	}
@@ -522,10 +523,10 @@ class FrmFormsController {
 	public static function insert_form_button() {
 		if ( current_user_can( 'frm_view_forms' ) ) {
 			$menu_name = FrmAppHelper::get_menu_name();
-			$content = '<a href="#TB_inline?width=50&height=50&inlineId=frm_insert_form" class="thickbox button add_media frm_insert_form" title="' . esc_attr__( 'Add forms and content', 'formidable' ) . '">
-				<span class="frm-buttons-icon wp-media-buttons-icon"></span> ' .
-				$menu_name . '</a>';
-			echo wp_kses_post( $content );
+			$icon = apply_filters( 'frm_media_icon', FrmAppHelper::svg_logo() );
+			echo '<a href="#TB_inline?width=50&height=50&inlineId=frm_insert_form" class="thickbox button add_media frm_insert_form" title="' . esc_attr__( 'Add forms and content', 'formidable' ) . '">' .
+				FrmAppHelper::kses( $icon, 'all' ) .
+				' ' . esc_html( $menu_name ) . '</a>'; // WPCS: XSS ok.
 		}
 	}
 
@@ -820,6 +821,7 @@ class FrmFormsController {
 
 		/**
 		 * Add extra helper shortcodes on the Advanced tab in form settings and views
+		 *
 		 * @since 3.04.01
 		 * @param array $atts - Includes fields and form_id
 		 */
@@ -829,6 +831,7 @@ class FrmFormsController {
 	/**
 	 * Get an array of the options to display in the advanced tab
 	 * of the customization panel
+	 *
 	 * @since 2.0.6
 	 */
 	private static function get_advanced_shortcodes() {
@@ -869,6 +872,7 @@ class FrmFormsController {
 
 	/**
 	 * Get an array of the helper shortcodes to display in the customization panel
+	 *
 	 * @since 2.0.6
 	 */
 	private static function get_shortcode_helpers( $settings_tab ) {
@@ -897,6 +901,7 @@ class FrmFormsController {
 		/**
 		 * Use this hook to add or remove buttons in the helpers section
 		 * in the customization panel
+		 *
 		 * @since 2.0.6
 		 */
 		$entry_shortcodes = apply_filters( 'frm_helper_shortcodes', $entry_shortcodes, $settings_tab );
@@ -1009,52 +1014,6 @@ class FrmFormsController {
         }
 
         return $errors;
-    }
-
-	/**
-	 * @deprecated 1.07.05
-	 * @codeCoverageIgnore
-	 */
-    public static function add_default_templates( $path, $default = true, $template = true ) {
-        _deprecated_function( __FUNCTION__, '1.07.05', 'FrmXMLController::add_default_templates()' );
-
-		$path = untrailingslashit( trim( $path ) );
-		$templates = glob( $path . '/*.php' );
-
-		for ( $i = count( $templates ) - 1; $i >= 0; $i-- ) {
-			$filename = str_replace( '.php', '', str_replace( $path . '/', '', $templates[ $i ] ) );
-			$template_query = array( 'form_key' => $filename );
-            if ( $template ) {
-                $template_query['is_template'] = 1;
-            }
-            if ( $default ) {
-                $template_query['default_template'] = 1;
-            }
-			$form = FrmForm::getAll( $template_query, '', 1 );
-
-            $values = FrmFormsHelper::setup_new_vars();
-            $values['form_key'] = $filename;
-            $values['is_template'] = $template;
-            $values['status'] = 'published';
-            if ( $default ) {
-                $values['default_template'] = 1;
-            }
-
-            include( $templates[ $i ] );
-
-            //get updated form
-			if ( isset( $form ) && ! empty( $form ) ) {
-                $old_id = $form->id;
-				$form = FrmForm::getOne( $form->id );
-            } else {
-                $old_id = false;
-				$form = FrmForm::getAll( $template_query, '', 1 );
-            }
-
-            if ( $form ) {
-				do_action( 'frm_after_duplicate_form', $form->id, (array) $form, array( 'old_id' => $old_id ) );
-            }
-        }
     }
 
     public static function route() {
@@ -1267,6 +1226,7 @@ class FrmFormsController {
 			/**
 			 * Use this shortcode to check for external shortcodes that may span
 			 * across multiple fields in the customizable HTML
+			 *
 			 * @since 2.0.8
 			 */
 			$form = apply_filters( 'frm_filter_final_form', $form );
@@ -1364,6 +1324,7 @@ class FrmFormsController {
 
 	/**
 	 * If the form was processed earlier (init), get the generated errors
+	 *
 	 * @since 2.05
 	 */
 	private static function get_saved_errors( $form, $params ) {
@@ -1435,6 +1396,7 @@ class FrmFormsController {
 
 	/**
 	 * Used when the success action is not 'message'
+	 *
 	 * @since 2.05
 	 */
 	public static function run_success_action( $args ) {
@@ -1530,6 +1492,7 @@ class FrmFormsController {
 
 	/**
 	 * Prepare to show the success message and empty form after submit
+	 *
 	 * @since 2.05
 	 */
 	public static function show_message_after_save( $atts ) {
@@ -1544,6 +1507,7 @@ class FrmFormsController {
 
 	/**
 	 * Show an empty form
+	 *
 	 * @since 2.05
 	 */
 	private static function show_form_after_submit( $args ) {
@@ -1572,6 +1536,7 @@ class FrmFormsController {
 
 	/**
 	 * Get all the values needed on the new.php entry page
+	 *
 	 * @since 2.05
 	 */
 	private static function fill_atts_for_form_display( &$args ) {
@@ -1589,6 +1554,7 @@ class FrmFormsController {
 
 	/**
 	 * Show the success message without the form
+	 *
 	 * @since 2.05
 	 */
 	private static function show_lone_success_messsage( $atts ) {
@@ -1606,6 +1572,7 @@ class FrmFormsController {
 
 	/**
 	 * Prepare the success message before it's shown
+	 *
 	 * @since 2.05
 	 */
 	private static function prepare_submit_message( $form, $entry_id ) {
@@ -1698,18 +1665,19 @@ class FrmFormsController {
 	}
 
 	/**
+	 * @deprecated 1.07.05
+	 * @codeCoverageIgnore
+	 */
+	public static function add_default_templates( $path, $default = true, $template = true ) {
+		FrmDeprecated::add_default_templates( $path, $default, $template );
+	}
+
+	/**
 	 * @deprecated 3.0
 	 * @codeCoverageIgnore
 	 */
 	public static function bulk_create_template( $ids ) {
-		_deprecated_function( __METHOD__, '3.0', 'FrmForm::duplicate( $id, true, true )' );
-		FrmAppHelper::permission_check( 'frm_edit_forms' );
-
-		foreach ( $ids as $id ) {
-			FrmForm::duplicate( $id, true, true );
-		}
-
-		return __( 'Form template was Successfully Created', 'formidable' );
+		return FrmDeprecated::bulk_create_template( $ids );
 	}
 
 	/**
@@ -1717,10 +1685,7 @@ class FrmFormsController {
 	 * @codeCoverageIgnore
 	 */
 	public static function register_pro_scripts() {
-		_deprecated_function( __FUNCTION__, '2.03', 'FrmProEntriesController::register_scripts' );
-		if ( FrmAppHelper::pro_is_installed() ) {
-			FrmProEntriesController::register_scripts();
-		}
+		FrmDeprecated::register_pro_scripts();
 	}
 
 	/**
@@ -1728,10 +1693,7 @@ class FrmFormsController {
 	 * @codeCoverageIgnore
 	 */
 	public static function edit_key() {
-		_deprecated_function( __METHOD__, '3.0' );
-		$values = self::edit_in_place_value( 'form_key' );
-		echo wp_kses( stripslashes( FrmForm::get_key_by_id( $values['form_id'] ) ), array() );
-		wp_die();
+		FrmDeprecated::edit_key();
 	}
 
 	/**
@@ -1739,28 +1701,6 @@ class FrmFormsController {
 	 * @codeCoverageIgnore
 	 */
 	public static function edit_description() {
-		_deprecated_function( __METHOD__, '3.0' );
-		$values = self::edit_in_place_value( 'description' );
-		echo wp_kses_post( FrmAppHelper::use_wpautop( stripslashes( $values['description'] ) ) );
-		wp_die();
-	}
-
-	/**
-	 * @deprecated 3.0
-	 * @codeCoverageIgnore
-	 */
-	private static function edit_in_place_value( $field ) {
-		_deprecated_function( __METHOD__, '3.0' );
-		check_ajax_referer( 'frm_ajax', 'nonce' );
-		FrmAppHelper::permission_check( 'frm_edit_forms', 'hide' );
-
-		$form_id = FrmAppHelper::get_post_param( 'form_id', '', 'absint' );
-		$value = FrmAppHelper::get_post_param( 'update_value', '', 'wp_filter_post_kses' );
-
-		$values = array( $field => trim( $value ) );
-		FrmForm::update( $form_id, $values );
-		$values['form_id'] = $form_id;
-
-		return $values;
+		FrmDeprecated::edit_description();
 	}
 }

@@ -34,6 +34,19 @@ class FrmProAppHelper {
         return $frmpro_settings;
     }
 
+	/**
+	 * Only load the Pro updater once on a page
+	 *
+	 * @since 3.04.03
+	 */
+	public static function get_updater() {
+		global $frmpro_updater;
+		if ( empty( $frmpro_updater ) ) {
+			$frmpro_updater = new FrmProEddController();
+		}
+		return $frmpro_updater;
+	}
+
     /**
      * Get the current date in the display format
      * Used by [date] shortcode
@@ -70,6 +83,7 @@ class FrmProAppHelper {
 
 	/**
 	 * Format the time field values
+	 *
 	 * @since 2.0.14
 	 */
 	public static function format_time( $time, $format = 'H:i' ) {
@@ -511,7 +525,7 @@ class FrmProAppHelper {
 	}
 
     /**
-     * if there are posts linked to entries for this form
+     * If there are posts linked to entries for this form
      */
     private static function prepare_post_filter( $args, $where_field, &$new_ids ) {
         if ( empty($args['form_posts']) ) {
