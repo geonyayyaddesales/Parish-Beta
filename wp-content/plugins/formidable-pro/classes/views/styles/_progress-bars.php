@@ -10,7 +10,7 @@
 </div>
 
 <div class="field-group clearfix field-group-border">
-	<label for="frm_progress_active_bg_color_color"><?php esc_html_e( 'Active BG', 'formidable-pro' ); ?></label>
+	<label for="frm_progress_active_bg_color"><?php esc_html_e( 'Active BG', 'formidable-pro' ); ?></label>
 	<input type="text" name="<?php echo esc_attr( $frm_style->get_field_name('progress_active_bg_color') ) ?>" id="frm_progress_active_bg_color_color" class="hex" value="<?php echo esc_attr( $style->post_content['progress_active_bg_color'] ) ?>" size="4" />
 </div>
 

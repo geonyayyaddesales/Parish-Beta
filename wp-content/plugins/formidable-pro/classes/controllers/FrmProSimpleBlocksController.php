@@ -88,6 +88,9 @@ class FrmProSimpleBlocksController {
 						'type'    => 'boolean',
 						'default' => false,
 					),
+					'className'   => array(
+						'type'    => 'string',
+					),
 				),
 				'editor_style'    => 'formidable',
 				'editor_script'   => 'formidable-view-selector',

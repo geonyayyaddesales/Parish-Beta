@@ -2,12 +2,12 @@
 
 class FrmProDb {
 
-	public static $db_version = 65;
+	public static $db_version = 66;
 
 	/**
 	 * @since 3.0.02
 	 */
-	public static $plug_version = '3.05';
+	public static $plug_version = '3.06';
 
 	/**
 	 * @since 2.3
@@ -49,7 +49,7 @@ class FrmProDb {
 		}
 
 		if ( $old_db_version && is_numeric( $old_db_version ) ) {
-			$migrations = array( 16, 17, 25, 27, 28, 29, 30, 31, 32, 34, 36, 37, 39, 43, 44, 50, 62, 65 );
+			$migrations = array( 16, 17, 25, 27, 28, 29, 30, 31, 32, 34, 36, 37, 39, 43, 44, 50, 62, 65, 66 );
 			foreach ( $migrations as $migration ) {
 				if ( $db_version >= $migration && $old_db_version < $migration ) {
 					call_user_func( array( __CLASS__, 'migrate_to_' . $migration ) );
@@ -62,11 +62,6 @@ class FrmProDb {
 		update_option( 'frmpro_db_version', self::$plug_version . '-' . self::$db_version );
 
 		FrmAppHelper::save_combined_js();
-
-        /**** ADD DEFAULT TEMPLATES ****/
-        if ( class_exists('FrmXMLController') ) {
-            FrmXMLController::add_default_templates();
-        }
     }
 
 	public static function uninstall() {
@@ -101,6 +96,21 @@ class FrmProDb {
 	 */
 	public static function before_free_version_db_upgrade() {
 		FrmProContent::add_rewrite_endpoint();
+	}
+
+	/**
+	 * Delete uneeded default templates
+	 *
+	 * @since 3.06
+	 */
+	private static function migrate_to_66() {
+		$form_keys = array( 'frmproapplication', 'frmprorealestatelistings', 'frmprocontact' );
+		foreach ( $form_keys as $form_key ) {
+			$form = FrmForm::getOne( $form_key );
+			if ( $form && $form->default_template == 1 ) {
+				FrmForm::destroy( $form_key );
+			}
+		}
 	}
 
 	/**

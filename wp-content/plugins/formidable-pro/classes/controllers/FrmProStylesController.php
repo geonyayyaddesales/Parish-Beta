@@ -121,7 +121,7 @@ class FrmProStylesController extends FrmStylesController {
 	public static function enqueue_jquery_css() {
 		$form = self::get_form_for_page();
 		$theme_css = FrmStylesController::get_style_val( 'theme_css', $form );
-		if ( $theme_css != -1 ) {
+		if ( $theme_css != -1 && ! FrmAppHelper::is_admin( 'formidable' ) ) {
 			wp_enqueue_style( 'jquery-theme', self::jquery_css_url( $theme_css ), array(), FrmAppHelper::plugin_version() );
 		}
 	}

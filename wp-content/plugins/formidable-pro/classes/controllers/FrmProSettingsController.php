@@ -8,8 +8,13 @@ class FrmProSettingsController {
 		$show_creds_form = self::show_license_form();
 		$errors = array();
 
-		if ( ! empty( $edd_update->license ) && is_callable( 'FrmAddonsController::error_for_license' ) ) {
-			$errors = FrmAddonsController::error_for_license( $edd_update->license );
+		if ( ! empty( $edd_update->license ) ) {
+			if ( class_exists( 'FrmFormApi' ) ) {
+				$api = new FrmFormApi( $edd_update->license );
+				$errors = $api->error_for_license();
+			} elseif ( is_callable( 'FrmAddonsController::error_for_license' ) ) {
+				$errors = FrmAddonsController::error_for_license( $edd_update->license );
+			}
 		}
 
 		include( FrmProAppHelper::plugin_path() . '/classes/views/settings/license_box.php' );

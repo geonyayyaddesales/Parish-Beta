@@ -133,9 +133,13 @@ class FrmProField {
 
         // switch out field ids in conditional logic
 		if ( isset( $values['field_options']['hide_field'] ) && ! empty( $values['field_options']['hide_field'] ) ) {
-            $values['field_options']['hide_field_cond'] = maybe_unserialize($values['field_options']['hide_field_cond']);
-            $values['field_options']['hide_opt'] = maybe_unserialize($values['field_options']['hide_opt']);
-            $values['field_options']['hide_field'] = maybe_unserialize($values['field_options']['hide_field']);
+			foreach ( array( 'hide_field_cond', 'hide_opt', 'hide_field' ) as $logic ) {
+				if ( isset( $values['field_options'][ $logic ] ) ) {
+					$values['field_options'][ $logic ] = maybe_unserialize( $values['field_options'][ $logic ] );
+				} else {
+					$values['field_options'][ $logic ] = array();
+				}
+			}
 
             foreach ( $values['field_options']['hide_field'] as $k => $f ) {
 				if ( isset( $frm_duplicate_ids[ $f ] ) ) {

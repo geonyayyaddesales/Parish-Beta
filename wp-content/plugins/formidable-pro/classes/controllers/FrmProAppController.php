@@ -71,7 +71,7 @@ class FrmProAppController {
 	}
 
 	public static function get_pro_js_files( $suffix = '' ) {
-		$version = FrmAppHelper::plugin_version();
+		$version = FrmProDb::$plug_version;
 		if ( $suffix == '' ) {
 			$suffix = FrmAppHelper::js_suffix();
 		}

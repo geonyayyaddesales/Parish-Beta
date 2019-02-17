@@ -2352,7 +2352,7 @@ class FrmProFieldsHelper {
 		$is_list_field = FrmProField::is_list_field( $field ) && ! is_numeric( $value );
 
 		// If value is an entry ID and the Dynamic field is not mapped to a taxonomy
-		if ( ctype_digit( $value ) && ( ! isset( $field->field_options['form_select'] ) || $field->field_options['form_select'] !== 'taxonomy' ) && $linked_field_id && ! $is_list_field ) {
+		if ( is_numeric( $value ) && ( ! isset( $field->field_options['form_select'] ) || $field->field_options['form_select'] !== 'taxonomy' ) && $linked_field_id && ! $is_list_field ) {
 
 			$linked_field = FrmField::getOne( $linked_field_id );
 

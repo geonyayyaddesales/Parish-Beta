@@ -879,6 +879,8 @@ class FrmProFileField {
 			return;
 		}
 
+		include_once( ABSPATH . 'wp-admin/includes/file.php' );
+
 		foreach ( $upload_fields as $field ) {
 			$attachments = maybe_unserialize( self::get_previous_file_ids( $field, $old_entry_id ) );
 			if ( empty( $attachments ) ) {

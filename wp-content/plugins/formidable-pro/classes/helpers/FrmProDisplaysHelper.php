@@ -284,7 +284,7 @@ class FrmProDisplaysHelper {
 		$where['pm.meta_key'] = $key;
 		$where['p.post_type'] = $post_type;
 
-		$results = FrmDb::get_var( $table, $where, $field, [], '', 'associative_results' );
+		$results = FrmDb::get_var( $table, $where, $field, array(), '', 'associative_results' );
 
 		return $results;
 	}

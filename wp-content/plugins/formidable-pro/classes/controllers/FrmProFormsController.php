@@ -210,8 +210,7 @@ class FrmProFormsController {
 
 		self::enqueue_footer_js();
 
-		print_late_styles();
-		print_footer_scripts();
+		_wp_footer_scripts();
 
 		self::footer_js();
 	}

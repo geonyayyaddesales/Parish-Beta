@@ -51,11 +51,11 @@ class FrmProEntriesListHelper extends FrmEntriesListHelper {
 				echo '<input type="hidden" name="' . esc_attr( $get_var ) . '" value="' . esc_attr( $_REQUEST[ $get_var ] ) . '" />';
         	}
         }
-
 ?>
-<div class="search-box">
+<div class="search-box frm-search">
 	<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ) ?>"><?php echo esc_attr( $text ); ?>:</label>
-	<input type="text" id="<?php echo esc_attr( $input_id ) ?>" name="s" value="<?php echo esc_attr( $search_str ); ?>" />
+	<span class="dashicons dashicons-search"></span>
+	<input type="text" id="<?php echo esc_attr( $input_id ) ?>" name="s" value="<?php echo esc_attr( $search_str ); ?>" class="frm-search-input" />
 	<?php
 	if ( isset( $field_list ) && ! empty( $field_list ) ) {
 	?>
@@ -72,7 +72,7 @@ class FrmProEntriesListHelper extends FrmEntriesListHelper {
 		<?php } ?>
 	</select>
 
-	<div class="button dropdown hide-if-no-js">
+	<div class="button dropdown hide-if-no-js" id="search-submit">
 		<a href="#" id="frm-fid-search" class="frm-dropdown-toggle" data-toggle="dropdown">
 			<?php esc_html_e( 'Search', 'formidable-pro' ); ?>
 			<b class="caret"></b>

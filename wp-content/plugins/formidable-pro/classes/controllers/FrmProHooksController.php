@@ -198,7 +198,6 @@ class FrmProHooksController {
         add_filter('frm_notification_attachment', 'FrmProNotification::add_attachments', 1, 3 );
 
 		// XML Controller
-		add_filter( 'frm_default_templates_files', 'FrmProXMLController::import_default_templates' );
 		add_filter( 'frm_importing_xml', 'FrmProXMLController::importing_xml', 10, 2 );
 
 		// Simple Blocks Controller

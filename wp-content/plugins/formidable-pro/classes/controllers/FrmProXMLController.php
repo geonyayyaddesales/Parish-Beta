@@ -2,11 +2,6 @@
 
 class FrmProXMLController {
 
-	public static function import_default_templates( $files ) {
-        $files[] = FrmProAppHelper::plugin_path() . '/classes/views/xml/default-templates.xml';
-        return $files;
-    }
-
 	public static function route( $continue, $action ) {
         if ( $action == 'import_csv' ) {
             self::import_csv();
@@ -274,4 +269,14 @@ class FrmProXMLController {
 
         wp_die();
     }
+
+	/**
+	 * The templates are now off-site
+	 *
+	 * @deprecated 3.06
+	 */
+	public static function import_default_templates( $files ) {
+		_deprecated_function( __METHOD__, '3.06' );
+		return $files;
+	}
 }
