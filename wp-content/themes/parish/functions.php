@@ -659,26 +659,3 @@ return $file;
 
 }
 add_filter('wp_handle_upload_prefilter', 'whero_limit_image_size');
-
-function whero_limit_image_size2($file) {
-
-// Calculate the image size in KB
-$image_size = $file['size']/1024;
-
-// File size limit in KB
-$limit = 1999;
-	
-// Check if it's an image
-$is_image = strpos($file['type'], 'image');
-	
-	
-if ( ( $image_size > $limit )) {
-        $file['error'] = 'The file you are trying to upload is too large. If you are working with an image, please try uploading it to Optimizilla.com and then downloading the optimized version of the file. If you are working with a PDF, please try uploading it to Smallpdf.com and then downloading the compressed version of the file.
-		
-If your file is still too large to upload to WordPress, send an email to hello@desalesmedia.org or call 718-424-6704, and we will be happy to help.';
-}
-	
-return $file;
-
-}
-add_filter('wp_handle_upload_prefilter', 'whero_limit_image_size2');
