@@ -35,7 +35,7 @@ if ( FrmField::is_read_only( $field ) ) {
 ?>
 <input type="hidden" name="<?php echo esc_attr( $input_name ) ?>" value="<?php echo esc_attr( $hidden_value ) ?>" data-frmfile="<?php echo esc_attr( $field['id'] ) ?>" />
 
-<div class="frm_dropzone frm_<?php echo esc_attr( $file_settings['maxFiles'] == 1 ? 'single' : 'multi' ) ?>_upload frm_clearfix" id="<?php echo esc_attr( $file_name ) ?>_dropzone">
+<div class="frm_dropzone frm_<?php echo esc_attr( $file_settings['maxFiles'] == 1 ? 'single' : 'multi' ) ?>_upload frm_clearfix" id="<?php echo esc_attr( $file_name ) ?>_dropzone" aria-labelledby="<?php echo esc_html( $html_id ); ?>_label" role="group">
 	<div class="fallback">
 		<input type="file" name="<?php echo esc_attr( $file_name . ( $is_multiple ? '[]' : '' ) ) ?>" id="<?php echo esc_attr( $html_id ) ?>" <?php echo $extra_atts; do_action( 'frm_field_input_html', $field ) ?> />
 		<?php foreach ( $file_settings['mockFiles'] as $file ) { ?>

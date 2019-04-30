@@ -1032,6 +1032,14 @@ class FrmProGraphsController {
 			return array();
 		}
 
+		if ( $atts['type'] === 'histogram' ) {
+			foreach ( $meta_values as $meta ) {
+				$meta = self::get_displayed_value( $field, $meta );
+				$graph_data[] = $meta;
+			}
+			return $graph_data;
+		}
+
 		$count_values = array();
 		foreach ( $meta_values as $meta ) {
 			$meta = self::get_displayed_value( $field, $meta );

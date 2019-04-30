@@ -24,3 +24,28 @@
 		<input type="text" name="field_options[end_year_<?php echo absint( $field['id'] ) ?>]" value="<?php echo esc_attr( isset( $field['end_year'] ) ? $field['end_year'] : '' ); ?>" size="4"/>
 	</td>
 </tr>
+
+<?php
+if ( ! function_exists( 'frm_dates_autoloader' ) && is_callable( 'FrmAddonsController::install_link' ) ) {
+	$install_data = '';
+	$class        = ' frm_noallow';
+	$upgrading    = FrmAddonsController::install_link( 'dates' );
+	if ( isset( $upgrading['url'] ) ) {
+		$install_data = json_encode( $upgrading );
+		$class        = '';
+	}
+	?>
+	<tr>
+		<td>
+			<?php esc_attr_e( 'Blackout Dates, Inline Datepicker, and Dynamic Start and End Dates', 'formidable-pro' ); ?>
+		</td>
+		<td>
+			<a href="javascript:void(0)" class="frm_show_upgrade<?php echo esc_attr( $class ); ?>" data-upgrade="<?php esc_attr_e( 'Extra Datepicker options', 'formidable' ); ?>" data-medium="datepicker-options" data-oneclick="<?php echo esc_attr( $install_data ); ?>">
+				<i class="frm_add_tag frm_icon_font"></i>
+				<?php esc_html_e( 'More Datepicker Options', 'formidable' ); ?>
+			</a>
+		</td>
+	</tr>
+	<?php
+}
+?>

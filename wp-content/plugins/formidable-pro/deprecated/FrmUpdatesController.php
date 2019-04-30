@@ -332,7 +332,7 @@ class FrmUpdatesController {
         if ( is_wp_error( $resp ) ) {
 			$message = sprintf( __( 'You had an error communicating with the Formidable Forms API. %1$sClick here%2$s for more information.', 'formidable-pro' ), '<a href="https://formidableforms.com/knowledgebase/why-cant-i-activate-formidable-pro/" target="_blank">', '</a>' );
 			if ( is_wp_error( $resp ) ) {
-				$message .= ' ' . $resp->get_error_message();
+				$message .= ' ' . $resp->get_error_code() . ' ' . $resp->get_error_message();
 			}
             return $message;
 		} elseif ( $body == 'error' || is_wp_error( $body ) ) {

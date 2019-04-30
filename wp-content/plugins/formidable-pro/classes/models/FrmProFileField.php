@@ -534,7 +534,7 @@ class FrmProFileField {
 		if ( ! empty( $_FILES ) ) {
 			$field_id = FrmAppHelper::get_param( 'field_id', '', 'post', 'absint' );
 			if ( $field_id ) {
-				$field = FrmField::getOne( $field_id );
+				$field = FrmField::getOne( $field_id, true );
 				$field->temp_id = $field->id;
 
 				foreach ( $_FILES as $file_name => $file ) {
@@ -706,9 +706,37 @@ class FrmProFileField {
 			$uploads['path'] = $uploads['basedir'] . '/' . $relative_path;
 			$uploads['url'] = $uploads['baseurl'] . '/' . $relative_path;
 			$uploads['subdir'] = '/' . $relative_path;
+
+			self::create_index( $uploads, $relative_path );
 		}
 
 		return $uploads;
+	}
+
+	/**
+	 * Create an index.php in the folders where files are being uploaded.
+	 *
+	 * @since 3.06.01
+	 * @param array  $uploads Info about file locations.
+	 * @param string $path The folder where files will be saved.
+	 */
+	private static function create_index( $uploads, $path ) {
+		if ( file_exists( $uploads['path'] . $uploads['subdir'] . '/index.php' ) ) {
+			return;
+		}
+
+		remove_filter( 'upload_dir', array( 'FrmProFileField', 'upload_dir' ) );
+
+		$file_atts = array(
+			'file_name'   => 'index.php',
+			'folder_name' => $path,
+		);
+
+		$file_content = '<?php' . "\r\n";
+		$new_file     = new FrmCreateFile( $file_atts );
+		$new_file->create_file( $file_content );
+
+		add_filter( 'upload_dir', array( 'FrmProFileField', 'upload_dir' ) );
 	}
 
 	public static function get_upload_dir_for_form( $form_id ) {

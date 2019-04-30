@@ -179,7 +179,8 @@ class FrmProXMLController {
 		$form_id = FrmAppHelper::get_param( 'form_id', '', 'get', 'absint' );
 
         setlocale(LC_ALL, get_locale());
-        if ( ( $f = fopen($filename, 'r') ) !== false ) {
+		$f = fopen( $filename, 'r' );
+		if ( $f !== false ) {
             $row = 0;
             while ( ( $data = fgetcsv($f, 100000, $csv_del) ) !== false ) {
             //while (($raw_data = fgets($f, 100000))){

@@ -9,7 +9,6 @@ class FrmProEddController extends FrmAddon {
 	private $pro_auth_store  = 'frmpro-authorized';
 	public $pro_wpmu_store  = 'frmpro-wpmu-sitewide';
 	private $pro_wpmu = false;
-	protected $get_beta = false;
 
 	public function __construct() {
 		$this->version = FrmProDb::$plug_version;
@@ -34,20 +33,10 @@ class FrmProEddController extends FrmAddon {
 	}
 
 	/**
-	 * This isn't really beta, but we need to serve two different downloads
-	 * "beta" is the nested version with formidable/pro that we will be phasing out
-	 *
 	 * @since 3.0
 	 */
 	private function set_download() {
-		$path = FrmProAppHelper::plugin_path();
-		if ( substr( $path, -4 ) === '/pro' ) {
-			// this is nested
-			$this->plugin_file = FrmAppHelper::plugin_path() . '/formidable.php';
-			$this->get_beta = true;
-		} else {
-			$this->plugin_file = $path . '/formidable-pro.php';
-		}
+		$this->plugin_file = FrmProAppHelper::plugin_path() . '/formidable-pro.php';
 	}
 
 	public function set_license( $license ) {
@@ -108,7 +97,10 @@ class FrmProEddController extends FrmAddon {
 		$frm_style = new FrmStyle();
 		$frm_style->update( 'default' );
 
-		FrmAppHelper::save_combined_js();
+		parent::set_active( $is_active );
+
+		// The child class crease the option we don't need.
+		delete_option( $this->option_name . 'active', $is_active );
 	}
 
 	private function get_pro_cred_form_vals() {

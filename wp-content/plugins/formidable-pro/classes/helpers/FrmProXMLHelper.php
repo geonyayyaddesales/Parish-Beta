@@ -64,10 +64,13 @@ class FrmProXMLHelper {
 				FrmEntry::update_entry_from_xml( $entry['id'], $entry );
                 $imported['updated']['items']++;
 				$saved_entries[ $entry['id'] ] = $entry['id'];
-            } else if ( $e = FrmEntry::create_entry_from_xml($entry) ) {
-				$saved_entries[ $entry['id'] ] = $e;
-                $imported['imported']['items']++;
-            }
+			} else {
+				$e = FrmEntry::create_entry_from_xml( $entry );
+				if ( $e ) {
+					$saved_entries[ $entry['id'] ] = $e;
+					$imported['imported']['items']++;
+				}
+			}
 
 			self::track_imported_child_entries( $saved_entries[ $entry['id'] ], $entry['parent_item_id'], $track_child_ids );
 
@@ -160,7 +163,8 @@ class FrmProXMLHelper {
 		$unmapped_fields = self::get_unmapped_fields( $field_ids );
 		$field_ids = array_filter( $field_ids );
 
-        if ( $f = fopen($path, 'r') ) {
+		$f = fopen( $path, 'r' );
+		if ( $f ) {
             unset($path);
             $row = 0;
             //setlocale(LC_ALL, get_locale());

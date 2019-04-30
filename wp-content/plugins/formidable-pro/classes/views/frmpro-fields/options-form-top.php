@@ -15,9 +15,8 @@ if ( $field['type'] == 'divider' ) {
         $field['repeat'] = false;
     }
 ?>
-<label for="frm_repeat_field_<?php echo absint( $field['id'] ) ?>" class="frm_inline_label frm_help" title="<?php esc_attr_e( 'Repeatable: This section can be repeated when viewing your form.', 'formidable-pro' ) ?>">
-	<input type="checkbox" id="frm_repeat_field_<?php echo absint( $field['id'] ) ?>" name="field_options[repeat_<?php echo absint( $field['id'] ) ?>]" class="frm_repeat_field" value="1" <?php checked( $field['repeat'], 1 ); ?> />
-	<?php esc_html_e( 'Repeatable', 'formidable-pro' ); ?>
-</label>
+
+<input type="hidden" id="frm_repeat_field_<?php echo absint( $field['id'] ) ?>" name="field_options[repeat_<?php echo absint( $field['id'] ) ?>]" class="frm_repeat_field" value="<?php echo esc_attr( $field['repeat'] ); ?>" />
+
 <?php
 }

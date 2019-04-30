@@ -46,6 +46,20 @@ class FrmProFieldCreditCard extends FrmFieldType {
 		);
 	}
 
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		$strings   = parent::translatable_strings();
+		$strings[] = 'cc';
+		$strings[] = 'cvc';
+		$strings[] = 'cc_desc';
+		$strings[] = 'month_desc';
+		$strings[] = 'year_desc';
+		$strings[] = 'cvc_desc';
+		return $strings;
+	}
+
 	public function show_on_form_builder( $name = '' ) {
 		$field = FrmFieldsHelper::setup_edit_vars( $this->field );
 		$defaults = $this->empty_value_array();
@@ -85,7 +99,8 @@ class FrmProFieldCreditCard extends FrmFieldType {
 				$new_value = $value['cc'] . ' <br/>';
 			}
 
-			$new_value .= $value['month'] . '/' . $value['year'];
+			$new_value .= __( 'Expiration:', 'formidable-pro' );
+			$new_value .= ' ' . $value['month'] . '/' . $value['year'];
 		}
 		return $new_value;
 	}
@@ -95,6 +110,8 @@ class FrmProFieldCreditCard extends FrmFieldType {
 	}
 
 	public function validate( $args ) {
+		$this->field->temp_id = $args['id'];
+
 		$errors = array();
 		$this->validate_required_fields( $errors, $args );
 		$this->validate_cc_number( $errors, $args );
@@ -107,6 +124,11 @@ class FrmProFieldCreditCard extends FrmFieldType {
 	private function validate_required_fields( &$errors, $args ) {
 		$values = $args['value'];
 		if ( $this->should_require( $values ) ) {
+			if ( empty( $values ) ) {
+				$errors[ 'field' . $args['id'] ] = FrmFieldsHelper::get_error_msg( $this->field, 'blank' );
+				return;
+			}
+
 			foreach ( $values as $key => $value ) {
 				if ( empty( $value ) ) {
 					$errors[ 'field' . $args['id'] . '-' . $key ] = '';

@@ -11,7 +11,13 @@ class FrmProFieldFile extends FrmFieldType {
 	 */
 	protected $type = 'file';
 
-	protected $is_tall = true;
+	/**
+	 * Fix WCAG errors.
+	 *
+	 * @var bool
+	 * @since 3.06.01
+	 */
+	protected $has_for_label = false;
 
 	protected function include_form_builder_file() {
 		return FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/field-' . $this->type . '.php';
@@ -40,6 +46,16 @@ class FrmProFieldFile extends FrmFieldType {
 			'drop_msg'   => __( 'Drop a file here or click to upload', 'formidable-pro' ),
 			'choose_msg' => __( 'Choose File', 'formidable-pro' ),
 		);
+	}
+
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		$strings   = parent::translatable_strings();
+		$strings[] = 'drop_msg';
+		$strings[] = 'choose_msg';
+		return $strings;
 	}
 
 	/**

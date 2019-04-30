@@ -90,7 +90,7 @@ class FrmProAppController {
 			'jquery-chosen' => array(
 				'file'     => '/js/chosen.jquery.min.js',
 				'requires' => array( 'jquery' ),
-				'version'  => '1.5.1',
+				'version'  => '1.8.7',
 			),
 			'jquery-maskedinput' => array(
 				'file'     => '/js/jquery.maskedinput.min.js',
@@ -107,6 +107,8 @@ class FrmProAppController {
 		if ( is_admin() || ! current_user_can( 'frm_edit_forms' ) ) {
 			return;
 		}
+
+		self::maybe_change_post_link();
 
 		$actions = array();
 
@@ -128,6 +130,32 @@ class FrmProAppController {
 				'href'   => $action['url'],
 				'id'     => 'edit_' . $id,
 			) );
+		}
+	}
+
+	/**
+	 * If the post is edited by the entry, use the entry edit link
+	 * instead of the post link.
+	 *
+	 * @since 4.0
+	 */
+	private static function maybe_change_post_link() {
+		global $wp_admin_bar, $post;
+
+		if ( ! $post ) {
+			return;
+		}
+
+		$display_id = get_post_meta( $post->ID, 'frm_display_id', true );
+		if ( empty( $display_id ) ) {
+			return;
+		}
+
+		$entry_id  = FrmDb::get_var( 'frm_items', array( 'post_id' => $post->ID ) );
+		$edit_node = $wp_admin_bar->get_node( 'edit' );
+		if ( ! empty( $edit_node ) && $entry_id ) {
+			$edit_node->href = admin_url( 'admin.php?page=formidable-entries&frm_action=edit&id=' . $entry_id );
+			$wp_admin_bar->add_node( $edit_node );
 		}
 	}
 
@@ -361,5 +389,31 @@ class FrmProAppController {
 		} else {
 			remove_action( 'frm_before_settings', 'FrmSettingsController::license_box' );
 		}
+	}
+
+	/**
+	 * Show a message if Pro is installed but not activated.
+	 *
+	 * @since 3.06.02
+	 */
+	public static function admin_notices() {
+		$is_settings_page = FrmAppHelper::simple_get( 'page', 'sanitize_text_field' ) === 'formidable-settings';
+		if ( $is_settings_page ) {
+			return;
+		}
+		?>
+		<div class="error">
+			<p>
+			<?php
+			printf(
+				/* translators: %1$s: Start link HTML, %2$s: End link HTML */
+				__( 'Formidable Forms Pro is installed, but not yet activated. %1$sAdd your license key now%2$s to start enjoying all the Pro features.', 'formidable' ),
+				'<a href="' . esc_url( admin_url( 'admin.php?page=formidable-settings' ) ) . '">',
+				'</a>'
+			);
+			?>
+			</p>
+		</div>
+		<?php
 	}
 }

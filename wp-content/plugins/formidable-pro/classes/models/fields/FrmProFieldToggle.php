@@ -29,6 +29,16 @@ class FrmProFieldToggle extends FrmFieldType {
 		);
 	}
 
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		$strings   = parent::translatable_strings();
+		$strings[] = 'toggle_on';
+		$strings[] = 'toggle_off';
+		return $strings;
+	}
+
 	protected function builder_text_field( $name = '' ) {
 		$this->set_field_column( 'value', $this->get_field_column('default_value') );
 		$args = array(
@@ -75,5 +85,23 @@ class FrmProFieldToggle extends FrmFieldType {
 		$input .= '</div>';
 
 		return $input;
+	}
+
+	/**
+	 * If no value is saved, set the off label if it's not 0.
+	 *
+	 * @since 3.06.01
+	 * @param array $args
+	 * @return array errors
+	 */
+	public function validate( $args ) {
+		if ( empty( $args['value'] ) ) {
+			$off_label = FrmField::get_option( $this->field, 'toggle_off' );
+			if ( ! empty( $off_label ) ) {
+				FrmEntriesHelper::set_posted_value( $this->field, $off_label, $args );
+			}
+		}
+
+		return array();
 	}
 }

@@ -11,8 +11,6 @@ class FrmProFieldRte extends FrmFieldType {
 	 */
 	protected $type = 'rte';
 
-	protected $is_tall = true;
-
 	protected function include_form_builder_file() {
 		return FrmProAppHelper::plugin_path() . '/classes/views/frmpro-fields/back-end/field-' . $this->type . '.php';
 	}

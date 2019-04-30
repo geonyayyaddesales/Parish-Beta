@@ -342,22 +342,28 @@ function frmProFormJS() {
 	 * @returns {boolean}
 	 */
 	function anyPrecedingRequiredFieldsCompleted( uploadField, fileSelector ) {
-		var dropzoneDiv = jQuery( fileSelector ),
+		var prevPage, requiredFields,
+			fieldsComplete = true,
+			dropzoneDiv = jQuery( fileSelector ),
 			form = dropzoneDiv.closest( 'form' );
 
 		if ( form.length < 1 ) {
 			return false;
 		}
 
-		var requiredFields = jQuery( form ).find(
+		prevPage = form.find( 'input[name="frm_prev_page"]' );
+		if ( prevPage.length ) {
+			// Only check if on the first page of the form.
+			return true;
+		}
+
+		requiredFields = jQuery( form ).find(
 			'.frm_required_field:visible input, .frm_required_field:visible select, .frm_required_field:visible textarea, ' + fileSelector
 		);
 
 		if ( requiredFields.length < 1 ) {
 			return true;
 		} else {
-			var fieldsComplete = true;
-
 			for ( var r = 0, rl = requiredFields.length; r < rl; r++ ) {
 				if ( '#' + requiredFields[ r ].id === fileSelector ) {
 					break;
@@ -1175,7 +1181,7 @@ function frmProFormJS() {
 		var inputs = getInputsInFieldOnPage( container ),
 			inContainer = ( depFieldArgs.fieldType === 'divider' || depFieldArgs.fieldType === 'form' );
 
-		setValueForInputs( inputs, inContainer, depFieldArgs.formId );
+		setValueForInputs( inputs, inContainer, depFieldArgs.formId, 'required' );
 	}
 
 	/**
@@ -1238,17 +1244,21 @@ function frmProFormJS() {
 		return document.querySelectorAll( '[name^="' + name + '"]' );
 	}
 
-	function setValueForInputs( inputs, inContainer, formId ) {
+	function setValueForInputs( inputs, inContainer, formId, setRequired ) {
 		if ( inputs.length ) {
 
 			var prevInput;
 			for ( var i = 0; i < inputs.length; i++ ) {
-				if ( skipSetValue( i, prevInput, inputs ) ) {
+				// Don't set the value if the field is in a section and it's conditionally hidden
+				if ( inContainer && isChildInputConditionallyHidden( inputs[ i ], formId ) ) {
 					continue;
 				}
 
-				// Don't set the value if the field is in a section and it's conditionally hidden
-				if ( inContainer && isChildInputConditionallyHidden( inputs[ i ], formId ) ) {
+				if ( setRequired === 'required' ) {
+					maybeAddRequiredTag( inputs[ i ] );
+				}
+
+				if ( skipSetValue( i, prevInput, inputs ) ) {
 					continue;
 				}
 
@@ -1258,6 +1268,22 @@ function frmProFormJS() {
 
 				prevInput = inputs[ i ];
 			}
+		}
+	}
+
+	/**
+	 * When a field is shown with logic, add the html and aria
+	 * required attributes if the field is required.
+	 */
+	function maybeAddRequiredTag( input ) {
+		if ( input.type === 'checkbox' || input.type === 'radio' || input.type === 'file' ) {
+			return;
+		}
+		var is_required = input.parentElement.className.indexOf( 'frm_required_field' ),
+			is_optional = input.className.indexOf( 'frm_optional' );
+
+		if ( is_required > -1 && is_optional === -1 ) {
+			input.setAttribute( 'aria-required', true );
 		}
 	}
 
@@ -1394,7 +1420,7 @@ function frmProFormJS() {
 
 	function clearInputsInFieldOnPage( containerId ) {
 		var inputs = getInputsInFieldOnPage( containerId );
-		clearValueForInputs( inputs );
+		clearValueForInputs( inputs, 'required' );
 	}
 
 	function clearInputsInFieldAcrossPage( depFieldArgs ) {
@@ -1426,7 +1452,7 @@ function frmProFormJS() {
 		return document.querySelectorAll( '[id^="field_' + depFieldArgs.fieldKey + '-"]' );
 	}
 
-	function clearValueForInputs( inputs ) {
+	function clearValueForInputs( inputs, required ) {
 		if ( inputs.length < 1 ) {
 			return;
 		}
@@ -1450,7 +1476,7 @@ function frmProFormJS() {
 			if ( inputs[ i ].type === 'radio' || inputs[ i ].type === 'checkbox' ) {
 				inputs[ i ].checked = false;
 			} else if ( inputs[ i ].tagName === 'SELECT' ) {
-				if ( inputs[ i ].selectedIndex === 0 ) {
+				if ( ( inputs[ i ].selectedIndex === 0 ) || ( inputs[ i ].selectedIndex === - 1 ) ) {
 					valueChanged = false;
 				} else {
 					inputs[ i ].selectedIndex = 0;
@@ -1461,8 +1487,15 @@ function frmProFormJS() {
 				if ( autocomplete !== null ) {
 					jQuery( inputs[ i ] ).trigger( 'chosen:updated' );
 				}
+			} else if ( inputs[ i ].type === 'range' ) {
+				inputs[ i ].value = 0;
 			} else {
 				inputs[ i ].value = '';
+			}
+
+			if ( required === 'required' ) {
+				inputs[ i ].required = false;
+				inputs[ i ].setAttribute( 'aria-required', false );
 			}
 
 			prevInput = inputs[ i ];
@@ -1556,6 +1589,12 @@ function frmProFormJS() {
 			if ( defaultField !== null ) {
 				defaultValue = defaultField.value;
 				tinymce.get( input.id ).setContent( defaultValue );
+			}
+		} else if ( typeof defaultValue === 'undefined' && input.type === 'hidden' ) {
+			//with read only select input, value is in sibling select
+			var $select = $input.next( 'select[disabled]' );
+			if ( $select.length > 0 ) {
+				defaultValue = $select.data( 'frmval' );
 			}
 		}
 
@@ -3871,6 +3910,10 @@ function frmProFormJS() {
 
 				jQuery( document ).trigger( 'frmAfterAddRow' );
 
+				jQuery( '.frm_repeat_' + id ).each( function( i ) {
+					this.style.zIndex = 999 - i;
+				} );
+
 				currentlyAddingRow = false;
 			},
 			error: function() {
@@ -4502,6 +4545,13 @@ function frmProFormJS() {
 				},
 			} );
 		},
+
+		changeRte: function( editor ) {
+			editor.on( 'change', function() {
+				var content = editor.getBody().innerHTML;
+				jQuery( '#' + editor.id ).val( content ).change();
+			} );
+		}
 	};
 }
 var frmProForm = frmProFormJS();

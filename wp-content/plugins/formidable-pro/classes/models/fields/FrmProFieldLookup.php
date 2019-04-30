@@ -11,8 +11,6 @@ class FrmProFieldLookup extends FrmFieldType {
 	 */
 	protected $type = 'lookup';
 
-	protected $is_tall = true;
-
 	public function show_on_form_builder( $name = '' ) {
 		$field = FrmFieldsHelper::setup_edit_vars( $this->field );
 		FrmProLookupFieldsController::show_lookup_field_input_on_form_builder( $field );

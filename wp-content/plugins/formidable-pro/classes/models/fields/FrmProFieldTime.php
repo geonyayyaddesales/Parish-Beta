@@ -11,6 +11,14 @@ class FrmProFieldTime extends FrmFieldType {
 	 */
 	protected $type = 'time';
 
+	/**
+	 * Fix WCAG errors when multiple dropdowns for the time field.
+	 *
+	 * @var bool
+	 * @since 3.06.01
+	 */
+	protected $has_for_label = false;
+
 	public function show_on_form_builder( $name = '' ) {
 		$field = FrmFieldsHelper::setup_edit_vars( $this->field );
 		$field['value'] = $field['default_value'];
@@ -109,6 +117,8 @@ class FrmProFieldTime extends FrmFieldType {
 		$hidden = $this->maybe_include_hidden_values( $values );
 		$this->maybe_format_time( $values['field_value'] );
 
+		$labeled_by = 'aria-labelledby="' . esc_attr( $values['html_id'] ) . '_label" ';
+
 		if ( isset( $field['options']['H'] ) ) {
 			$this->time_string_to_array( $values['field_value'] );
 			$this->time_string_to_array( $values['field']['default_value'] );
@@ -129,10 +139,13 @@ class FrmProFieldTime extends FrmFieldType {
 				$values['combo_name'] = 'A';
 				$html .= $this->get_select_box( $values ) . "\r\n";
 			}
+
+			$html  = str_replace( '<select ', '<select ' . $labeled_by, $html );
 			$html .= '</div>';
 		} else {
 			$this->time_array_to_string( $values['field_value'] );
 			$html = $this->get_select_box( $values );
+			$html = str_replace( '<select ', '<select ' . $labeled_by, $html );
 		}
 
 		echo $hidden . $html;

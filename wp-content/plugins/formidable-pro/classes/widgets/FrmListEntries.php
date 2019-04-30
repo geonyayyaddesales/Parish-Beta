@@ -104,7 +104,8 @@ class FrmListEntries extends WP_Widget {
                 }
 
                 if ( isset($instance['cat_list']) && (int) $instance['cat_list'] == 1 && is_numeric($instance['cat_id']) ) {
-					if ( $cat_field = FrmField::getOne( $instance['cat_id'] ) ) {
+					$cat_field = FrmField::getOne( $instance['cat_id'] );
+					if ( $cat_field ) {
 						$categories = maybe_unserialize( $cat_field->options );
 					}
                 }

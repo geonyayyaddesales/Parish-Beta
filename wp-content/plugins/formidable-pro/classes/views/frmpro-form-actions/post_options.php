@@ -38,7 +38,7 @@
 
 					$form_action->post_content['post_category'][ $fo['taxonomy'] . $tax_count ] = array(
 						'field_id'    => $fo['id'],
-						'exclude_cat' => $fo['exclude_cat'],
+						'exclude_cat' => isset( $fo['exclude_cat'] ) ? $fo['exclude_cat'] : 0,
 						'meta_name'   => $fo['taxonomy'],
 					);
                     unset($tax_count);

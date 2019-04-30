@@ -627,7 +627,7 @@ class FrmProNestedFormsController {
 
 			$field_num ++;
 
-			if ( 'top' == $label_pos && in_array( $subfield['label'], array( 'top', 'hidden', '' ) ) ) {
+			if ( 'top' == $label_pos && in_array( $subfield['label'], array( 'top', 'hidden', '', 'inside' ) ) ) {
 				// add placeholder label if repeating
 				$label_pos = 'hidden';
 			}

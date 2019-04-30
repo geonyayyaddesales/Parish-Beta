@@ -24,7 +24,7 @@ class FrmProConditionalLogicController {
 			$present = false;
 		} elseif ( FrmField::is_no_save_field( $logic_field->type ) ) {
 			$present = false;
-		} elseif ( in_array( $logic_field->type, array( 'file', 'rte', 'date', 'address', 'credit_card' ) ) ) {
+		} elseif ( in_array( $logic_field->type, array( 'file', 'date', 'address', 'credit_card' ) ) ) {
 			$present = false;
 		} elseif ( FrmProField::is_list_field( $logic_field ) ) {
 			$present = false;

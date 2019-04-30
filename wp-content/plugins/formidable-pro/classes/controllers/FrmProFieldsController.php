@@ -60,14 +60,14 @@ class FrmProFieldsController {
     }
 
 	public static function build_field_class( $classes, $field ) {
-        if ( 'inline' == $field['conf_field'] ) {
-            $classes .= ' frm_conf_inline';
-        } else if ( 'below' == $field['conf_field'] ) {
-            $classes .= ' frm_conf_below';
-        }
+		if ( 'inline' == $field['conf_field'] ) {
+			$classes .= ' frm_conf_inline';
+		} else if ( 'below' == $field['conf_field'] ) {
+			$classes .= ' frm_conf_below';
+		}
 
-        return $classes;
-    }
+		return $classes;
+	}
 
     public static function input_html( $field, $echo = true ) {
         $add_html = '';
@@ -984,35 +984,10 @@ class FrmProFieldsController {
 	 * Set the form id for the repeating section and any fields inside it
 	 *
 	 * @since 2.0
+	 * @deprecated 3.06.01
 	 */
 	public static function toggle_repeat() {
-        check_ajax_referer( 'frm_ajax', 'nonce' );
-		FrmAppHelper::permission_check('frm_edit_forms');
-
-		$form_id = absint( $_POST['form_id'] ); // $form_id should be empty for non-repeating sections
-		$parent_form_id = absint( $_POST['parent_form_id'] );
-		$checked = absint( $_POST['checked'] );
-		$new_form_name = sanitize_text_field( $_POST['field_name'] );
-
-		// Switch to repeating
-		if ( $checked ) {
-
-			$form_id = FrmProField::create_repeat_form( 0, array( 'parent_form_id' => $parent_form_id, 'field_name' => $new_form_name ) );
-
-			// New form_select
-			echo absint( $form_id );
-		}
-
-        if ( $form_id ) {
-			$field_id = absint( $_POST['field_id'] );
-
-			// get the array of child fields
-            $children = array_filter( (array) $_POST['children'], 'is_numeric');
-
-            if ( ! empty( $children ) ) {
-				FrmProFieldsHelper::update_for_repeat( compact('form_id', 'parent_form_id', 'checked', 'field_id', 'children' ) );
-            }
-        }
+		_deprecated_function( __METHOD__, '3.06.01' );
 
         wp_die();
     }

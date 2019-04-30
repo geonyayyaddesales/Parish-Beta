@@ -18,6 +18,7 @@ class FrmProHooksController {
 
 		global $frm_vars;
 		if ( ! $frm_vars['pro_is_authorized'] ) {
+			add_action( 'admin_notices', 'FrmProAppController::admin_notices' );
 			return;
 		}
 
@@ -165,6 +166,7 @@ class FrmProHooksController {
         add_filter('frm_replace_content_shortcodes', 'FrmProFormsController::replace_content_shortcodes', 10, 3);
         add_filter('frm_conditional_shortcodes', 'FrmProFormsController::conditional_options');
         add_filter( 'frm_helper_shortcodes', 'FrmProFormsController::add_pro_field_helpers', 10, 2 );
+		add_filter( 'frm_form_strings', 'FrmProFormsController::add_form_strings', 10, 2 );
 
 		add_filter( 'frm_validate_entry', 'FrmProFormsHelper::can_submit_form_now', 15, 2 );
 		add_filter( 'frm_pre_display_form', 'FrmProFormsHelper::prepare_inline_edit_form', 10, 1 );
@@ -375,6 +377,10 @@ class FrmProHooksController {
 		// Time Controller
 		add_action('wp_ajax_frm_fields_ajax_time_options', 'FrmProTimeFieldsController::ajax_time_options');
 		add_action('wp_ajax_nopriv_frm_fields_ajax_time_options', 'FrmProTimeFieldsController::ajax_time_options');
+
+		// Usage
+		add_filter( 'frm_usage_settings', 'FrmProUsageController::settings' );
+		add_filter( 'frm_usage_form', 'FrmProUsageController::form', 10, 2 );
 	}
 
     public static function load_ajax_hooks() {
@@ -413,7 +419,6 @@ class FrmProHooksController {
         add_action('wp_ajax_nopriv_frm_fields_ajax_data_options', 'FrmProFieldsController::ajax_data_options');
         add_action('wp_ajax_frm_add_logic_row', 'FrmProFieldsController::_logic_row');
         add_action('wp_ajax_frm_populate_calc_dropdown', 'FrmProFieldsController::populate_calc_dropdown');
-        add_action('wp_ajax_frm_toggle_repeat', 'FrmProFieldsController::toggle_repeat');
         add_action( 'wp_ajax_frm_update_field_after_move', 'FrmProFieldsController::update_field_after_move' );
 		add_action( 'wp_ajax_nopriv_frm_submit_dropzone', 'FrmProFieldsController::ajax_upload' );
 		add_action( 'wp_ajax_frm_submit_dropzone', 'FrmProFieldsController::ajax_upload' );

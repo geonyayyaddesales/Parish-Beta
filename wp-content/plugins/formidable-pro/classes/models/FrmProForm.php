@@ -236,16 +236,27 @@ class FrmProForm {
 	public static function update( $id, $values ) {
         global $wpdb;
 
-		if ( isset( $values['options'] ) ) {
-            $logged_in = isset($values['logged_in']) ? $values['logged_in'] : 0;
-            $editable = isset($values['editable']) ? $values['editable'] : 0;
-			$updated = $wpdb->update( $wpdb->prefix . 'frm_forms', array( 'logged_in' => $logged_in, 'editable' => $editable ), array( 'id' => $id ) );
-			if ( $updated ) {
-				FrmForm::clear_form_cache();
-				unset( $updated );
-			}
-        }
-    }
+		$action = FrmAppHelper::get_param( 'frm_action', '', 'post', 'sanitize_text_field' );
+		if ( ! isset( $values['options'] ) || $action !== 'update_settings' ) {
+			return;
+		}
+
+		$logged_in = isset( $values['logged_in'] ) ? $values['logged_in'] : 0;
+		$editable = isset( $values['editable'] ) ? $values['editable'] : 0;
+		$updated = $wpdb->update(
+			$wpdb->prefix . 'frm_forms',
+			array(
+				'logged_in' => $logged_in,
+				'editable' => $editable,
+			),
+			array( 'id' => $id )
+		);
+
+		if ( $updated ) {
+			FrmForm::clear_form_cache();
+			unset( $updated );
+		}
+	}
 
 	public static function after_duplicate( $new_opts ) {
         if ( isset($new_opts['success_url']) ) {

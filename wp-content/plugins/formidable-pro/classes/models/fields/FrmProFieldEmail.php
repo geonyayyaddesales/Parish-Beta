@@ -16,4 +16,14 @@ class FrmProFieldEmail extends FrmFieldEmail {
 		FrmProFieldsHelper::fill_default_field_display( $settings );
 		return $settings;
 	}
+
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		$strings   = parent::translatable_strings();
+		$strings[] = 'conf_desc';
+		$strings[] = 'conf_msg';
+		return $strings;
+	}
 }

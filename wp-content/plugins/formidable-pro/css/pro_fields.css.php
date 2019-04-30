@@ -19,6 +19,12 @@
 .with_frm_style .frm_repeat_sec{
     margin-bottom:20px;
     margin-top:20px;
+	padding-bottom:15px;
+}
+
+.with_frm_style .frm_repeat_sec:last-child{
+	border-bottom:none;
+	padding-bottom:none;
 }
 
 .with_frm_style .frm_repeat_inline{
@@ -73,20 +79,20 @@
 .frm_repeat_inline .frm_button,
 .frm_repeat_sec .frm_button{
 	display: inline-block;
-	line-height:1.3;
+	line-height:1;
 }
 
 .frm_repeat_sec .frm_button .frm_icon_font:before,
 .frm_repeat_grid .frm_button .frm_icon_font:before,
 .frm_repeat_inline .frm_button .frm_icon_font:before{
-    line-height:1.3;
+    line-height:1;
 }
 
-.frm_form_field .frm_repeat_grid .frm_form_field label.frm_primary_label{
+.frm_form_field .frm_repeat_grid .frm_form_field .frm_primary_label{
     display:none !important;
 }
 
-.frm_form_field .frm_repeat_grid.frm_first_repeat .frm_form_field label.frm_primary_label{
+.frm_form_field .frm_repeat_grid.frm_first_repeat .frm_form_field .frm_primary_label{
     display:inherit !important;
 }
 

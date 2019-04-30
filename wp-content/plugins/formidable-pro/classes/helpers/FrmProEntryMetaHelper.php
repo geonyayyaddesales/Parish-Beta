@@ -112,8 +112,9 @@ class FrmProEntryMetaHelper {
 			if ( isset( $atts['field']->field_options ) ) {
                 $field_options = maybe_unserialize($atts['field']->field_options);
                 $tax = isset($field_options['taxonomy']) ? $field_options['taxonomy'] : 'frm_tag';
+				$tags = get_the_terms( $post_id, $tax );
 
-				if ( $tags = get_the_terms( $post_id, $tax ) ) {
+				if ( $tags ) {
                     $names = array();
                     foreach ( $tags as $tag ) {
                         self::get_term_with_link( $tag, $tax, $names, $atts );

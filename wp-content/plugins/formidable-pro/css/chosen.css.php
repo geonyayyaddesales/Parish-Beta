@@ -1,4 +1,3 @@
-/* Start Chosen */
 .with_frm_style .chosen-container{
     font-size:<?php echo esc_html( $defaults['field_font_size'] ) ?>;
     position:relative;
@@ -23,14 +22,17 @@
     border-top:0;
     position:absolute;
     top:100%;
-    box-shadow:0 4px 5px rgba(0,0,0,.15);
     z-index:1010;
     width:100%;
-    display: none;
+	clip: rect(0, 0, 0, 0);
+	-webkit-clip-path: inset(100% 100%);
+	clip-path: inset(100% 100%);
 }
 
 .with_frm_style .chosen-container.chosen-with-drop .chosen-drop{
-    display: block;
+	clip: auto;
+	-webkit-clip-path: none;
+	clip-path: none;
 }
 
 .with_frm_style .chosen-container a{
@@ -63,12 +65,6 @@
     text-decoration:none;
     white-space:nowrap;
     line-height:24px;
-}
-
-.with_frm_style .chosen-container-single .chosen-single input[type="text"] {
-	cursor: pointer;
-	opacity: 0;
-	position: absolute;
 }
 
 .with_frm_style .chosen-container-single .chosen-default {
@@ -150,6 +146,8 @@
 .with_frm_style .chosen-container-single.chosen-container-single-nosearch .chosen-search{
     position:absolute;
     clip: rect(0, 0, 0, 0);
+	-webkit-clip-path: inset(100% 100%);
+	clip-path: inset(100% 100%);
 }
 
 .with_frm_style .chosen-container .chosen-results{
@@ -440,7 +438,13 @@
 .with_frm_style .chosen-rtl.chosen-container-single.chosen-with-drop .chosen-single div b{
     background-position:-12px 2px;
 }
-/* End Chosen */
+
+/** Fix for overlapping options **/
+.with_frm_style .frm_repeat_sec,
+.with_frm_style .frm_repeat_inline,
+.with_frm_style .frm_repeat_grid {
+	position: relative;
+}
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 144dpi){
     .with_frm_style .chosen-rtl .chosen-search input[type="text"],

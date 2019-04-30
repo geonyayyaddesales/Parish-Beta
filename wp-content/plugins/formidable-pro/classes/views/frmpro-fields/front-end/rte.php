@@ -21,6 +21,9 @@ if ( FrmAppHelper::is_admin() ) { ?>
 		if ( $field['max'] ) {
 			$e_args['textarea_rows'] = $field['max'];
 		}
+		$e_args['tinymce'] = array(
+			'init_instance_callback' => 'frmProForm.changeRte'
+		);
 
 		$e_args = apply_filters( 'frm_rte_options', $e_args, $field );
 

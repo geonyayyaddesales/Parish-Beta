@@ -139,13 +139,31 @@ class FrmField {
 			),
 			'credit_card' => array(
 				'name'  => __( 'Credit Card', 'formidable' ),
-				'icon'  => 'frm_icon_font frm_credit-card-alt_icon',
+				'icon'  => 'frm_icon_font frm_credit-card-alt_icon frm_show_upgrade',
+				'addon' => 'stripe',
 			),
 			'address'   => array(
 				'name'  => __( 'Address', 'formidable' ),
 				'icon'  => 'frm_icon_font frm_location_icon',
 			),
+			'signature' => array(
+				'name'  => __( 'Signature', 'formidable' ),
+				'icon'  => 'frm_icon_font frm_pencil_icon frm_show_upgrade',
+				'addon' => 'signature',
+			),
+			'quiz_score' => array(
+				'name'  => __( 'Quiz Score', 'formidable' ),
+				'icon'  => 'frm_icon_font frm_calculator_icon frm_show_upgrade',
+				'addon' => 'quizzes',
+			),
 		);
+
+		// Since the signature field may be in a different section, don't show it twice.
+		$lite_fields = self::field_selection();
+		if ( isset( $lite_fields['signature'] ) ) {
+			unset( $fields['signature'] );
+		}
+
 		return apply_filters( 'frm_pro_available_fields', $fields );
 	}
 
@@ -250,6 +268,8 @@ class FrmField {
 			if ( $field->form_id != $old_form_id && isset( $old_repeat_form_id ) && isset( $new_repeat_form_id ) && $field->form_id == $old_repeat_form_id ) {
 				$values['form_id'] = $new_repeat_form_id;
 			}
+
+			$values['description'] = FrmFieldsHelper::switch_field_ids( $values['description'] );
 
 			$values = apply_filters( 'frm_duplicated_field', $values );
 			$new_id = self::create( $values );
@@ -370,7 +390,11 @@ class FrmField {
 		}
 	}
 
-	public static function getOne( $id ) {
+	/**
+	 * @param string|int $id The field id or key.
+	 * @param bool $filter When true, run the frm_field filter.
+	 */
+	public static function getOne( $id, $filter = false ) {
 		if ( empty( $id ) ) {
 			return null;
 		}
@@ -383,6 +407,7 @@ class FrmField {
         $results = FrmDb::check_cache( $id, 'frm_field', $query, 'get_row', 0 );
 
 		if ( empty( $results ) ) {
+			self::filter_field( $filter, $results );
             return $results;
         }
 
@@ -393,9 +418,24 @@ class FrmField {
         }
 
 		self::prepare_options( $results );
+		self::filter_field( $filter, $results );
 
 		return stripslashes_deep( $results );
     }
+
+	/**
+	 * @since 3.06.01
+	 * @param bool   $filter When true, run the frm_field filter.
+	 * @param object $results
+	 */
+	private static function filter_field( $filter, &$results ) {
+		if ( $filter ) {
+			/**
+			 * @since 3.06.01
+			 */
+			$results = apply_filters( 'frm_field', $results );
+		}
+	}
 
 	/**
 	 * Get the field type by key or id

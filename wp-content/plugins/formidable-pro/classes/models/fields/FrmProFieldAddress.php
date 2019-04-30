@@ -41,6 +41,20 @@ class FrmProFieldAddress extends FrmFieldType {
 		return $options;
 	}
 
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		$strings   = parent::translatable_strings();
+		$strings[] = 'line1_desc';
+		$strings[] = 'line2_desc';
+		$strings[] = 'city_desc';
+		$strings[] = 'state_desc';
+		$strings[] = 'zip_desc';
+		$strings[] = 'country_desc';
+		return $strings;
+	}
+
 	private static function default_labels() {
 		return array(
 			'line1' => '',
@@ -225,6 +239,8 @@ class FrmProFieldAddress extends FrmFieldType {
 	}
 
 	public function validate( $args ) {
+		$this->field->temp_id = $args['id'];
+
 		$errors = array();
 		self::validate_required_fields( $errors, $args );
 		self::validate_zip( $errors, $args );

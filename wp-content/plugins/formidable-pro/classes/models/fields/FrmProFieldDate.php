@@ -29,7 +29,7 @@ class FrmProFieldDate extends FrmFieldType {
 		return array(
 			'start_year' => '-10',
 			'end_year'   => '+10',
-			'locale'     => '',
+			'locale'     => 'en',
 			'max'        => '10',
 		);
 	}
@@ -39,6 +39,15 @@ class FrmProFieldDate extends FrmFieldType {
 			'format' => false,
 		);
 		$atts = wp_parse_args( $atts, $defaults );
+	}
+
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		$strings   = parent::translatable_strings();
+		$strings[] = 'locale';
+		return $strings;
 	}
 
 	/**

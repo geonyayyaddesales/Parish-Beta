@@ -567,10 +567,15 @@ echo $custom_options;
 	 * @return boolean
 	 */
 	public static function user_can_submit_form( $form ) {
+		$can_submit  = true;
 		$admin_entry = FrmAppHelper::is_admin();
 
-		$can_submit = true;
-		if ( $form->options['single_entry_type'] == 'cookie' && isset( $_COOKIE[ 'frm_form' . $form->id . '_' . COOKIEHASH ] ) ) {
+		if ( $admin_entry && current_user_can( 'frm_create_entries' ) ) {
+			return $can_submit;
+		}
+
+		$cookie_limit = $form->options['single_entry_type'] === 'cookie' && isset( $_COOKIE[ 'frm_form' . $form->id . '_' . COOKIEHASH ] );
+		if ( $cookie_limit ) {
 			$can_submit = $admin_entry ? true : false;
 		} else if ( $form->options['single_entry_type'] == 'ip' ) {
 			if ( ! $admin_entry ) {

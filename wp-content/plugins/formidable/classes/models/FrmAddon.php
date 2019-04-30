@@ -241,6 +241,9 @@ class FrmAddon {
 
 		$api = new FrmFormApi( $this->license );
 		$api->reset_cached();
+
+		$api = new FrmFormTemplateApi( $this->license );
+		$api->reset_cached();
 	}
 
 	/**
@@ -328,7 +331,6 @@ class FrmAddon {
 				$transient = false;
 			} else {
 				$this->maybe_use_beta_url( $version_info );
-				$version_info->new_version = trim( $version_info->new_version, 'p' );
 
 				if ( version_compare( $version_info->new_version, $this->version, '>' ) ) {
 					$transient = $version_info;

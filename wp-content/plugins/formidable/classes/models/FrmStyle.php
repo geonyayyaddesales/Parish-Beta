@@ -64,8 +64,8 @@ class FrmStyle {
  			    continue;
  			}
 
- 			$new_instance['post_title'] = sanitize_text_field( $_POST['frm_style_setting']['post_title'] );
- 			$new_instance['post_content'] = $_POST['frm_style_setting']['post_content'];
+ 			$new_instance['post_title'] = isset( $_POST['frm_style_setting']['post_title'] ) ? sanitize_text_field( $_POST['frm_style_setting']['post_title'] ) : '';
+ 			$new_instance['post_content'] = isset( $_POST['frm_style_setting']['post_content'] ) ? $_POST['frm_style_setting']['post_content'] : '';
  			$new_instance['post_type']  = FrmStylesController::$post_type;
             $new_instance['post_status']  = 'publish';
 			$new_instance['menu_order']  = isset( $_POST['frm_style_setting']['menu_order'] ) ? absint( $_POST['frm_style_setting']['menu_order'] ) : 0;
@@ -142,7 +142,7 @@ class FrmStyle {
 		$create_file->create_file( $css );
 
 		update_option( 'frmpro_css', $css, 'no' );
-		set_transient( 'frmpro_css', $css );
+		set_transient( 'frmpro_css', $css, MONTH_IN_SECONDS );
 	}
 
 	private function get_css_content( $filename ) {

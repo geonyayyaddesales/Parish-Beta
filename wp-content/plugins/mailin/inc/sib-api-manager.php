@@ -192,7 +192,7 @@ if ( ! class_exists( 'SIB_API_Manager' ) ) {
 
 					foreach ( $templates['data']['campaign_records'] as $template ) {
 						$is_dopt = 0;
-						if ( strpos( $template['html_content'], '[DOUBLEOPTIN]' ) != false ) {
+						if ( strpos( $template['html_content'], 'DOUBLEOPTIN' ) != false  || strpos( $template['html_content'], 'doubleoptin' ) != false) {
 							$is_dopt = 1;
 						}
 						$template_data[] = array(
@@ -549,11 +549,17 @@ if ( ! class_exists( 'SIB_API_Manager' ) ) {
 
 			$html_content = str_replace( '{site_domain}', $site_domain, $html_content );
 			$encodedEmail = rtrim( strtr( base64_encode( $to_email ), '+/', '-_' ), '=' );
+			$search_value = "({{\s*doubleoptin\s*}})";
 
 			// double optin
 			$html_content = str_replace( 'https://[DOUBLEOPTIN]', '{subscribe_url}', $html_content );
 			$html_content = str_replace( 'http://[DOUBLEOPTIN]', '{subscribe_url}', $html_content );
+			$html_content = str_replace( 'https://{{doubleoptin}}', '{subscribe_url}', $html_content );
+			$html_content = str_replace( 'http://{{doubleoptin}}', '{subscribe_url}', $html_content );
+			$html_content = str_replace( 'https://{{ doubleoptin }}', '{subscribe_url}', $html_content );
+			$html_content = str_replace( 'http://{{ doubleoptin }}', '{subscribe_url}', $html_content );
 			$html_content = str_replace( '[DOUBLEOPTIN]', '{subscribe_url}', $html_content );
+			$html_content = preg_replace($search_value, '{subscribe_url}', $html_content);
 			$html_content = str_replace(
 				'{subscribe_url}', add_query_arg(
 					array(

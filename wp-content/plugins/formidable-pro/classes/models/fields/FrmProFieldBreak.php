@@ -47,6 +47,13 @@ class FrmProFieldBreak extends FrmFieldType {
 		);
 	}
 
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		return array( 'name' );
+	}
+
 	public function prepare_field_html( $args ) {
 		global $frm_vars;
 

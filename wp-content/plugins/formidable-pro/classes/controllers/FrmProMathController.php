@@ -67,6 +67,8 @@ class FrmProMathController {
 	 */
 	private static function clear_expression_of_extra_characters( $expression, $atts ) {
 		if ( isset( $atts['clean'] ) && $atts['clean'] ) {
+			//remove /> and </ so HTML tags can be fully removed
+			$expression = preg_replace( '/\/>|<\/|&lt;\/|\/&gt;/', '', $expression );
 			return preg_replace( '/[^\+\-\/\*0-9\.\(\)\%]/', '', $expression );
 		}
 

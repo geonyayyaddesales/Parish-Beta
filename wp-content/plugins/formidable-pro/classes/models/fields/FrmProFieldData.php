@@ -11,8 +11,6 @@ class FrmProFieldData extends FrmFieldType {
 	 */
 	protected $type = 'data';
 
-	protected $is_tall = true;
-
 	protected function input_html() {
 		return $this->multiple_input_html();
 	}
@@ -56,7 +54,7 @@ class FrmProFieldData extends FrmFieldType {
 		$data_type = FrmField::get_option( $this->field, 'data_type' );
 		$form_select = FrmField::get_option( $this->field, 'form_select' );
 		if ( in_array( $data_type, array( 'select', 'radio', 'checkbox' ) ) && is_numeric( $form_select ) ) {
-			$entry_id = isset( $values['entry_id'] ) ? $values['entry_id'] : 0;
+			$entry_id = isset( $atts['entry_id'] ) ? $atts['entry_id'] : 0;
 			FrmProDynamicFieldsController::add_options_for_dynamic_field( $this->field, $values, array( 'entry_id' => $entry_id ) );
 		}
 		return $values;

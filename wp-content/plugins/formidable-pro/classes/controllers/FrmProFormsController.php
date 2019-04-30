@@ -937,6 +937,38 @@ class FrmProFormsController {
 		return $entry_shortcodes;
 	}
 
+	/**
+	 * Set the strings to be translatable by multilingual plugins.
+	 *
+	 * @since 3.06.01
+	 * @param array $strings
+	 * @param object $form
+	 */
+	public static function add_form_strings( $strings, $form ) {
+		// Add edit and delete options.
+		if ( $form->editable ) {
+			$strings[] = 'edit_value';
+			$strings[] = 'edit_msg';
+		}
+
+		if ( isset( $form->options['save_draft'] ) && $form->options['save_draft'] ) {
+			if ( isset( $form->options['draft_msg'] ) ) {
+				$strings[] = 'draft_msg';
+			}
+		}
+
+		if ( isset( $form->options['open_status'] ) && ! empty( $form->options['open_status'] ) ) {
+			$strings[] = 'closed_msg';
+		}
+
+		$strings[] = 'prev_value';
+		if ( isset( $form->options['rootline_titles_on'] ) && ! empty( $form->options['rootline_titles_on'] ) ) {
+			$strings[] = 'rootline_titles';
+		}
+
+		return $strings;
+	}
+
 	public static function setup_form_data_for_editing_entry( $entry, &$values ) {
 		$form = $entry->form_id;
 		FrmForm::maybe_get_form( $form );

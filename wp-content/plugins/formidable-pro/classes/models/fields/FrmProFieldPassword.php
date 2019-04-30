@@ -36,6 +36,16 @@ class FrmProFieldPassword extends FrmFieldType {
 		);
 	}
 
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		$strings   = parent::translatable_strings();
+		$strings[] = 'conf_desc';
+		$strings[] = 'conf_msg';
+		return $strings;
+	}
+
 	protected function html5_input_type() {
 		return 'password';
 	}

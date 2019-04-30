@@ -122,7 +122,7 @@ class FrmProFieldValue extends FrmFieldValue {
 	public function has_child_entries() {
 		$has_child_entries = false;
 
-		if ( $this->field->type === 'form' || FrmField::is_repeating_field( $this->field ) ) {
+		if ( $this->field->type === 'form' || $this->is_repeater() ) {
 
 			if ( FrmAppHelper::is_not_empty_value( $this->saved_value ) ) {
 				$has_child_entries = true;
@@ -131,6 +131,13 @@ class FrmProFieldValue extends FrmFieldValue {
 
 		return $has_child_entries;
 
+	}
+
+	/**
+	 * @since 3.06.01
+	 */
+	public function is_repeater() {
+		return FrmField::is_repeating_field( $this->field );
 	}
 
 	/**

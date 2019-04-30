@@ -55,7 +55,8 @@ class FrmProEntriesController {
     }
 
 	public static function new_entry() {
-		if ( $form_id = FrmAppHelper::get_param( 'form', '', 'get', 'absint' ) ) {
+		$form_id = FrmAppHelper::get_param( 'form', '', 'get', 'absint' );
+		if ( $form_id ) {
             $form = FrmForm::getOne($form_id);
             self::get_new_vars('', $form);
         } else {
@@ -1286,6 +1287,10 @@ class FrmProEntriesController {
 		}
 
 		if ( ! empty( $f_values ) ) {
+			if ( is_array( $value ) ) {
+				$value = FrmAppHelper::array_flatten( $value, 'reset' );
+			}
+
 			foreach ( (array) $value as $v_key => $val ) {
 				if ( in_array( $val, $f_values ) ) {
 					$opt = array_search( $val, $f_values );
@@ -1742,6 +1747,10 @@ class FrmProEntriesController {
 
 		if ( $atts['clickable'] ) {
 			$graph_vals['options']['no_entries'] = make_clickable( $graph_vals['options']['no_entries'] );
+		}
+
+		if ( ! isset( $atts['entries'] ) || empty( $atts['entries'] ) ) {
+			$atts['entries'] = array();
 		}
 
 		$first_loop = true;
@@ -2739,6 +2748,10 @@ class FrmProEntriesController {
 		}
 
 		$form = FrmForm::getOne($form_id);
+		if ( ! isset( $form->options['single_entry_type'] ) || $form->options['single_entry_type'] !== 'cookie' ) {
+			return;
+		}
+
 		$expiration = isset( $form->options['cookie_expiration'] ) ? ( (float) $form->options['cookie_expiration'] * 60 * 60 ) : 30000000;
 		$expiration = apply_filters('frm_cookie_expiration', $expiration, $form_id, $entry_id);
 		setcookie( 'frm_form' . $form_id . '_' . COOKIEHASH, current_time('mysql', 1), time() + $expiration, COOKIEPATH, COOKIE_DOMAIN, is_ssl() );

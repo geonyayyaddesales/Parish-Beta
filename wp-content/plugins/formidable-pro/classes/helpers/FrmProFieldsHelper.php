@@ -220,7 +220,9 @@ class FrmProFieldsHelper {
 				break;
 
 			case 'date':
-				$new_value = FrmProAppHelper::get_date( isset( $atts['format'] ) ? $atts['format'] : '' );
+				$date      = isset( $atts['offset'] ) ? $atts['offset'] : current_time( 'mysql' );
+				$format    = isset( $atts['format'] ) ? $atts['format'] : '';
+				$new_value = self::get_single_date( $date, $format );
 				break;
 
 			case 'time':
@@ -440,6 +442,20 @@ class FrmProFieldsHelper {
             }
         }
     }
+
+	/**
+	* If value is "current_user", returns current user's id
+ 	*
+	* @param $value
+	*
+	* @return int
+	*/
+	private static function get_user_id_if_value_is_current_user( $value ) {
+		if ( 'current_user' === $value ) {
+			$value = get_current_user_id();
+		}
+		return $value;
+	}
 
     /**
      * If this default value should be an array, we will make sure it is
@@ -820,100 +836,10 @@ class FrmProFieldsHelper {
 	 *  - Delete the other entries and meta
 	 *
 	 * @since 2.0
+	 * @deprecated 3.06.01
 	 */
 	public static function update_for_repeat( $args ) {
-		if ( $args['checked'] ) {
-			// Switching to repeatable
-			self::move_fields_to_form( $args['children'], $args['form_id'] );
-			self::move_entries_to_child_form( $args );
-			$form_select = $args['form_id'];
-		} else {
-			// Switching to non-repeatable
-			self::move_fields_to_form( $args['children'], $args['parent_form_id'] );
-			self::move_entries_to_parent_form( $args );
-			$form_select = '';
-		}
-
-		// update the repeat setting and form_select
-		$section = FrmField::getOne( $args['field_id'] );
-		$section->field_options['repeat'] = $args['checked'];
-		$section->field_options['form_select'] = $form_select;
-		FrmField::update( $args['field_id'], array( 'field_options' => $section->field_options ) );
-	}
-
-	/**
-	* Move fields to a different form
-	* Used when switching from repeating to non-repeating (or vice versa)
-	*/
-	private static function move_fields_to_form( $field_ids, $form_id ) {
-		global $wpdb;
-
-		$where = array( 'id' => $field_ids, 'type !' => 'end_divider' );
-		FrmDb::get_where_clause_and_values( $where );
-		array_unshift( $where['values'], $form_id );
-		$wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'frm_fields SET form_id=%d ' . $where['where'], $where['values'] ) );
-	}
-
-	/**
-	* Move entries from parent form to child form
-	*
-	* @since 2.0.09
-	*/
-	private static function move_entries_to_child_form( $args ) {
-		global $wpdb;
-
-		// get the ids of the entries saved in these fields
-		$item_ids = FrmDb::get_col( 'frm_item_metas', array( 'field_id' => $args['children'] ), 'item_id', array( 'group_by' => 'item_id' ) );
-
-		foreach ( $item_ids as $old_id ) {
-			// Create a new entry in the child form
-	        $new_id = FrmEntry::create( array( 'form_id' => $args['form_id'], 'parent_item_id' => $old_id ) );
-
-			// Move the parent item_metas to the child form
-			$where = array( 'item_id' => $old_id, 'field_id' => $args['children'] );
-			FrmDb::get_where_clause_and_values( $where );
-			array_unshift( $where['values'], $new_id );
-			$c = $wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'frm_item_metas SET item_id = %d ' . $where['where'], $where['values'] ) );
-
-			if ( $c ) {
-				// update the section field meta with the new entry ID
-				$u = FrmEntryMeta::update_entry_meta( $old_id, $args['field_id'], null, $new_id );
-				if ( ! $u ) {
-					// add the row if it wasn't there to update
-					FrmEntryMeta::add_entry_meta( $old_id, $args['field_id'], null, $new_id );
-				}
-			}
-		}
-	}
-
-	/**
-	* Delete entries from repeating sections and transfer first row to parent entries
-	*/
-	private static function move_entries_to_parent_form( $args ) {
-		global $wpdb;
-
-		// get the ids of the entries saved in child fields
-		$items = FrmDb::get_results( $wpdb->prefix . 'frm_item_metas m LEFT JOIN ' . $wpdb->prefix . 'frm_items i ON i.id=m.item_id', array( 'field_id' => $args['children'] ), 'item_id,parent_item_id', array( 'order_by' => 'i.created_at ASC' ) );
-
-		$updated_ids = array();
-		foreach ( $items as $item ) {
-			$child_id = $item->item_id;
-			$parent_id = $item->parent_item_id;
-			if ( ! in_array( $parent_id, $updated_ids ) ) {
-				// Change the item_id in frm_item_metas to match the parent item ID
-				$wpdb->query( $wpdb->prepare( 'UPDATE ' . $wpdb->prefix . 'frm_item_metas SET item_id = %d WHERE item_id = %d', $parent_id, $child_id ) );
-				$updated_ids[] = $parent_id;
-			}
-
-			// Delete the child entry
-			FrmEntry::destroy( $child_id );
-		}
-
-		// delete all the metas for the repeat section
-		$wpdb->query( $wpdb->prepare( 'DELETE FROM ' . $wpdb->prefix . 'frm_item_metas WHERE field_id=%d', $args['field_id'] ) );
-
-		// Delete the child form
-		FrmForm::destroy( $args['form_id'] );
+   		_deprecated_function( __METHOD__, '3.06.01' );
 	}
 
 	/**
@@ -1174,11 +1100,12 @@ class FrmProFieldsHelper {
 	 * @param array $logic_rules
 	 */
 	private static function add_condition_to_logic_rules( $field, $i, &$logic_rules ) {
-		if ( ! isset( $field['hide_opt'][ $i ] ) ) {
+		if ( ! isset( $field['hide_opt'][ $i ] ) || ! isset( $field['hide_field_cond'][ $i ] ) ) {
 			return;
 		}
 
 		$value = self::get_default_value( $field['hide_opt'][ $i ], $field, false );
+		$value = self::get_user_id_if_value_is_current_user( $value );
 		$logic_rules['conditions'][] = array(
 			'fieldId'  => $field['hide_field'][ $i ],
 			'operator' => $field['hide_field_cond'][ $i ],
@@ -1651,7 +1578,7 @@ class FrmProFieldsHelper {
 		$field_js = array(
 			'start_year'   => $start_year,
 			'end_year'     => $end_year,
-			'locale'       => $locale,
+			'locale'       => ( $locale === 'en' ? '' : $locale ),
 			'unique'       => $unique,
 			'field_id'     => $field['id'],
 			'entry_id'     => $id,
@@ -2501,6 +2428,14 @@ class FrmProFieldsHelper {
             $date = FrmProAppHelper::convert_date($date, $frmpro_settings->date_format, 'Y-m-d');
         }
 
+		if ( empty( $date_format ) ) {
+			// The default format for a default value date.
+			if ( ! isset( $frmpro_settings ) ) {
+				$frmpro_settings = FrmProAppHelper::get_settings();
+			}
+			$date_format = $frmpro_settings->date_format;
+		}
+
         return date_i18n($date_format, strtotime($date));
     }
 
@@ -2689,8 +2624,8 @@ class FrmProFieldsHelper {
 
 		// only show the credit card field when an add-on says so
 		$show_credit_card = apply_filters( 'frm_include_credit_card', false );
-		if ( ! $show_credit_card ) {
-			unset( $field_types['credit_card'] );
+		if ( $show_credit_card ) {
+			$field_types['credit_card']['icon'] = str_replace( ' frm_show_upgrade', '', $field_types['credit_card']['icon'] );
 		}
 
 		$field_types['lookup']['types'] = FrmProLookupFieldsController::get_lookup_field_data_types();
@@ -2795,6 +2730,9 @@ class FrmProFieldsHelper {
 	private static function get_conditional_logic_outcomes( $field, $values ) {
 		$logic_outcomes = array();
 		foreach ( $field->field_options['hide_field'] as $logic_key => $logic_field ) {
+			if ( ! isset( $field->field_options['hide_field_cond'][ $logic_key ] ) ) {
+				continue;
+			}
 
 			$observed_value = self::get_observed_logic_value( $field, $values, $logic_field );
 			$logic_value = self::get_conditional_logic_value( $field, $logic_key, $observed_value );

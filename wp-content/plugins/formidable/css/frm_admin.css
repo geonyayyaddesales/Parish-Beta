@@ -474,7 +474,6 @@ ul.frm_form_nav > li{
 
 .frm_orange_button,
 .wrap .frm_pricing a.button-primary,
-.toplevel_page_formidable #frm_upgrade_modal .button-primary,
 .toplevel_page_formidable .frm_wrap button.button-primary{
 	border-color: #da791d !important;
 	background: #f37656;
@@ -688,16 +687,16 @@ input.frm_insert_in_template{
 	margin:6px 40px;
 	padding:0;
 }
-label.frm_primary_label,
-#frm_form_editor_container label.frm_primary_label{
+.frm_primary_label,
+#frm_form_editor_container .frm_primary_label{
 	font-weight:bold;
 }
-.form-field label.frm_primary_label{
+.form-field .frm_primary_label{
 	display:block;
 	float:none;
 	width:auto;
 }
-#frm_form_editor_container label.frm_primary_label{
+#frm_form_editor_container .frm_primary_label{
 	color:#444;
 	margin:0;
 	padding:0;
@@ -706,11 +705,11 @@ label.frm_primary_label,
 	min-height:20px;
 }
 
-#frm_form_editor_container label.frm_primary_label:hover{
+#frm_form_editor_container .frm_primary_label:hover{
 	cursor:text;
 }
 
-form label.frm_primary_label input{font-size:12px;}
+form .frm_primary_label input{font-size:12px;}
 .with_frm_style form .form-field{margin-bottom:20px;}
 .with_frm_style form div.description,
 .frm_error,
@@ -719,7 +718,7 @@ form label.frm_primary_label input{font-size:12px;}
 	font-size:11px;
 }
 
-#frm_form_editor_container .divider_section_only label.frm_primary_label {
+#frm_form_editor_container .divider_section_only .frm_primary_label {
 	font-size:16px;
 }
 
@@ -1024,6 +1023,10 @@ h2.frm-h2 + .howto{
 	margin-bottom:0;
 }
 
+#frm-templates-page .updated,
+.frm-add-new-form .updated,
+#frm-templates-page .notice,
+.frm-add-new-form .notice,
 #frm-templates-page .error,
 .frm-add-new-form .error{
 	display:none;
@@ -1453,22 +1456,27 @@ img.frm_help{
 	margin-top: 20px;
 }
 
+.frm_loading_button,
 .frm_loading_form.frm_button_submit {
-    position: relative;
+    position: relative !important;
     opacity: .8;
     color: transparent !important;
     text-shadow: none !important;
 }
 
+.frm_loading_button:hover,
+.frm_loading_button:active,
+.frm_loading_button:focus,
 .frm_loading_form.frm_button_submit:hover,
 .frm_loading_form.frm_button_submit:active,
 .frm_loading_form.frm_button_submit:focus {
     cursor: not-allowed;
-    color: transparent;
+    color: transparent !important;
     outline: none !important;
     box-shadow: none;
 }
 
+.frm_loading_button:before,
 .frm_loading_form.frm_button_submit:before {
     content: '';
     display: inline-block;
@@ -1718,7 +1726,7 @@ table td, .form-table tr td{vertical-align:top;}
 	display:none;
 }
 
-#frm_form_editor_container .subform_section label.frm_primary_label{
+#frm_form_editor_container .subform_section .frm_primary_label{
 	display:block;
 }
 

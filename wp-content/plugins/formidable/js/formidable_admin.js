@@ -1252,28 +1252,6 @@ function frmAdminBuildJS(){
 			jQuery('.inplace_field').blur();
 		}
 	}
-	
-	function toggleRepeat(){
-		/*jshint validthis:true */
-		var field_id = jQuery(this).closest('li.frm_field_box').data('fid');
-		var main_form_id = jQuery('input[name="id"]').val();
-		var prev_form = jQuery('input[name="field_options[form_select_'+field_id+']"]').val();
-
-		if(this.checked){
-			jQuery('#frm_field_id_'+field_id+' .show_repeat_sec').fadeIn('slow');
-			jQuery(this).closest('li.frm_field_box').addClass('repeat_section').removeClass('no_repeat_section');
-
-			toggleFormid(field_id, prev_form, main_form_id, 1);
-		}else{
-			if(confirm(frm_admin_js.conf_no_repeat)){
-				jQuery('#frm_field_id_'+field_id+' .show_repeat_sec').fadeOut('slow');
-				jQuery(this).closest('li.frm_field_box').removeClass('repeat_section').addClass('no_repeat_section');
-				toggleFormid(field_id, prev_form, main_form_id, 0);
-			}else{
-				this.checked = true;
-			}
-		}
-	}
 
 	function toggleRepeatButtons(){
 		/*jshint validthis:true */
@@ -1300,27 +1278,6 @@ function frmAdminBuildJS(){
 	function updateRepeatText(obj, addRemove){
 		var $thisField = jQuery(obj).closest('.frm_field_box');
 		$thisField.find('.frm_'+ addRemove +'_form_row .frm_repeat_label').text(obj.value);
-	}
-	
-	function toggleFormid(field_id, form_id, main_form_id, checked){
-		// change form ids of all fields in section
-		var children = fieldsInSection(field_id);
-		var field_name = document.getElementById('field_label_' + field_id).innerHTML;
-		jQuery.ajax({type:'POST',url:ajaxurl,
-			data:{action:'frm_toggle_repeat', form_id:form_id, parent_form_id:main_form_id, checked:checked, field_id:field_id, field_name:field_name, children:children, nonce:frmGlobal.nonce},
-			success:function(id){
-				//return form id to hidden field
-				jQuery('input[name="field_options[form_select_'+field_id+']"]').val(id);
-
-				// Update data-formid on section field
-				var fieldListElement = document.getElementById( 'frm_field_id_' + field_id );
-				if ( id !== '' ) {
-					fieldListElement.setAttribute('data-formid', id);
-				} else {
-					fieldListElement.setAttribute('data-formid', main_form_id);
-				}
-			}
-		});
 	}
 
 	function fieldsInSection(id){
@@ -1740,16 +1697,56 @@ function frmAdminBuildJS(){
 			return;
 		}
 
-		jQuery('.frm_show_upgrade').click( function( event ) {
+		jQuery( document ).on( 'click', '.frm_show_upgrade', function( event ) {
 			event.preventDefault();
-			jQuery('.frm_feature_label').html( jQuery(this).data('upgrade') );
+			jQuery('.frm_feature_label').html( this.dataset.upgrade );
+			jQuery( '#frm_upgrade_modal h2' ).show();
+			jQuery( '#frm_upgrade_modal .dashicons-lock' ).removeClass( 'dashicons-unlock' );
+
+			// If one click upgrade, hide other content
+			addOneClickModal( this );
+
 			$info.dialog('open');
 
 			// set the utm medium
-			var button = $info.find('.button-primary');
-			var link = button.attr('href').replace( /(medium=)[a-z_-]+/ig, '$1' + jQuery(this).data('medium') );
+			var button = $info.find('.button-primary:not(#frm-oneclick-button)');
+			var link = button.attr('href').replace( /(medium=)[a-z_-]+/ig, '$1' + this.dataset.medium );
+			var content = this.dataset.content;
+			if ( content === undefined ) {
+				content = '';
+			}
+			link = link.replace( /(content=)[a-z_-]+/ig, '$1' + content );
 			button.attr( 'href', link );
+			return false;
 		} );
+	}
+
+	/**
+	 * Allow addons to be installed from the upgrade modal.
+	 */
+	function addOneClickModal( link ) {
+		// If one click upgrade, hide other content
+		var oneclickMessage = document.getElementById( 'frm-oneclick' ),
+			oneclick = link.getAttribute( 'data-oneclick' ),
+			button = document.getElementById( 'frm-oneclick-button' ),
+			showIt = 'block',
+			hideIt = 'none';
+
+		if ( oneclickMessage !== null && typeof oneclick !== 'undefined' && oneclick ) {
+			showIt = 'none';
+			hideIt = 'block';
+			oneclick = JSON.parse( oneclick );
+
+			button.className = button.className.replace( ' frm-install-addon', '' ).replace( ' frm-activate-addon', '' );
+			button.className = button.className + ' ' + oneclick.class;
+			button.rel = oneclick.url;
+		}
+
+		document.getElementById( 'frm-addon-status' ).style.display = 'none';
+		oneclickMessage.style.display = hideIt;
+		button.style.display = hideIt == 'block' ? 'inline-block' : hideIt;
+		document.getElementById( 'frm-upgrade-message' ).style.display = showIt;
+		document.getElementById( 'frm-upgrade-modal-link' ).style.display = showIt == 'block' ? 'inline-block' : showIt;
 	}
 
 	/* Form settings */
@@ -2398,7 +2395,7 @@ function frmAdminBuildJS(){
 			type:'POST',url:ajaxurl,
 			data:{action:'frm_add_order_row',form_id:this_form_id,order_key:(parseInt(l)+1), nonce:frmGlobal.nonce},
 			success:function(html){
-				jQuery('#frm_order_options .frm_logic_rows').append(html).prev('.frm_add_order_row').hide();
+				jQuery('#frm_order_options .frm_logic_rows').append(html).show().prev('.frm_add_order_row').hide();
 			}
 		});
 	}
@@ -2770,37 +2767,6 @@ function frmAdminBuildJS(){
 		});
 	}
 
-	function fillLicenses(){
-		var emptyFields = jQuery('.frm_addon_license_key:visible');
-		if ( emptyFields.length < 1 ){
-			return false;
-		}
-
-		jQuery.ajax({
-			type:'POST',url:ajaxurl,dataType:'json',
-			data:{action:'frm_fill_licenses', nonce:frmGlobal.nonce},
-			success:function(json){
-				var i;
-				var licenses = json.licenses;
-				var filledSomething = false;
-				for ( i in licenses ) {
-				    if (licenses.hasOwnProperty(i)) {
-						var input = jQuery('#edd_'+ licenses[i].slug +'_license_key');
-						if ( typeof input !== null && input.is(':visible') ) {
-							input.val(licenses[i].key);
-							jQuery('input[name="edd_'+ licenses[i].slug +'_license_activate"]').click();
-							filledSomething = true;
-						}
-				    }
-				}
-				if ( ! filledSomething ) {
-					jQuery('.edd_frm_fill_license').replaceWith(frm_admin_js.no_licenses);
-				}
-			}
-		});
-		return false;
-	}
-
 	/* Import/Export page */
 
 	function startFormMigration( event ) {
@@ -2997,19 +2963,25 @@ function frmAdminBuildJS(){
     }
 
 	/* Addons page */
+	function activateAddon( e ) {
+		e.preventDefault();
+		installOrActivate( this, 'frm_activate_addon' );
+	}
+
 	function installAddon( e ) {
 		e.preventDefault();
+		installOrActivate( this, 'frm_install_addon' );
+	}
 
+	function installOrActivate( clicked, action ) {
 		// Remove any leftover error messages, output an icon and get the plugin basename that needs to be activated.
 		jQuery('.frm-addon-error').remove();
-		var button  = jQuery(this);
+		var button  = jQuery(clicked);
 		var plugin  = button.attr('rel');
 		var el      = button.parent();
 		var message = el.parent().find('.addon-status-label');
-		var loader  = button.next();
 
-		button.html( frm_admin_js.installing );
-		loader.css({ 'visibility': 'visible', 'display': 'inline-block' });
+		button.addClass('frm_loading_button');
 
 		// Process the Ajax to perform the activation.
 		jQuery.ajax({
@@ -3019,14 +2991,14 @@ function frmAdminBuildJS(){
 			cache: false,
 			dataType: 'json',
 			data: {
-				action: 'frm_install_addon',
+				action: action,
 				nonce:  frmGlobal.nonce,
 				plugin: plugin
 			},
 			success: function(response) {
 				// If there is a WP Error instance, output it here and quit the script.
 				if ( response.error ) {
-					addonError( response, el, button, loader );
+					addonError( response, el, button );
 					return;
 				}
 
@@ -3046,16 +3018,10 @@ function frmAdminBuildJS(){
 					return;
 				}
 
-				// The Ajax request was successful, so let's update the output.
-				button.css({ 'visibility': 'hidden' });
-				message.text( frm_admin_js.active );
-
-				// Proceed with CSS changes
-				el.parent().removeClass('frm-addon-not-installed').addClass('frm-addon-active');
-				loader.hide();
+				afterAddonInstall( response, button, message, el );
 			},
 			error: function(xhr, textStatus, e) {
-				loader.hide();
+				button.removeClass('frm_loading_button');
 			}
 		});
 	}
@@ -3067,10 +3033,8 @@ function frmAdminBuildJS(){
 		// Now let's make another Ajax request once the user has submitted their credentials.
 		var proceed   = jQuery(this);
 		var el        = proceed.parent().parent();
-		var loader    = proceed.next();
 
-		proceed.html( frm_admin_js.installing );
-		loader.css({ 'visibility': 'visible', 'display': 'inline-block' });
+		proceed.addClass( 'frm_loading_button' );
 
 		jQuery.ajax({
 			url: ajaxurl,
@@ -3089,7 +3053,7 @@ function frmAdminBuildJS(){
 			success: function(response) {
 				// If there is a WP Error instance, output it here and quit the script.
 				if ( response.error ) {
-					addonError( response, el, button, loader );
+					addonError( response, el, button );
 					return;
 				}
 
@@ -3101,24 +3065,31 @@ function frmAdminBuildJS(){
 					return;
 				}
 
-				// The Ajax request was successful, so let's update the output.
-				button.hide();
-				jQuery(message).text( frm_admin_js.active );
-
-				// Proceed with CSS changes
-				jQuery(el).removeClass('frm-addon-not-installed').addClass('frm-addon-active');
-				loader.hide();
+				afterAddonInstall( response, proceed, message, el );
 			},
 			error: function(xhr, textStatus ,e) {
-				loader.hide();
+				proceed.removeClass( 'frm_loading_button' );
 			}
 		});
 	}
 
-	function addonError( response, el, button, loader ) {
+	function afterAddonInstall( response, button, message, el ) {
+		// The Ajax request was successful, so let's update the output.
+		button.css({ 'opacity': '0' });
+		message.text( frm_admin_js.active );
+		jQuery( '#frm-oneclick' ).hide();
+		jQuery( '#frm-addon-status' ).text( response ).show();
+		jQuery( '#frm_upgrade_modal h2' ).hide();
+		jQuery( '#frm_upgrade_modal .dashicons-lock' ).addClass( 'dashicons-unlock' );
+
+		// Proceed with CSS changes
+		el.parent().removeClass('frm-addon-not-installed frm-addon-installed').addClass('frm-addon-active');
+		button.removeClass('frm_loading_button');
+	}
+
+	function addonError( response, el, button ) {
 		el.append('<div class="frm-addon-error frm_error_style"><p><strong>' + response.error + '</strong></p></div>');
-		button.html( frm_admin_js.install );
-		loader.hide();
+		button.removeClass( 'frm_loading_button' );
 		jQuery('.frm-addon-error').delay(4000).fadeOut();
 	}
 
@@ -3445,7 +3416,9 @@ function frmAdminBuildJS(){
 			jQuery(document.getElementById('frm_deauthorize_link')).click(deauthorize);
 			jQuery('.frm_authorize_link').click(authorize);
 
-			jQuery('.frm-install-addon').click( installAddon );
+			jQuery( document ).on( 'click', '.frm-install-addon', installAddon );
+			jQuery( document ).on( 'click', '.frm-activate-addon', activateAddon );
+			initUpgradeModal();
 
 			// prevent annoying confirmation message from WordPress
 			jQuery('button, input[type=submit]').on('click', removeWPUnload);
@@ -3523,7 +3496,6 @@ function frmAdminBuildJS(){
 			$newFields.on('click', '.frm_reload_icon', { iconType: 'clear_on_focus' }, toggleDefaultValueIcon);
 			$newFields.on('click', '.frm_error_icon', { iconType: 'default_blank' }, toggleDefaultValueIcon);
 
-			$newFields.on('click', '.frm_repeat_field', toggleRepeat);
 			$newFields.on('change', '.frm_repeat_format', toggleRepeatButtons);
 			$newFields.on('change', '.frm_repeat_limit', checkRepeatLimit);
 			$newFields.on('input', 'input[name^="field_options[add_label_"]', function(){
@@ -3549,8 +3521,6 @@ function frmAdminBuildJS(){
 			$newFields.on('change', 'select.conf_field', addConf);
 
 			$newFields.on('change', '.frm_get_field_selection', getFieldSelection);
-
-			initUpgradeModal();
 		},
 		
 		settingsInit: function(){
@@ -3665,8 +3635,6 @@ function frmAdminBuildJS(){
 					jQuery('.edit_action_message_box').fadeOut('slow');//Hide On Update message box
 				}
 			});
-
-			initUpgradeModal();
 		},
 		
 		panelInit: function(){
@@ -3917,7 +3885,6 @@ function frmAdminBuildJS(){
 			// activate addon licenses
 			var licenseTab = document.getElementById('licenses_settings');
 			jQuery(licenseTab).on('click', '.edd_frm_save_license', saveAddonLicense);
-			jQuery(licenseTab).on('click', '.edd_frm_fill_license', fillLicenses);
 
 			jQuery('.settings-lite-cta .dismiss').click( function( event ) {
 				event.preventDefault();

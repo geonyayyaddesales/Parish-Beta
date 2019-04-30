@@ -2,7 +2,7 @@
 Contributors: neeraj_slit
 Tags: sendinblue, marketing automation, email marketing, email campaign, newsletter, wordpress smtp, subscription form, phpmailer, SMTP, wp_mail, massive email, sendmail, ssl, tls, wp-phpmailer, mail smtp, mailchimp, newsletters, email plugin, signup form, email widget, widget, plugin, sidebar, shortcode
 Requires at least: 4.4
-Tested up to: 4.9.8
+Tested up to: 5.1.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -73,7 +73,7 @@ The plugin is available in English and French.
 2.	Activate the SendinBlue plugin through the 'Plugins' menu in WordPress. 
 3.	The "SendinBlue" tab must appear in your WordPress side navigation panel, then set your <a href="https://my.sendinblue.com/advanced/apikey/?utm_source=wordpress_plugin&utm_medium=plugin&utm_campaign=addons_page" target="_blank">SendinBlue API key</a> in the plugin homepage.
 
-To get a SendinBlue API key, you have to <a href="https://www.sendinblue.com/users/signup/?utm_source=wordpress_plugin&utm_medium=plugin&utm_campaign=addons_page" target="_blank">create an account</a>. It's free and takes less than 2 minutes!
+To get a SendinBlue API key, you have to <a href="https://app.sendinblue.com/account/register/?utm_source=wordpress_plugin&utm_medium=plugin&utm_campaign=addons_page" target="_blank">create an account</a>. It's free and takes less than 2 minutes!
 
 == Screenshots ==
 1. First, your are invited to create an account on SendinBlue then enter your API keys
@@ -113,6 +113,11 @@ In order to create a signup form, you need to:
 
 
 == Changelog ==
+= 2.9.4 =
+* Fix the doubleoptin issue for NTL 
+* update Sendinblue registration link 
+* Update translation
+
 = 2.9.3 =
 * Fix the issue that request ajax call on every page
 * Fix sms field issue

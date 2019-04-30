@@ -45,6 +45,13 @@ DEFAULT_HTML;
 		);
 	}
 
+	/**
+	 * @since 3.06.01
+	 */
+	public function translatable_strings() {
+		return array( 'name', 'description' );
+	}
+
 	protected function alter_builder_classes( $classes ) {
 		$classes = str_replace( ' frm_not_divider ', ' ', $classes );
 		if ( FrmField::get_option( $this->field, 'repeat' ) ) {
@@ -134,6 +141,7 @@ DEFAULT_HTML;
 
 		if ( FrmField::is_option_true( $this->field, 'repeat' ) ) {
 			$errors = isset( $args['errors'] ) ? $args['errors'] : array();
+			$form   = isset( $args['form'] ) ? $args['form'] : array();
 
 			$input = $this->front_field_input( compact( 'errors', 'form' ), array() );
 
