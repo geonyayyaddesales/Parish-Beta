@@ -59,6 +59,29 @@ get_header('homepage');
 					echo do_shortcode('[kingslider id="'.$royalsliderid.'"]');
 					endif;
 				?>
+				<?php 
+        		  $nivosliderid = get_field('nivo_slider');
+        		  if(get_field('nivo_slider')):
+        		  echo do_shortcode('[nivoslider id="'.$nivosliderid.'"]');
+        		  endif;
+        		?>
+        		<script>
+        		  var interval = null;
+
+        		  function addNivoArrowClass(){
+        		    if( jQuery('.nivo-nextNav').length && jQuery('.nivo-prevNav').length ){
+        		      jQuery('.nivo-nextNav').addClass('fa fa-caret-square-o-right');
+        		      jQuery('.nivo-prevNav').addClass('fa fa-caret-square-o-left');
+        		      clearInterval(interval);
+        		    }
+        		  }
+
+        		  jQuery(document).ready(function(){
+        		    if( window.location.pathname == '/' ){
+        		      interval = setInterval(addNivoArrowClass, 750);
+        		    }
+        		  });
+        		</script>
             </div>
             
             <div class="welcome-text">
