@@ -65,6 +65,12 @@ get_header('homepage');
         		  echo do_shortcode('[nivoslider id="'.$nivosliderid.'"]');
         		  endif;
         		?>
+        		<?php
+                  $metasliderid = get_field('meta_slider');
+                  if(get_field('meta_slider')):
+                  echo do_shortcode('[metaslider id="'.$metasliderid.'"]');
+                  endif;
+                ?>
         		<script>
         		  var interval = null;
 
