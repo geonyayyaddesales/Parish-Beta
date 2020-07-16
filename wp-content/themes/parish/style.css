@@ -496,6 +496,9 @@ footer p.sm {font-size: 10px;}
 .royalSlider.rsMinW .rsBullet { padding: 6px 6px 6px 4px !important; }
 .entry-content .unslider {height:400px; }
 
+.fa-toggle-right:before, .fa-caret-square-o-right:before { content: "\f105" !important; }
+.fa-toggle-left:before, .fa-caret-square-o-left:before { content: "\f104" !important; }
+
 /* HOME BOTTOM */
 
 .home-bottom {clear: both; margin: 20px auto; width: 954px; }
