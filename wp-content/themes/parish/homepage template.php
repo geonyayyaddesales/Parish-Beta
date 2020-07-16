@@ -53,18 +53,6 @@ get_header('homepage');
 		<div class="home-welcome">
       
       		<div class="welcome-img">
-				/*<?php
-					$royalsliderid = get_field('royal_slider');
-					if(get_field('royal_slider')):
-					echo do_shortcode('[kingslider id="'.$royalsliderid.'"]');
-					endif;
-				?>
-				<?php 
-        		  $nivosliderid = get_field('nivo_slider');
-        		  if(get_field('nivo_slider')):
-        		  echo do_shortcode('[nivoslider id="'.$nivosliderid.'"]');
-        		  endif;
-        		?>*/
         		<?php
                   $metasliderid = get_field('meta_slider');
                   if(get_field('meta_slider')):
